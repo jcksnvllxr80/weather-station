@@ -1,0 +1,72 @@
+Version 4.0 HI-TECH Software Intermediate Code
+"50 mcc_generated_files/device_config.c
+[p x FEXTOSC  =  OFF     ]
+"51
+[p x RSTOSC  =  EXTOSC     ]
+"54
+[p x CLKOUTEN  =  OFF     ]
+"55
+[p x CSWEN  =  ON     ]
+"56
+[p x FCMEN  =  ON     ]
+"59
+[p x MCLRE  =  EXTMCLR     ]
+"60
+[p x PWRTE  =  OFF     ]
+"61
+[p x LPBOREN  =  OFF     ]
+"62
+[p x BOREN  =  SBORDIS     ]
+"65
+[p x BORV  =  VBOR_2P45     ]
+"66
+[p x ZCD  =  OFF     ]
+"67
+[p x PPS1WAY  =  ON     ]
+"68
+[p x STVREN  =  ON     ]
+"69
+[p x DEBUG  =  OFF     ]
+"70
+[p x XINST  =  OFF     ]
+"73
+[p x WDTCPS  =  WDTCPS_31     ]
+"74
+[p x WDTE  =  OFF     ]
+"77
+[p x WDTCWS  =  WDTCWS_7     ]
+"78
+[p x WDTCCS  =  SC     ]
+"81
+[p x WRT0  =  OFF     ]
+"82
+[p x WRT1  =  OFF     ]
+"83
+[p x WRT2  =  OFF     ]
+"84
+[p x WRT3  =  OFF     ]
+"87
+[p x WRTC  =  OFF     ]
+"88
+[p x WRTB  =  OFF     ]
+"89
+[p x WRTD  =  OFF     ]
+"90
+[p x SCANE  =  ON     ]
+"91
+[p x LVP  =  ON     ]
+"94
+[p x CP  =  OFF     ]
+"95
+[p x CPD  =  OFF     ]
+"98
+[p x EBTR0  =  OFF     ]
+"99
+[p x EBTR1  =  OFF     ]
+"100
+[p x EBTR2  =  OFF     ]
+"101
+[p x EBTR3  =  OFF     ]
+"104
+[; ;mcc_generated_files/device_config.c: 104: 
+[p x EBTRB  =  OFF     ]
