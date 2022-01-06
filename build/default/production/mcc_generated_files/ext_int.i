@@ -15414,6 +15414,5 @@ void EXT_INT_Initialize(void)
     (INTCONbits.INT2EDG = 1);
 
     INT2_SetInterruptHandler(INT2_DefaultInterruptHandler);
-    (PIE0bits.INT2IE = 1);
 
 }

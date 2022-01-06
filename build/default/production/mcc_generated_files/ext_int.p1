@@ -1530,10 +1530,7 @@ Version 4.0 HI-TECH Software Intermediate Code
 "139
 [; ;mcc_generated_files/ext_int.c: 139:     INT2_SetInterruptHandler(INT2_DefaultInterruptHandler);
 [e ( _INT2_SetInterruptHandler (1 &U _INT2_DefaultInterruptHandler ]
-"140
-[; ;mcc_generated_files/ext_int.c: 140:     (PIE0bits.INT2IE = 1);
-[e = . . _PIE0bits 0 2 -> -> 1 `i `uc ]
-"142
-[; ;mcc_generated_files/ext_int.c: 142: }
+"141
+[; ;mcc_generated_files/ext_int.c: 141: }
 [e :UE 1330 ]
 }

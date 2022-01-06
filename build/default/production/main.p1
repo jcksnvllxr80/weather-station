@@ -3,6 +3,15 @@ Version 4.0 HI-TECH Software Intermediate Code
 "74 ./mcc_generated_files/mcc.h
 [; ;./mcc_generated_files/mcc.h: 74: void SYSTEM_Initialize(void);
 [v _SYSTEM_Initialize `(v ~T0 @X0 0 ef ]
+"48 main.c
+[; ;main.c: 48: void sendUartStr(char *TxData);
+[v _sendUartStr `(v ~T0 @X0 0 ef1`*uc ]
+"253 ./mcc_generated_files/eusart.h
+[; ;./mcc_generated_files/eusart.h: 253: _Bool EUSART_is_tx_done(void);
+[v _EUSART_is_tx_done `(a ~T0 @X0 0 ef ]
+"341
+[; ;./mcc_generated_files/eusart.h: 341: void EUSART_Write(uint8_t txData);
+[v _EUSART_Write `(v ~T0 @X0 0 ef1`uc ]
 "54 C:/Program Files/Microchip/MPLABX/v5.50/packs/Microchip/PIC18F-K_DFP/1.4.87/xc8\pic\include\proc\pic18f25k40.h
 [; ;C:/Program Files/Microchip/MPLABX/v5.50/packs/Microchip/PIC18F-K_DFP/1.4.87/xc8\pic\include\proc\pic18f25k40.h: 54: __asm("PPSLOCK equ 0EA0h");
 [; <" PPSLOCK equ 0EA0h ;# ">
@@ -1222,30 +1231,76 @@ Version 4.0 HI-TECH Software Intermediate Code
 [; ;C:/Program Files/Microchip/MPLABX/v5.50/packs/Microchip/PIC18F-K_DFP/1.4.87/xc8\pic\include\proc\pic18f25k40.h: 25228: __asm("TOSU equ 0FFFh");
 [; <" TOSU equ 0FFFh ;# ">
 [v $root$_main `(v ~T0 @X0 0 e ]
-"49 main.c
-[; ;main.c: 49: void main(void)
+"52 main.c
+[; ;main.c: 52: void main(void)
 [v _main `(v ~T0 @X0 1 ef ]
-"50
-[; ;main.c: 50: {
+"53
+[; ;main.c: 53: {
 {
 [e :U _main ]
 [f ]
-"52
-[; ;main.c: 52:     SYSTEM_Initialize();
+"55
+[; ;main.c: 55:     SYSTEM_Initialize();
 [e ( _SYSTEM_Initialize ..  ]
-"70
-[; ;main.c: 70:     while (1)
-[e :U 1319 ]
-"71
-[; ;main.c: 71:     {
-{
+"72
+[; ;main.c: 72:     char* TestTxData = "AT\r\n\r\n";
+[v _TestTxData `*uc ~T0 @X0 1 a ]
+[e = _TestTxData :s 1C ]
 "73
-[; ;main.c: 73:     }
-}
-[e :U 1318 ]
-[e $U 1319  ]
+[; ;main.c: 73:     while (1)
 [e :U 1320 ]
 "74
-[; ;main.c: 74: }
-[e :UE 1317 ]
+[; ;main.c: 74:     {
+{
+"75
+[; ;main.c: 75:         sendUartStr(TestTxData);
+[e ( _sendUartStr (1 _TestTxData ]
+"77
+[; ;main.c: 77:     }
 }
+[e :U 1319 ]
+[e $U 1320  ]
+[e :U 1321 ]
+"78
+[; ;main.c: 78: }
+[e :UE 1318 ]
+}
+"80
+[; ;main.c: 80: void sendUartStr(char *TxData){
+[v _sendUartStr `(v ~T0 @X0 1 ef1`*uc ]
+{
+[e :U _sendUartStr ]
+[v _TxData `*uc ~T0 @X0 1 r1 ]
+[f ]
+"81
+[; ;main.c: 81:     while (*TxData != '\0') {
+[e $U 1323  ]
+[e :U 1324 ]
+{
+"82
+[; ;main.c: 82:         if (EUSART_is_tx_done()){
+[e $ ! != -> ( _EUSART_is_tx_done ..  `i -> 0 `i 1326  ]
+{
+"83
+[; ;main.c: 83:             EUSART_Write(*TxData);
+[e ( _EUSART_Write (1 -> *U _TxData `uc ]
+"84
+[; ;main.c: 84:             TxData++;
+[e ++ _TxData * -> -> 1 `i `x -> -> # *U _TxData `i `x ]
+"85
+[; ;main.c: 85:         }
+}
+[e :U 1326 ]
+"86
+[; ;main.c: 86:     }
+}
+[e :U 1323 ]
+"81
+[; ;main.c: 81:     while (*TxData != '\0') {
+[e $ != -> *U _TxData `ui -> 0 `ui 1324  ]
+[e :U 1325 ]
+"87
+[; ;main.c: 87: }
+[e :UE 1322 ]
+}
+[a 1C 65 84 13 10 13 10 0 ]

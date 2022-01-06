@@ -15279,9 +15279,9 @@ extern __attribute__((nonreentrant)) void _delay3(unsigned char);
 # 50 "mcc_generated_files/mcc.h" 2
 
 # 1 "mcc_generated_files/pin_manager.h" 1
-# 138 "mcc_generated_files/pin_manager.h"
+# 126 "mcc_generated_files/pin_manager.h"
 void PIN_MANAGER_Initialize (void);
-# 150 "mcc_generated_files/pin_manager.h"
+# 138 "mcc_generated_files/pin_manager.h"
 void PIN_MANAGER_IOC(void);
 # 51 "mcc_generated_files/mcc.h" 2
 
@@ -15587,10 +15587,6 @@ void __attribute__((picinterrupt(("")))) INTERRUPT_InterruptManager (void)
     else if(PIE0bits.INT1IE == 1 && PIR0bits.INT1IF == 1)
     {
         INT1_ISR();
-    }
-    else if(PIE0bits.INT2IE == 1 && PIR0bits.INT2IF == 1)
-    {
-        INT2_ISR();
     }
     else
     {

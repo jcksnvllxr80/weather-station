@@ -48,9 +48,6 @@ Version 4.0 HI-TECH Software Intermediate Code
 "697
 [; ;mcc_generated_files/ext_int.h: 697: void INT1_ISR(void);
 [v _INT1_ISR `(v ~T0 @X0 0 ef ]
-"810
-[; ;mcc_generated_files/ext_int.h: 810: void INT2_ISR(void);
-[v _INT2_ISR `(v ~T0 @X0 0 ef ]
 "54 C:/Program Files/Microchip/MPLABX/v5.50/packs/Microchip/PIC18F-K_DFP/1.4.87/xc8\pic\include\proc\pic18f25k40.h
 [; ;C:/Program Files/Microchip/MPLABX/v5.50/packs/Microchip/PIC18F-K_DFP/1.4.87/xc8\pic\include\proc\pic18f25k40.h: 54: __asm("PPSLOCK equ 0EA0h");
 [; <" PPSLOCK equ 0EA0h ;# ">
@@ -1321,32 +1318,17 @@ Version 4.0 HI-TECH Software Intermediate Code
 }
 [e $U 1322  ]
 "69
-[; ;mcc_generated_files/interrupt_manager.c: 69:     else if(PIE0bits.INT2IE == 1 && PIR0bits.INT2IF == 1)
+[; ;mcc_generated_files/interrupt_manager.c: 69:     else
 [e :U 1321 ]
-[e $ ! && == -> . . _PIE0bits 0 2 `i -> 1 `i == -> . . _PIR0bits 0 2 `i -> 1 `i 1323  ]
 "70
 [; ;mcc_generated_files/interrupt_manager.c: 70:     {
 {
-"71
-[; ;mcc_generated_files/interrupt_manager.c: 71:         INT2_ISR();
-[e ( _INT2_ISR ..  ]
 "72
 [; ;mcc_generated_files/interrupt_manager.c: 72:     }
 }
-[e $U 1324  ]
-"73
-[; ;mcc_generated_files/interrupt_manager.c: 73:     else
-[e :U 1323 ]
-"74
-[; ;mcc_generated_files/interrupt_manager.c: 74:     {
-{
-"76
-[; ;mcc_generated_files/interrupt_manager.c: 76:     }
-}
-[e :U 1324 ]
 [e :U 1322 ]
 [e :U 1320 ]
-"77
-[; ;mcc_generated_files/interrupt_manager.c: 77: }
+"73
+[; ;mcc_generated_files/interrupt_manager.c: 73: }
 [e :UE 1318 ]
 }
