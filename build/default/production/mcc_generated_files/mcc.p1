@@ -14,11 +14,11 @@ Version 4.0 HI-TECH Software Intermediate Code
 "126 mcc_generated_files/adcc.h
 [; ;mcc_generated_files/adcc.h: 126: void ADCC_Initialize(void);
 [v _ADCC_Initialize `(v ~T0 @X0 0 ef ]
-"562 mcc_generated_files/ext_int.h
-[; ;mcc_generated_files/ext_int.h: 562: void EXT_INT_Initialize(void);
+"406 mcc_generated_files/ext_int.h
+[; ;mcc_generated_files/ext_int.h: 406: void EXT_INT_Initialize(void);
 [v _EXT_INT_Initialize `(v ~T0 @X0 0 ef ]
-"110 mcc_generated_files/eusart.h
-[; ;mcc_generated_files/eusart.h: 110: void EUSART_Initialize(void);
+"117 mcc_generated_files/eusart.h
+[; ;mcc_generated_files/eusart.h: 117: void EUSART_Initialize(void);
 [v _EUSART_Initialize `(v ~T0 @X0 0 ef ]
 "4268 C:/Program Files/Microchip/MPLABX/v5.50/packs/Microchip/PIC18F-K_DFP/1.4.87/xc8\pic\include\proc\pic18f25k40.h
 [; ;C:/Program Files/Microchip/MPLABX/v5.50/packs/Microchip/PIC18F-K_DFP/1.4.87/xc8\pic\include\proc\pic18f25k40.h: 4268: extern volatile unsigned char OSCCON1 __attribute__((address(0xED8)));
@@ -1313,8 +1313,8 @@ Version 4.0 HI-TECH Software Intermediate Code
 [e :U _OSCILLATOR_Initialize ]
 [f ]
 "64
-[; ;mcc_generated_files/mcc.c: 64:     OSCCON1 = 0x70;
-[e = _OSCCON1 -> -> 112 `i `uc ]
+[; ;mcc_generated_files/mcc.c: 64:     OSCCON1 = 0x60;
+[e = _OSCCON1 -> -> 96 `i `uc ]
 "66
 [; ;mcc_generated_files/mcc.c: 66:     OSCCON3 = 0x00;
 [e = _OSCCON3 -> -> 0 `i `uc ]
@@ -1322,8 +1322,8 @@ Version 4.0 HI-TECH Software Intermediate Code
 [; ;mcc_generated_files/mcc.c: 68:     OSCEN = 0x00;
 [e = _OSCEN -> -> 0 `i `uc ]
 "70
-[; ;mcc_generated_files/mcc.c: 70:     OSCFRQ = 0x02;
-[e = _OSCFRQ -> -> 2 `i `uc ]
+[; ;mcc_generated_files/mcc.c: 70:     OSCFRQ = 0x08;
+[e = _OSCFRQ -> -> 8 `i `uc ]
 "72
 [; ;mcc_generated_files/mcc.c: 72:     OSCTUNE = 0x00;
 [e = _OSCTUNE -> -> 0 `i `uc ]

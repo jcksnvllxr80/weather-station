@@ -1,7 +1,6 @@
 Version 4.0 HI-TECH Software Intermediate Code
-[v F9043 `(v ~T0 @X0 0 tf ]
-[v F9045 `(v ~T0 @X0 0 tf ]
-[v F9047 `(v ~T0 @X0 0 tf ]
+[v F9034 `(v ~T0 @X0 0 tf ]
+[v F9036 `(v ~T0 @X0 0 tf ]
 "3318 C:/Program Files/Microchip/MPLABX/v5.50/packs/Microchip/PIC18F-K_DFP/1.4.87/xc8\pic\include\proc\pic18f25k40.h
 [; ;C:/Program Files/Microchip/MPLABX/v5.50/packs/Microchip/PIC18F-K_DFP/1.4.87/xc8\pic\include\proc\pic18f25k40.h: 3318:     struct {
 [s S202 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 ]
@@ -13,24 +12,18 @@ Version 4.0 HI-TECH Software Intermediate Code
 "3327
 [; ;C:/Program Files/Microchip/MPLABX/v5.50/packs/Microchip/PIC18F-K_DFP/1.4.87/xc8\pic\include\proc\pic18f25k40.h: 3327: extern volatile PIR0bits_t PIR0bits __attribute__((address(0xECA)));
 [v _PIR0bits `VS201 ~T0 @X0 0 e@3786 ]
-"608 mcc_generated_files/ext_int.h
-[; ;mcc_generated_files/ext_int.h: 608: void INT0_CallBack(void);
+"452 mcc_generated_files/ext_int.h
+[; ;mcc_generated_files/ext_int.h: 452: void INT0_CallBack(void);
 [v _INT0_CallBack `(v ~T0 @X0 0 ef ]
+[v F9039 `(v ~T0 @X0 0 tf ]
+[v F9041 `(v ~T0 @X0 0 tf ]
+[v F9043 `(v ~T0 @X0 0 tf ]
+"565
+[; ;mcc_generated_files/ext_int.h: 565: void INT1_CallBack(void);
+[v _INT1_CallBack `(v ~T0 @X0 0 ef ]
+[v F9048 `(v ~T0 @X0 0 tf ]
 [v F9050 `(v ~T0 @X0 0 tf ]
 [v F9052 `(v ~T0 @X0 0 tf ]
-[v F9054 `(v ~T0 @X0 0 tf ]
-"721
-[; ;mcc_generated_files/ext_int.h: 721: void INT1_CallBack(void);
-[v _INT1_CallBack `(v ~T0 @X0 0 ef ]
-[v F9059 `(v ~T0 @X0 0 tf ]
-[v F9061 `(v ~T0 @X0 0 tf ]
-[v F9063 `(v ~T0 @X0 0 tf ]
-"834
-[; ;mcc_generated_files/ext_int.h: 834: void INT2_CallBack(void);
-[v _INT2_CallBack `(v ~T0 @X0 0 ef ]
-[v F9068 `(v ~T0 @X0 0 tf ]
-[v F9070 `(v ~T0 @X0 0 tf ]
-[v F9072 `(v ~T0 @X0 0 tf ]
 "24785 C:/Program Files/Microchip/MPLABX/v5.50/packs/Microchip/PIC18F-K_DFP/1.4.87/xc8\pic\include\proc\pic18f25k40.h
 [; ;C:/Program Files/Microchip/MPLABX/v5.50/packs/Microchip/PIC18F-K_DFP/1.4.87/xc8\pic\include\proc\pic18f25k40.h: 24785:     struct {
 [s S1285 :1 `uc 1 :1 `uc 1 :1 `uc 1 :2 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 ]
@@ -1281,256 +1274,177 @@ Version 4.0 HI-TECH Software Intermediate Code
 [; <" TOSU equ 0FFFh ;# ">
 "30 mcc_generated_files/ext_int.c
 [; ;mcc_generated_files/ext_int.c: 30: void (*INT0_InterruptHandler)(void);
-[v _INT0_InterruptHandler `*F9043 ~T0 @X0 1 e ]
+[v _INT0_InterruptHandler `*F9034 ~T0 @X0 1 e ]
 "31
 [; ;mcc_generated_files/ext_int.c: 31: void (*INT1_InterruptHandler)(void);
-[v _INT1_InterruptHandler `*F9045 ~T0 @X0 1 e ]
-"32
-[; ;mcc_generated_files/ext_int.c: 32: void (*INT2_InterruptHandler)(void);
-[v _INT2_InterruptHandler `*F9047 ~T0 @X0 1 e ]
-"34
-[; ;mcc_generated_files/ext_int.c: 34: void INT0_ISR(void)
+[v _INT1_InterruptHandler `*F9036 ~T0 @X0 1 e ]
+"33
+[; ;mcc_generated_files/ext_int.c: 33: void INT0_ISR(void)
 [v _INT0_ISR `(v ~T0 @X0 1 ef ]
-"35
-[; ;mcc_generated_files/ext_int.c: 35: {
+"34
+[; ;mcc_generated_files/ext_int.c: 34: {
 {
 [e :U _INT0_ISR ]
 [f ]
-"36
-[; ;mcc_generated_files/ext_int.c: 36:     (PIR0bits.INT0IF = 0);
+"35
+[; ;mcc_generated_files/ext_int.c: 35:     (PIR0bits.INT0IF = 0);
 [e = . . _PIR0bits 0 0 -> -> 0 `i `uc ]
-"39
-[; ;mcc_generated_files/ext_int.c: 39:     INT0_CallBack();
+"38
+[; ;mcc_generated_files/ext_int.c: 38:     INT0_CallBack();
 [e ( _INT0_CallBack ..  ]
-"40
-[; ;mcc_generated_files/ext_int.c: 40: }
+"39
+[; ;mcc_generated_files/ext_int.c: 39: }
 [e :UE 1315 ]
 }
-"43
-[; ;mcc_generated_files/ext_int.c: 43: void INT0_CallBack(void)
+"42
+[; ;mcc_generated_files/ext_int.c: 42: void INT0_CallBack(void)
 [v _INT0_CallBack `(v ~T0 @X0 1 ef ]
-"44
-[; ;mcc_generated_files/ext_int.c: 44: {
+"43
+[; ;mcc_generated_files/ext_int.c: 43: {
 {
 [e :U _INT0_CallBack ]
 [f ]
+"45
+[; ;mcc_generated_files/ext_int.c: 45:     if(INT0_InterruptHandler)
+[e $ ! != _INT0_InterruptHandler -> -> 0 `i `*F9039 1317  ]
 "46
-[; ;mcc_generated_files/ext_int.c: 46:     if(INT0_InterruptHandler)
-[e $ ! != _INT0_InterruptHandler -> -> 0 `i `*F9050 1317  ]
-"47
-[; ;mcc_generated_files/ext_int.c: 47:     {
+[; ;mcc_generated_files/ext_int.c: 46:     {
 {
-"48
-[; ;mcc_generated_files/ext_int.c: 48:         INT0_InterruptHandler();
+"47
+[; ;mcc_generated_files/ext_int.c: 47:         INT0_InterruptHandler();
 [e ( *U _INT0_InterruptHandler ..  ]
-"49
-[; ;mcc_generated_files/ext_int.c: 49:     }
+"48
+[; ;mcc_generated_files/ext_int.c: 48:     }
 }
 [e :U 1317 ]
-"50
-[; ;mcc_generated_files/ext_int.c: 50: }
+"49
+[; ;mcc_generated_files/ext_int.c: 49: }
 [e :UE 1316 ]
 }
-"52
-[; ;mcc_generated_files/ext_int.c: 52: void INT0_SetInterruptHandler(void (* InterruptHandler)(void)){
-[v _INT0_SetInterruptHandler `(v ~T0 @X0 1 ef1`*F9052 ]
+"51
+[; ;mcc_generated_files/ext_int.c: 51: void INT0_SetInterruptHandler(void (* InterruptHandler)(void)){
+[v _INT0_SetInterruptHandler `(v ~T0 @X0 1 ef1`*F9041 ]
 {
 [e :U _INT0_SetInterruptHandler ]
-[v _InterruptHandler `*F9054 ~T0 @X0 1 r1 ]
+[v _InterruptHandler `*F9043 ~T0 @X0 1 r1 ]
 [f ]
-"53
-[; ;mcc_generated_files/ext_int.c: 53:     INT0_InterruptHandler = InterruptHandler;
+"52
+[; ;mcc_generated_files/ext_int.c: 52:     INT0_InterruptHandler = InterruptHandler;
 [e = _INT0_InterruptHandler _InterruptHandler ]
-"54
-[; ;mcc_generated_files/ext_int.c: 54: }
+"53
+[; ;mcc_generated_files/ext_int.c: 53: }
 [e :UE 1318 ]
 }
-"56
-[; ;mcc_generated_files/ext_int.c: 56: void INT0_DefaultInterruptHandler(void){
+"55
+[; ;mcc_generated_files/ext_int.c: 55: void INT0_DefaultInterruptHandler(void){
 [v _INT0_DefaultInterruptHandler `(v ~T0 @X0 1 ef ]
 {
 [e :U _INT0_DefaultInterruptHandler ]
 [f ]
-"59
-[; ;mcc_generated_files/ext_int.c: 59: }
+"58
+[; ;mcc_generated_files/ext_int.c: 58: }
 [e :UE 1319 ]
 }
-"60
-[; ;mcc_generated_files/ext_int.c: 60: void INT1_ISR(void)
+"59
+[; ;mcc_generated_files/ext_int.c: 59: void INT1_ISR(void)
 [v _INT1_ISR `(v ~T0 @X0 1 ef ]
-"61
-[; ;mcc_generated_files/ext_int.c: 61: {
+"60
+[; ;mcc_generated_files/ext_int.c: 60: {
 {
 [e :U _INT1_ISR ]
 [f ]
-"62
-[; ;mcc_generated_files/ext_int.c: 62:     (PIR0bits.INT1IF = 0);
+"61
+[; ;mcc_generated_files/ext_int.c: 61:     (PIR0bits.INT1IF = 0);
 [e = . . _PIR0bits 0 1 -> -> 0 `i `uc ]
-"65
-[; ;mcc_generated_files/ext_int.c: 65:     INT1_CallBack();
+"64
+[; ;mcc_generated_files/ext_int.c: 64:     INT1_CallBack();
 [e ( _INT1_CallBack ..  ]
-"66
-[; ;mcc_generated_files/ext_int.c: 66: }
+"65
+[; ;mcc_generated_files/ext_int.c: 65: }
 [e :UE 1320 ]
 }
-"69
-[; ;mcc_generated_files/ext_int.c: 69: void INT1_CallBack(void)
+"68
+[; ;mcc_generated_files/ext_int.c: 68: void INT1_CallBack(void)
 [v _INT1_CallBack `(v ~T0 @X0 1 ef ]
-"70
-[; ;mcc_generated_files/ext_int.c: 70: {
+"69
+[; ;mcc_generated_files/ext_int.c: 69: {
 {
 [e :U _INT1_CallBack ]
 [f ]
+"71
+[; ;mcc_generated_files/ext_int.c: 71:     if(INT1_InterruptHandler)
+[e $ ! != _INT1_InterruptHandler -> -> 0 `i `*F9048 1322  ]
 "72
-[; ;mcc_generated_files/ext_int.c: 72:     if(INT1_InterruptHandler)
-[e $ ! != _INT1_InterruptHandler -> -> 0 `i `*F9059 1322  ]
-"73
-[; ;mcc_generated_files/ext_int.c: 73:     {
+[; ;mcc_generated_files/ext_int.c: 72:     {
 {
-"74
-[; ;mcc_generated_files/ext_int.c: 74:         INT1_InterruptHandler();
+"73
+[; ;mcc_generated_files/ext_int.c: 73:         INT1_InterruptHandler();
 [e ( *U _INT1_InterruptHandler ..  ]
-"75
-[; ;mcc_generated_files/ext_int.c: 75:     }
+"74
+[; ;mcc_generated_files/ext_int.c: 74:     }
 }
 [e :U 1322 ]
-"76
-[; ;mcc_generated_files/ext_int.c: 76: }
+"75
+[; ;mcc_generated_files/ext_int.c: 75: }
 [e :UE 1321 ]
 }
-"78
-[; ;mcc_generated_files/ext_int.c: 78: void INT1_SetInterruptHandler(void (* InterruptHandler)(void)){
-[v _INT1_SetInterruptHandler `(v ~T0 @X0 1 ef1`*F9061 ]
+"77
+[; ;mcc_generated_files/ext_int.c: 77: void INT1_SetInterruptHandler(void (* InterruptHandler)(void)){
+[v _INT1_SetInterruptHandler `(v ~T0 @X0 1 ef1`*F9050 ]
 {
 [e :U _INT1_SetInterruptHandler ]
-[v _InterruptHandler `*F9063 ~T0 @X0 1 r1 ]
+[v _InterruptHandler `*F9052 ~T0 @X0 1 r1 ]
 [f ]
-"79
-[; ;mcc_generated_files/ext_int.c: 79:     INT1_InterruptHandler = InterruptHandler;
+"78
+[; ;mcc_generated_files/ext_int.c: 78:     INT1_InterruptHandler = InterruptHandler;
 [e = _INT1_InterruptHandler _InterruptHandler ]
-"80
-[; ;mcc_generated_files/ext_int.c: 80: }
+"79
+[; ;mcc_generated_files/ext_int.c: 79: }
 [e :UE 1323 ]
 }
-"82
-[; ;mcc_generated_files/ext_int.c: 82: void INT1_DefaultInterruptHandler(void){
+"81
+[; ;mcc_generated_files/ext_int.c: 81: void INT1_DefaultInterruptHandler(void){
 [v _INT1_DefaultInterruptHandler `(v ~T0 @X0 1 ef ]
 {
 [e :U _INT1_DefaultInterruptHandler ]
 [f ]
-"85
-[; ;mcc_generated_files/ext_int.c: 85: }
+"84
+[; ;mcc_generated_files/ext_int.c: 84: }
 [e :UE 1324 ]
 }
 "86
-[; ;mcc_generated_files/ext_int.c: 86: void INT2_ISR(void)
-[v _INT2_ISR `(v ~T0 @X0 1 ef ]
+[; ;mcc_generated_files/ext_int.c: 86: void EXT_INT_Initialize(void)
+[v _EXT_INT_Initialize `(v ~T0 @X0 1 ef ]
 "87
 [; ;mcc_generated_files/ext_int.c: 87: {
 {
-[e :U _INT2_ISR ]
-[f ]
-"88
-[; ;mcc_generated_files/ext_int.c: 88:     (PIR0bits.INT2IF = 0);
-[e = . . _PIR0bits 0 2 -> -> 0 `i `uc ]
-"91
-[; ;mcc_generated_files/ext_int.c: 91:     INT2_CallBack();
-[e ( _INT2_CallBack ..  ]
-"92
-[; ;mcc_generated_files/ext_int.c: 92: }
-[e :UE 1325 ]
-}
-"95
-[; ;mcc_generated_files/ext_int.c: 95: void INT2_CallBack(void)
-[v _INT2_CallBack `(v ~T0 @X0 1 ef ]
-"96
-[; ;mcc_generated_files/ext_int.c: 96: {
-{
-[e :U _INT2_CallBack ]
-[f ]
-"98
-[; ;mcc_generated_files/ext_int.c: 98:     if(INT2_InterruptHandler)
-[e $ ! != _INT2_InterruptHandler -> -> 0 `i `*F9068 1327  ]
-"99
-[; ;mcc_generated_files/ext_int.c: 99:     {
-{
-"100
-[; ;mcc_generated_files/ext_int.c: 100:         INT2_InterruptHandler();
-[e ( *U _INT2_InterruptHandler ..  ]
-"101
-[; ;mcc_generated_files/ext_int.c: 101:     }
-}
-[e :U 1327 ]
-"102
-[; ;mcc_generated_files/ext_int.c: 102: }
-[e :UE 1326 ]
-}
-"104
-[; ;mcc_generated_files/ext_int.c: 104: void INT2_SetInterruptHandler(void (* InterruptHandler)(void)){
-[v _INT2_SetInterruptHandler `(v ~T0 @X0 1 ef1`*F9070 ]
-{
-[e :U _INT2_SetInterruptHandler ]
-[v _InterruptHandler `*F9072 ~T0 @X0 1 r1 ]
-[f ]
-"105
-[; ;mcc_generated_files/ext_int.c: 105:     INT2_InterruptHandler = InterruptHandler;
-[e = _INT2_InterruptHandler _InterruptHandler ]
-"106
-[; ;mcc_generated_files/ext_int.c: 106: }
-[e :UE 1328 ]
-}
-"108
-[; ;mcc_generated_files/ext_int.c: 108: void INT2_DefaultInterruptHandler(void){
-[v _INT2_DefaultInterruptHandler `(v ~T0 @X0 1 ef ]
-{
-[e :U _INT2_DefaultInterruptHandler ]
-[f ]
-"111
-[; ;mcc_generated_files/ext_int.c: 111: }
-[e :UE 1329 ]
-}
-"113
-[; ;mcc_generated_files/ext_int.c: 113: void EXT_INT_Initialize(void)
-[v _EXT_INT_Initialize `(v ~T0 @X0 1 ef ]
-"114
-[; ;mcc_generated_files/ext_int.c: 114: {
-{
 [e :U _EXT_INT_Initialize ]
 [f ]
-"118
-[; ;mcc_generated_files/ext_int.c: 118:     (PIR0bits.INT0IF = 0);
+"91
+[; ;mcc_generated_files/ext_int.c: 91:     (PIR0bits.INT0IF = 0);
 [e = . . _PIR0bits 0 0 -> -> 0 `i `uc ]
-"119
-[; ;mcc_generated_files/ext_int.c: 119:     (INTCONbits.INT0EDG = 1);
+"92
+[; ;mcc_generated_files/ext_int.c: 92:     (INTCONbits.INT0EDG = 1);
 [e = . . _INTCONbits 0 0 -> -> 1 `i `uc ]
-"121
-[; ;mcc_generated_files/ext_int.c: 121:     INT0_SetInterruptHandler(INT0_DefaultInterruptHandler);
+"94
+[; ;mcc_generated_files/ext_int.c: 94:     INT0_SetInterruptHandler(INT0_DefaultInterruptHandler);
 [e ( _INT0_SetInterruptHandler (1 &U _INT0_DefaultInterruptHandler ]
-"122
-[; ;mcc_generated_files/ext_int.c: 122:     (PIE0bits.INT0IE = 1);
+"95
+[; ;mcc_generated_files/ext_int.c: 95:     (PIE0bits.INT0IE = 1);
 [e = . . _PIE0bits 0 0 -> -> 1 `i `uc ]
-"127
-[; ;mcc_generated_files/ext_int.c: 127:     (PIR0bits.INT1IF = 0);
+"100
+[; ;mcc_generated_files/ext_int.c: 100:     (PIR0bits.INT1IF = 0);
 [e = . . _PIR0bits 0 1 -> -> 0 `i `uc ]
-"128
-[; ;mcc_generated_files/ext_int.c: 128:     (INTCONbits.INT1EDG = 1);
+"101
+[; ;mcc_generated_files/ext_int.c: 101:     (INTCONbits.INT1EDG = 1);
 [e = . . _INTCONbits 0 1 -> -> 1 `i `uc ]
-"130
-[; ;mcc_generated_files/ext_int.c: 130:     INT1_SetInterruptHandler(INT1_DefaultInterruptHandler);
+"103
+[; ;mcc_generated_files/ext_int.c: 103:     INT1_SetInterruptHandler(INT1_DefaultInterruptHandler);
 [e ( _INT1_SetInterruptHandler (1 &U _INT1_DefaultInterruptHandler ]
-"131
-[; ;mcc_generated_files/ext_int.c: 131:     (PIE0bits.INT1IE = 1);
+"104
+[; ;mcc_generated_files/ext_int.c: 104:     (PIE0bits.INT1IE = 1);
 [e = . . _PIE0bits 0 1 -> -> 1 `i `uc ]
-"136
-[; ;mcc_generated_files/ext_int.c: 136:     (PIR0bits.INT2IF = 0);
-[e = . . _PIR0bits 0 2 -> -> 0 `i `uc ]
-"137
-[; ;mcc_generated_files/ext_int.c: 137:     (INTCONbits.INT2EDG = 1);
-[e = . . _INTCONbits 0 2 -> -> 1 `i `uc ]
-"139
-[; ;mcc_generated_files/ext_int.c: 139:     INT2_SetInterruptHandler(INT2_DefaultInterruptHandler);
-[e ( _INT2_SetInterruptHandler (1 &U _INT2_DefaultInterruptHandler ]
-"141
-[; ;mcc_generated_files/ext_int.c: 141: }
-[e :UE 1330 ]
+"106
+[; ;mcc_generated_files/ext_int.c: 106: }
+[e :UE 1325 ]
 }

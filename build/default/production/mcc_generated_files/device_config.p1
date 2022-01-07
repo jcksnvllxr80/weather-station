@@ -2,7 +2,7 @@ Version 4.0 HI-TECH Software Intermediate Code
 "50 mcc_generated_files/device_config.c
 [p x FEXTOSC  =  OFF     ]
 "51
-[p x RSTOSC  =  EXTOSC     ]
+[p x RSTOSC  =  HFINTOSC_64MHZ     ]
 "54
 [p x CLKOUTEN  =  OFF     ]
 "55
@@ -54,7 +54,7 @@ Version 4.0 HI-TECH Software Intermediate Code
 "90
 [p x SCANE  =  ON     ]
 "91
-[p x LVP  =  ON     ]
+[p x LVP  =  OFF     ]
 "94
 [p x CP  =  OFF     ]
 "95

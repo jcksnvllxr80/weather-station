@@ -15269,44 +15269,33 @@ extern __attribute__((nonreentrant)) void _delay3(unsigned char);
 # 27 "mcc_generated_files/ext_int.c" 2
 
 # 1 "mcc_generated_files/ext_int.h" 1
-# 562 "mcc_generated_files/ext_int.h"
+# 406 "mcc_generated_files/ext_int.h"
 void EXT_INT_Initialize(void);
-# 584 "mcc_generated_files/ext_int.h"
+# 428 "mcc_generated_files/ext_int.h"
 void INT0_ISR(void);
-# 608 "mcc_generated_files/ext_int.h"
+# 452 "mcc_generated_files/ext_int.h"
 void INT0_CallBack(void);
-# 631 "mcc_generated_files/ext_int.h"
+# 475 "mcc_generated_files/ext_int.h"
 void INT0_SetInterruptHandler(void (* InterruptHandler)(void));
-# 655 "mcc_generated_files/ext_int.h"
+# 499 "mcc_generated_files/ext_int.h"
 extern void (*INT0_InterruptHandler)(void);
-# 679 "mcc_generated_files/ext_int.h"
+# 523 "mcc_generated_files/ext_int.h"
 void INT0_DefaultInterruptHandler(void);
-# 697 "mcc_generated_files/ext_int.h"
+# 541 "mcc_generated_files/ext_int.h"
 void INT1_ISR(void);
-# 721 "mcc_generated_files/ext_int.h"
+# 565 "mcc_generated_files/ext_int.h"
 void INT1_CallBack(void);
-# 744 "mcc_generated_files/ext_int.h"
+# 588 "mcc_generated_files/ext_int.h"
 void INT1_SetInterruptHandler(void (* InterruptHandler)(void));
-# 768 "mcc_generated_files/ext_int.h"
+# 612 "mcc_generated_files/ext_int.h"
 extern void (*INT1_InterruptHandler)(void);
-# 792 "mcc_generated_files/ext_int.h"
+# 636 "mcc_generated_files/ext_int.h"
 void INT1_DefaultInterruptHandler(void);
-# 810 "mcc_generated_files/ext_int.h"
-void INT2_ISR(void);
-# 834 "mcc_generated_files/ext_int.h"
-void INT2_CallBack(void);
-# 857 "mcc_generated_files/ext_int.h"
-void INT2_SetInterruptHandler(void (* InterruptHandler)(void));
-# 881 "mcc_generated_files/ext_int.h"
-extern void (*INT2_InterruptHandler)(void);
-# 905 "mcc_generated_files/ext_int.h"
-void INT2_DefaultInterruptHandler(void);
 # 28 "mcc_generated_files/ext_int.c" 2
 
 
 void (*INT0_InterruptHandler)(void);
 void (*INT1_InterruptHandler)(void);
-void (*INT2_InterruptHandler)(void);
 
 void INT0_ISR(void)
 {
@@ -15360,32 +15349,6 @@ void INT1_DefaultInterruptHandler(void){
 
 
 }
-void INT2_ISR(void)
-{
-    (PIR0bits.INT2IF = 0);
-
-
-    INT2_CallBack();
-}
-
-
-void INT2_CallBack(void)
-{
-
-    if(INT2_InterruptHandler)
-    {
-        INT2_InterruptHandler();
-    }
-}
-
-void INT2_SetInterruptHandler(void (* InterruptHandler)(void)){
-    INT2_InterruptHandler = InterruptHandler;
-}
-
-void INT2_DefaultInterruptHandler(void){
-
-
-}
 
 void EXT_INT_Initialize(void)
 {
@@ -15406,13 +15369,5 @@ void EXT_INT_Initialize(void)
 
     INT1_SetInterruptHandler(INT1_DefaultInterruptHandler);
     (PIE0bits.INT1IE = 1);
-
-
-
-
-    (PIR0bits.INT2IF = 0);
-    (INTCONbits.INT2EDG = 1);
-
-    INT2_SetInterruptHandler(INT2_DefaultInterruptHandler);
 
 }

@@ -15495,38 +15495,28 @@ void MEMORY_Tasks(void);
 # 57 "mcc_generated_files/mcc.h" 2
 
 # 1 "mcc_generated_files/ext_int.h" 1
-# 562 "mcc_generated_files/ext_int.h"
+# 406 "mcc_generated_files/ext_int.h"
 void EXT_INT_Initialize(void);
-# 584 "mcc_generated_files/ext_int.h"
+# 428 "mcc_generated_files/ext_int.h"
 void INT0_ISR(void);
-# 608 "mcc_generated_files/ext_int.h"
+# 452 "mcc_generated_files/ext_int.h"
 void INT0_CallBack(void);
-# 631 "mcc_generated_files/ext_int.h"
+# 475 "mcc_generated_files/ext_int.h"
 void INT0_SetInterruptHandler(void (* InterruptHandler)(void));
-# 655 "mcc_generated_files/ext_int.h"
+# 499 "mcc_generated_files/ext_int.h"
 extern void (*INT0_InterruptHandler)(void);
-# 679 "mcc_generated_files/ext_int.h"
+# 523 "mcc_generated_files/ext_int.h"
 void INT0_DefaultInterruptHandler(void);
-# 697 "mcc_generated_files/ext_int.h"
+# 541 "mcc_generated_files/ext_int.h"
 void INT1_ISR(void);
-# 721 "mcc_generated_files/ext_int.h"
+# 565 "mcc_generated_files/ext_int.h"
 void INT1_CallBack(void);
-# 744 "mcc_generated_files/ext_int.h"
+# 588 "mcc_generated_files/ext_int.h"
 void INT1_SetInterruptHandler(void (* InterruptHandler)(void));
-# 768 "mcc_generated_files/ext_int.h"
+# 612 "mcc_generated_files/ext_int.h"
 extern void (*INT1_InterruptHandler)(void);
-# 792 "mcc_generated_files/ext_int.h"
+# 636 "mcc_generated_files/ext_int.h"
 void INT1_DefaultInterruptHandler(void);
-# 810 "mcc_generated_files/ext_int.h"
-void INT2_ISR(void);
-# 834 "mcc_generated_files/ext_int.h"
-void INT2_CallBack(void);
-# 857 "mcc_generated_files/ext_int.h"
-void INT2_SetInterruptHandler(void (* InterruptHandler)(void));
-# 881 "mcc_generated_files/ext_int.h"
-extern void (*INT2_InterruptHandler)(void);
-# 905 "mcc_generated_files/ext_int.h"
-void INT2_DefaultInterruptHandler(void);
 # 58 "mcc_generated_files/mcc.h" 2
 
 # 1 "mcc_generated_files/eusart.h" 1
@@ -15540,26 +15530,48 @@ typedef union {
     };
     uint8_t status;
 }eusart_status_t;
-# 110 "mcc_generated_files/eusart.h"
+
+
+
+
+extern volatile uint8_t eusartTxBufferRemaining;
+extern volatile uint8_t eusartRxCount;
+
+
+
+
+extern void (*EUSART_TxDefaultInterruptHandler)(void);
+extern void (*EUSART_RxDefaultInterruptHandler)(void);
+# 117 "mcc_generated_files/eusart.h"
 void EUSART_Initialize(void);
-# 158 "mcc_generated_files/eusart.h"
+# 165 "mcc_generated_files/eusart.h"
 _Bool EUSART_is_tx_ready(void);
-# 206 "mcc_generated_files/eusart.h"
+# 213 "mcc_generated_files/eusart.h"
 _Bool EUSART_is_rx_ready(void);
-# 253 "mcc_generated_files/eusart.h"
+# 260 "mcc_generated_files/eusart.h"
 _Bool EUSART_is_tx_done(void);
-# 301 "mcc_generated_files/eusart.h"
+# 308 "mcc_generated_files/eusart.h"
 eusart_status_t EUSART_get_last_status(void);
-# 321 "mcc_generated_files/eusart.h"
+# 328 "mcc_generated_files/eusart.h"
 uint8_t EUSART_Read(void);
-# 341 "mcc_generated_files/eusart.h"
+# 348 "mcc_generated_files/eusart.h"
 void EUSART_Write(uint8_t txData);
-# 361 "mcc_generated_files/eusart.h"
+# 369 "mcc_generated_files/eusart.h"
+void EUSART_Transmit_ISR(void);
+# 390 "mcc_generated_files/eusart.h"
+void EUSART_Receive_ISR(void);
+# 411 "mcc_generated_files/eusart.h"
+void EUSART_RxDataHandler(void);
+# 429 "mcc_generated_files/eusart.h"
 void EUSART_SetFramingErrorHandler(void (* interruptHandler)(void));
-# 379 "mcc_generated_files/eusart.h"
+# 447 "mcc_generated_files/eusart.h"
 void EUSART_SetOverrunErrorHandler(void (* interruptHandler)(void));
-# 397 "mcc_generated_files/eusart.h"
+# 465 "mcc_generated_files/eusart.h"
 void EUSART_SetErrorHandler(void (* interruptHandler)(void));
+# 485 "mcc_generated_files/eusart.h"
+void EUSART_SetTxInterruptHandler(void (* interruptHandler)(void));
+# 505 "mcc_generated_files/eusart.h"
+void EUSART_SetRxInterruptHandler(void (* interruptHandler)(void));
 # 59 "mcc_generated_files/mcc.h" 2
 # 74 "mcc_generated_files/mcc.h"
 void SYSTEM_Initialize(void);
@@ -15585,13 +15597,13 @@ void SYSTEM_Initialize(void)
 void OSCILLATOR_Initialize(void)
 {
 
-    OSCCON1 = 0x70;
+    OSCCON1 = 0x60;
 
     OSCCON3 = 0x00;
 
     OSCEN = 0x00;
 
-    OSCFRQ = 0x02;
+    OSCFRQ = 0x08;
 
     OSCTUNE = 0x00;
 }

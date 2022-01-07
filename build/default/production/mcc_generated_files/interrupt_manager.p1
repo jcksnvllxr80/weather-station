@@ -42,12 +42,62 @@ Version 4.0 HI-TECH Software Intermediate Code
 "3327
 [; ;C:/Program Files/Microchip/MPLABX/v5.50/packs/Microchip/PIC18F-K_DFP/1.4.87/xc8\pic\include\proc\pic18f25k40.h: 3327: extern volatile PIR0bits_t PIR0bits __attribute__((address(0xECA)));
 [v _PIR0bits `VS201 ~T0 @X0 0 e@3786 ]
-"584 mcc_generated_files/ext_int.h
-[; ;mcc_generated_files/ext_int.h: 584: void INT0_ISR(void);
+"428 mcc_generated_files/ext_int.h
+[; ;mcc_generated_files/ext_int.h: 428: void INT0_ISR(void);
 [v _INT0_ISR `(v ~T0 @X0 0 ef ]
-"697
-[; ;mcc_generated_files/ext_int.h: 697: void INT1_ISR(void);
+"541
+[; ;mcc_generated_files/ext_int.h: 541: void INT1_ISR(void);
 [v _INT1_ISR `(v ~T0 @X0 0 ef ]
+"3060 C:/Program Files/Microchip/MPLABX/v5.50/packs/Microchip/PIC18F-K_DFP/1.4.87/xc8\pic\include\proc\pic18f25k40.h
+[; ;C:/Program Files/Microchip/MPLABX/v5.50/packs/Microchip/PIC18F-K_DFP/1.4.87/xc8\pic\include\proc\pic18f25k40.h: 3060:     struct {
+[s S188 :1 `uc 1 :1 `uc 1 :2 `uc 1 :1 `uc 1 :1 `uc 1 ]
+[n S188 . SSP1IE BCL1IE . TX1IE RC1IE ]
+"3067
+[; ;C:/Program Files/Microchip/MPLABX/v5.50/packs/Microchip/PIC18F-K_DFP/1.4.87/xc8\pic\include\proc\pic18f25k40.h: 3067:     struct {
+[s S189 :1 `uc 1 :1 `uc 1 :2 `uc 1 :1 `uc 1 :1 `uc 1 ]
+[n S189 . SSPIE BCLIE . TXIE RCIE ]
+"3074
+[; ;C:/Program Files/Microchip/MPLABX/v5.50/packs/Microchip/PIC18F-K_DFP/1.4.87/xc8\pic\include\proc\pic18f25k40.h: 3074:     struct {
+[s S190 :1 `uc 1 :1 `uc 1 :2 `uc 1 :1 `uc 1 ]
+[n S190 . RXB0IE RXB1IE . TXB2IE ]
+"3080
+[; ;C:/Program Files/Microchip/MPLABX/v5.50/packs/Microchip/PIC18F-K_DFP/1.4.87/xc8\pic\include\proc\pic18f25k40.h: 3080:     struct {
+[s S191 :1 `uc 1 :1 `uc 1 :2 `uc 1 :1 `uc 1 ]
+[n S191 . . RXBNIE . TXBNIE ]
+"3059
+[; ;C:/Program Files/Microchip/MPLABX/v5.50/packs/Microchip/PIC18F-K_DFP/1.4.87/xc8\pic\include\proc\pic18f25k40.h: 3059: typedef union {
+[u S187 `S188 1 `S189 1 `S190 1 `S191 1 ]
+[n S187 . . . . . ]
+"3087
+[; ;C:/Program Files/Microchip/MPLABX/v5.50/packs/Microchip/PIC18F-K_DFP/1.4.87/xc8\pic\include\proc\pic18f25k40.h: 3087: extern volatile PIE3bits_t PIE3bits __attribute__((address(0xEC5)));
+[v _PIE3bits `VS187 ~T0 @X0 0 e@3781 ]
+"3459
+[; ;C:/Program Files/Microchip/MPLABX/v5.50/packs/Microchip/PIC18F-K_DFP/1.4.87/xc8\pic\include\proc\pic18f25k40.h: 3459:     struct {
+[s S210 :1 `uc 1 :1 `uc 1 :2 `uc 1 :1 `uc 1 :1 `uc 1 ]
+[n S210 . SSP1IF BCL1IF . TX1IF RC1IF ]
+"3466
+[; ;C:/Program Files/Microchip/MPLABX/v5.50/packs/Microchip/PIC18F-K_DFP/1.4.87/xc8\pic\include\proc\pic18f25k40.h: 3466:     struct {
+[s S211 :1 `uc 1 :1 `uc 1 :2 `uc 1 :1 `uc 1 :1 `uc 1 ]
+[n S211 . SSPIF BCLIF . TXIF RCIF ]
+"3473
+[; ;C:/Program Files/Microchip/MPLABX/v5.50/packs/Microchip/PIC18F-K_DFP/1.4.87/xc8\pic\include\proc\pic18f25k40.h: 3473:     struct {
+[s S212 :1 `uc 1 :1 `uc 1 :2 `uc 1 :1 `uc 1 ]
+[n S212 . . RXBNIF . TXBNIF ]
+"3458
+[; ;C:/Program Files/Microchip/MPLABX/v5.50/packs/Microchip/PIC18F-K_DFP/1.4.87/xc8\pic\include\proc\pic18f25k40.h: 3458: typedef union {
+[u S209 `S210 1 `S211 1 `S212 1 ]
+[n S209 . . . . ]
+"3480
+[; ;C:/Program Files/Microchip/MPLABX/v5.50/packs/Microchip/PIC18F-K_DFP/1.4.87/xc8\pic\include\proc\pic18f25k40.h: 3480: extern volatile PIR3bits_t PIR3bits __attribute__((address(0xECD)));
+[v _PIR3bits `VS209 ~T0 @X0 0 e@3789 ]
+[v F9154 `(v ~T0 @X0 0 tf ]
+"94 mcc_generated_files/eusart.h
+[; ;mcc_generated_files/eusart.h: 94: extern void (*EUSART_TxDefaultInterruptHandler)(void);
+[v _EUSART_TxDefaultInterruptHandler `*F9154 ~T0 @X0 0 e ]
+[v F9156 `(v ~T0 @X0 0 tf ]
+"95
+[; ;mcc_generated_files/eusart.h: 95: extern void (*EUSART_RxDefaultInterruptHandler)(void);
+[v _EUSART_RxDefaultInterruptHandler `*F9156 ~T0 @X0 0 e ]
 "54 C:/Program Files/Microchip/MPLABX/v5.50/packs/Microchip/PIC18F-K_DFP/1.4.87/xc8\pic\include\proc\pic18f25k40.h
 [; ;C:/Program Files/Microchip/MPLABX/v5.50/packs/Microchip/PIC18F-K_DFP/1.4.87/xc8\pic\include\proc\pic18f25k40.h: 54: __asm("PPSLOCK equ 0EA0h");
 [; <" PPSLOCK equ 0EA0h ;# ">
@@ -1318,17 +1368,67 @@ Version 4.0 HI-TECH Software Intermediate Code
 }
 [e $U 1322  ]
 "69
-[; ;mcc_generated_files/interrupt_manager.c: 69:     else
+[; ;mcc_generated_files/interrupt_manager.c: 69:     else if(INTCONbits.PEIE == 1)
 [e :U 1321 ]
+[e $ ! == -> . . _INTCONbits 1 1 `i -> 1 `i 1323  ]
 "70
 [; ;mcc_generated_files/interrupt_manager.c: 70:     {
 {
+"71
+[; ;mcc_generated_files/interrupt_manager.c: 71:         if(PIE3bits.TXIE == 1 && PIR3bits.TXIF == 1)
+[e $ ! && == -> . . _PIE3bits 1 3 `i -> 1 `i == -> . . _PIR3bits 1 3 `i -> 1 `i 1324  ]
 "72
-[; ;mcc_generated_files/interrupt_manager.c: 72:     }
+[; ;mcc_generated_files/interrupt_manager.c: 72:         {
+{
+"73
+[; ;mcc_generated_files/interrupt_manager.c: 73:             EUSART_TxDefaultInterruptHandler();
+[e ( *U _EUSART_TxDefaultInterruptHandler ..  ]
+"74
+[; ;mcc_generated_files/interrupt_manager.c: 74:         }
 }
+[e $U 1325  ]
+"75
+[; ;mcc_generated_files/interrupt_manager.c: 75:         else if(PIE3bits.RCIE == 1 && PIR3bits.RCIF == 1)
+[e :U 1324 ]
+[e $ ! && == -> . . _PIE3bits 1 4 `i -> 1 `i == -> . . _PIR3bits 1 4 `i -> 1 `i 1326  ]
+"76
+[; ;mcc_generated_files/interrupt_manager.c: 76:         {
+{
+"77
+[; ;mcc_generated_files/interrupt_manager.c: 77:             EUSART_RxDefaultInterruptHandler();
+[e ( *U _EUSART_RxDefaultInterruptHandler ..  ]
+"78
+[; ;mcc_generated_files/interrupt_manager.c: 78:         }
+}
+[e $U 1327  ]
+"79
+[; ;mcc_generated_files/interrupt_manager.c: 79:         else
+[e :U 1326 ]
+"80
+[; ;mcc_generated_files/interrupt_manager.c: 80:         {
+{
+"82
+[; ;mcc_generated_files/interrupt_manager.c: 82:         }
+}
+[e :U 1327 ]
+[e :U 1325 ]
+"83
+[; ;mcc_generated_files/interrupt_manager.c: 83:     }
+}
+[e $U 1328  ]
+"84
+[; ;mcc_generated_files/interrupt_manager.c: 84:     else
+[e :U 1323 ]
+"85
+[; ;mcc_generated_files/interrupt_manager.c: 85:     {
+{
+"87
+[; ;mcc_generated_files/interrupt_manager.c: 87:     }
+}
+[e :U 1328 ]
 [e :U 1322 ]
 [e :U 1320 ]
-"73
-[; ;mcc_generated_files/interrupt_manager.c: 73: }
+"88
+[; ;mcc_generated_files/interrupt_manager.c: 88: }
 [e :UE 1318 ]
 }

@@ -43,6 +43,7 @@
 
 #include "mcc_generated_files/mcc.h"
 #include <string.h>
+#include <stdio.h>
 
 
 void sendUartStr(char *TxData);
@@ -69,12 +70,18 @@ void main(void)
 
     // Disable the Peripheral Interrupts
     //INTERRUPT_PeripheralInterruptDisable();
-    char* TestTxData = "AT\r\n\r\n";
-    while (1)
+    char returnedData[100] = "";
+    char* TestTxData = "AT\r\n";
+    while (!EUSART_is_tx_ready()){};
+    sendUartStr(TestTxData);
+    size_t i = 0;
+    while (i < 100)
     {
-        sendUartStr(TestTxData);
-        // Add your application code
+//        while(!EUSART_is_rx_ready()){};
+        returnedData[i] = EUSART_Read();
+        i++;
     }
+    printf("%s",returnedData);
 }
 
 void sendUartStr(char *TxData){
@@ -85,6 +92,7 @@ void sendUartStr(char *TxData){
         }
     }
 }
+
 /**
  End of File
 */
