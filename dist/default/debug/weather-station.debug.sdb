@@ -1,0 +1,852 @@
+[p GLOBOPT AUTOSTATIC IEEE_FLT IEEE_DBL LFSROK EMI_WORD ]
+[d version 1.1 ]
+[d edition pro ]
+[d chip 18F25K40 ]
+[d frameptr 4065 ]
+"107 C:\Users\A-A-Ron\git\weather-station\mcc_generated_files/adcc.c
+[e E9047 . `uc
+channel_VSS 60
+channel_Temp 61
+channel_DAC1 62
+channel_FVR_buf1 63
+]
+"568 C:\Program Files\Microchip\xc8\v2.32\pic\sources\c99\common\doprnt.c
+[v _stoa stoa `(i  1 s 2 stoa ]
+"692
+[v _vfpfcnvrt vfpfcnvrt `(i  1 s 2 vfpfcnvrt ]
+"1390
+[v _vfprintf vfprintf `(i  1 e 2 0 ]
+"4 C:\Program Files\Microchip\xc8\v2.32\pic\sources\c99\common\fleq.c
+[v ___fleq __fleq `(b  1 e 0 0 ]
+"62 C:\Program Files\Microchip\xc8\v2.32\pic\sources\c99\common\float.c
+[v ___ftpack __ftpack `(f  1 e 4 0 ]
+"86 C:\Program Files\Microchip\xc8\v2.32\pic\sources\c99\common\ftadd.c
+[v ___ftadd __ftadd `(f  1 e 4 0 ]
+"54 C:\Program Files\Microchip\xc8\v2.32\pic\sources\c99\common\ftdiv.c
+[v ___ftdiv __ftdiv `(f  1 e 4 0 ]
+"62 C:\Program Files\Microchip\xc8\v2.32\pic\sources\c99\common\ftmul.c
+[v ___ftmul __ftmul `(f  1 e 4 0 ]
+"19 C:\Program Files\Microchip\xc8\v2.32\pic\sources\c99\common\ftsub.c
+[v ___ftsub __ftsub `(f  1 e 4 0 ]
+"8 C:\Program Files\Microchip\xc8\v2.32\pic\sources\c99\common\nf_fputc.c
+[v _fputc fputc `(i  1 e 2 0 ]
+"8 C:\Program Files\Microchip\xc8\v2.32\pic\sources\c99\common\nf_fputs.c
+[v _fputs fputs `(i  1 e 2 0 ]
+"5 C:\Program Files\Microchip\xc8\v2.32\pic\sources\c99\common\printf.c
+[v _printf printf `(i  1 e 2 0 ]
+"7 C:\Program Files\Microchip\xc8\v2.32\pic\sources\c99\common\putch.c
+[v _putch putch `(v  1 e 1 0 ]
+"10 C:\Program Files\Microchip\xc8\v2.32\pic\sources\c99\common\sprcadd.c
+[v ___fladd __fladd `(d  1 e 4 0 ]
+"245
+[v ___flsub __flsub `(d  1 e 4 0 ]
+"11 C:\Program Files\Microchip\xc8\v2.32\pic\sources\c99\common\sprcdiv.c
+[v ___fldiv __fldiv `(d  1 e 4 0 ]
+"8 C:\Program Files\Microchip\xc8\v2.32\pic\sources\c99\common\sprcmul.c
+[v ___flmul __flmul `(d  1 e 4 0 ]
+"5 C:\Program Files\Microchip\xc8\v2.32\pic\sources\c99\common\strlen.c
+[v _strlen strlen `(ui  1 e 2 0 ]
+"15 C:\Program Files\Microchip\xc8\v2.32\pic\sources\c99\common\Umul32.c
+[v ___lmul __lmul `(ul  1 e 4 0 ]
+"91 C:\Program Files\Microchip\xc8\v2.32\pic\sources\c99\common\Umul64.c
+[v ___omul __omul `(uo  1 e 8 0 ]
+"53 C:\Users\A-A-Ron\git\weather-station\main.c
+[v _main main `(v  1 e 1 0 ]
+"87
+[v _sendUartStr sendUartStr `(v  1 e 1 0 ]
+"62 C:\Users\A-A-Ron\git\weather-station\mcc_generated_files/adcc.c
+[v _ADCC_Initialize ADCC_Initialize `(v  1 e 1 0 ]
+"88 C:\Users\A-A-Ron\git\weather-station\mcc_generated_files/eusart.c
+[v _EUSART_Initialize EUSART_Initialize `(v  1 e 1 0 ]
+"132
+[v _EUSART_is_tx_ready EUSART_is_tx_ready `(a  1 e 1 0 ]
+"142
+[v _EUSART_is_tx_done EUSART_is_tx_done `(a  1 e 1 0 ]
+"151
+[v _EUSART_Read EUSART_Read `(uc  1 e 1 0 ]
+"173
+[v _EUSART_Write EUSART_Write `(v  1 e 1 0 ]
+"197
+[v _EUSART_Transmit_ISR EUSART_Transmit_ISR `(v  1 e 1 0 ]
+"216
+[v _EUSART_Receive_ISR EUSART_Receive_ISR `(v  1 e 1 0 ]
+"240
+[v _EUSART_RxDataHandler EUSART_RxDataHandler `(v  1 e 1 0 ]
+"250
+[v _EUSART_DefaultFramingErrorHandler EUSART_DefaultFramingErrorHandler `(v  1 e 1 0 ]
+"252
+[v _EUSART_DefaultOverrunErrorHandler EUSART_DefaultOverrunErrorHandler `(v  1 e 1 0 ]
+"260
+[v _EUSART_DefaultErrorHandler EUSART_DefaultErrorHandler `(v  1 e 1 0 ]
+"264
+[v _EUSART_SetFramingErrorHandler EUSART_SetFramingErrorHandler `(v  1 e 1 0 ]
+"268
+[v _EUSART_SetOverrunErrorHandler EUSART_SetOverrunErrorHandler `(v  1 e 1 0 ]
+"272
+[v _EUSART_SetErrorHandler EUSART_SetErrorHandler `(v  1 e 1 0 ]
+"276
+[v _EUSART_SetTxInterruptHandler EUSART_SetTxInterruptHandler `(v  1 e 1 0 ]
+"280
+[v _EUSART_SetRxInterruptHandler EUSART_SetRxInterruptHandler `(v  1 e 1 0 ]
+"33 C:\Users\A-A-Ron\git\weather-station\mcc_generated_files/ext_int.c
+[v _INT0_ISR INT0_ISR `(v  1 e 1 0 ]
+"42
+[v _INT0_CallBack INT0_CallBack `(v  1 e 1 0 ]
+"51
+[v _INT0_SetInterruptHandler INT0_SetInterruptHandler `(v  1 e 1 0 ]
+"55
+[v _INT0_DefaultInterruptHandler INT0_DefaultInterruptHandler `(v  1 e 1 0 ]
+"59
+[v _INT1_ISR INT1_ISR `(v  1 e 1 0 ]
+"68
+[v _INT1_CallBack INT1_CallBack `(v  1 e 1 0 ]
+"77
+[v _INT1_SetInterruptHandler INT1_SetInterruptHandler `(v  1 e 1 0 ]
+"81
+[v _INT1_DefaultInterruptHandler INT1_DefaultInterruptHandler `(v  1 e 1 0 ]
+"86
+[v _EXT_INT_Initialize EXT_INT_Initialize `(v  1 e 1 0 ]
+"52 C:\Users\A-A-Ron\git\weather-station\mcc_generated_files/interrupt_manager.c
+[v _INTERRUPT_Initialize INTERRUPT_Initialize `(v  1 e 1 0 ]
+"58
+[v _INTERRUPT_InterruptManager INTERRUPT_InterruptManager `IIH(v  1 e 1 0 ]
+"50 C:\Users\A-A-Ron\git\weather-station\mcc_generated_files/mcc.c
+[v _SYSTEM_Initialize SYSTEM_Initialize `(v  1 e 1 0 ]
+"61
+[v _OSCILLATOR_Initialize OSCILLATOR_Initialize `(v  1 e 1 0 ]
+"75
+[v _PMD_Initialize PMD_Initialize `(v  1 e 1 0 ]
+"59 C:\Users\A-A-Ron\git\weather-station\mcc_generated_files/memory.c
+[v _FLASH_ReadByte FLASH_ReadByte `(uc  1 e 1 0 ]
+"95
+[v _FLASH_WriteBlock FLASH_WriteBlock `(c  1 e 1 0 ]
+"143
+[v _FLASH_EraseBlock FLASH_EraseBlock `(v  1 e 1 0 ]
+"55 C:\Users\A-A-Ron\git\weather-station\mcc_generated_files/pin_manager.c
+[v _PIN_MANAGER_Initialize PIN_MANAGER_Initialize `(v  1 e 1 0 ]
+"72 C:/Program Files/Microchip/MPLABX/v5.50/packs/Microchip/PIC18F-K_DFP/1.4.87/xc8\pic\include\proc\pic18f25k40.h
+[v _INT0PPS INT0PPS `VEuc  1 e 1 @3745 ]
+"132
+[v _INT1PPS INT1PPS `VEuc  1 e 1 @3746 ]
+"1517
+[v _RXPPS RXPPS `VEuc  1 e 1 @3765 ]
+[s S94 . 1 `uc 1 INT0IE 1 0 :1:0 
+`uc 1 INT1IE 1 0 :1:1 
+`uc 1 INT2IE 1 0 :1:2 
+`uc 1 . 1 0 :1:3 
+`uc 1 IOCIE 1 0 :1:4 
+`uc 1 TMR0IE 1 0 :1:5 
+]
+"2928
+[u S101 . 1 `S94 1 . 1 0 ]
+[v _PIE0bits PIE0bits `VES101  1 e 1 @3778 ]
+[s S449 . 1 `uc 1 SSP1IE 1 0 :1:0 
+`uc 1 BCL1IE 1 0 :1:1 
+`uc 1 . 1 0 :2:2 
+`uc 1 TX1IE 1 0 :1:4 
+`uc 1 RC1IE 1 0 :1:5 
+]
+"3087
+[s S455 . 1 `uc 1 SSPIE 1 0 :1:0 
+`uc 1 BCLIE 1 0 :1:1 
+`uc 1 . 1 0 :2:2 
+`uc 1 TXIE 1 0 :1:4 
+`uc 1 RCIE 1 0 :1:5 
+]
+[s S461 . 1 `uc 1 RXB0IE 1 0 :1:0 
+`uc 1 RXB1IE 1 0 :1:1 
+`uc 1 . 1 0 :2:2 
+`uc 1 TXB2IE 1 0 :1:4 
+]
+[s S466 . 1 `uc 1 . 1 0 :1:0 
+`uc 1 RXBNIE 1 0 :1:1 
+`uc 1 . 1 0 :2:2 
+`uc 1 TXBNIE 1 0 :1:4 
+]
+[u S471 . 1 `S449 1 . 1 0 `S455 1 . 1 0 `S461 1 . 1 0 `S466 1 . 1 0 ]
+[v _PIE3bits PIE3bits `VES471  1 e 1 @3781 ]
+[s S26 . 1 `uc 1 INT0IF 1 0 :1:0 
+`uc 1 INT1IF 1 0 :1:1 
+`uc 1 INT2IF 1 0 :1:2 
+`uc 1 . 1 0 :1:3 
+`uc 1 IOCIF 1 0 :1:4 
+`uc 1 TMR0IF 1 0 :1:5 
+]
+"3327
+[u S33 . 1 `S26 1 . 1 0 ]
+[v _PIR0bits PIR0bits `VES33  1 e 1 @3786 ]
+[s S878 . 1 `uc 1 SSP1IF 1 0 :1:0 
+`uc 1 BCL1IF 1 0 :1:1 
+`uc 1 . 1 0 :2:2 
+`uc 1 TX1IF 1 0 :1:4 
+`uc 1 RC1IF 1 0 :1:5 
+]
+"3480
+[s S884 . 1 `uc 1 SSPIF 1 0 :1:0 
+`uc 1 BCLIF 1 0 :1:1 
+`uc 1 . 1 0 :2:2 
+`uc 1 TXIF 1 0 :1:4 
+`uc 1 RCIF 1 0 :1:5 
+]
+[s S890 . 1 `uc 1 . 1 0 :1:0 
+`uc 1 RXBNIF 1 0 :1:1 
+`uc 1 . 1 0 :2:2 
+`uc 1 TXBNIF 1 0 :1:4 
+]
+[u S895 . 1 `S878 1 . 1 0 `S884 1 . 1 0 `S890 1 . 1 0 ]
+[v _PIR3bits PIR3bits `VES895  1 e 1 @3789 ]
+[s S1010 . 1 `uc 1 CWGIF 1 0 :1:0 
+`uc 1 . 1 0 :4:1 
+`uc 1 NVMIF 1 0 :1:5 
+`uc 1 CRCIF 1 0 :1:6 
+`uc 1 SCANIF 1 0 :1:7 
+]
+"3660
+[s S1016 . 1 `uc 1 CWG1IF 1 0 :1:0 
+]
+[u S1018 . 1 `S1010 1 . 1 0 `S1016 1 . 1 0 ]
+[v _PIR7bits PIR7bits `VES1018  1 e 1 @3793 ]
+"4268
+[v _OSCCON1 OSCCON1 `VEuc  1 e 1 @3800 ]
+"4408
+[v _OSCCON3 OSCCON3 `VEuc  1 e 1 @3802 ]
+"4560
+[v _OSCEN OSCEN `VEuc  1 e 1 @3804 ]
+"4611
+[v _OSCTUNE OSCTUNE `VEuc  1 e 1 @3805 ]
+"4669
+[v _OSCFRQ OSCFRQ `VEuc  1 e 1 @3806 ]
+"4776
+[v _PMD0 PMD0 `VEuc  1 e 1 @3809 ]
+"4853
+[v _PMD1 PMD1 `VEuc  1 e 1 @3810 ]
+"4917
+[v _PMD2 PMD2 `VEuc  1 e 1 @3811 ]
+"4962
+[v _PMD3 PMD3 `VEuc  1 e 1 @3812 ]
+"5000
+[v _PMD4 PMD4 `VEuc  1 e 1 @3813 ]
+"5042
+[v _PMD5 PMD5 `VEuc  1 e 1 @3814 ]
+"6030
+[v _RC6PPS RC6PPS `VEuc  1 e 1 @3837 ]
+"6304
+[v _INLVLA INLVLA `VEuc  1 e 1 @3853 ]
+"6366
+[v _SLRCONA SLRCONA `VEuc  1 e 1 @3854 ]
+"6428
+[v _ODCONA ODCONA `VEuc  1 e 1 @3855 ]
+"6490
+[v _WPUA WPUA `VEuc  1 e 1 @3856 ]
+"6552
+[v _ANSELA ANSELA `VEuc  1 e 1 @3857 ]
+"6800
+[v _INLVLB INLVLB `VEuc  1 e 1 @3861 ]
+"6862
+[v _SLRCONB SLRCONB `VEuc  1 e 1 @3862 ]
+"6924
+[v _ODCONB ODCONB `VEuc  1 e 1 @3863 ]
+"6986
+[v _WPUB WPUB `VEuc  1 e 1 @3864 ]
+"7048
+[v _ANSELB ANSELB `VEuc  1 e 1 @3865 ]
+"7296
+[v _INLVLC INLVLC `VEuc  1 e 1 @3869 ]
+"7358
+[v _SLRCONC SLRCONC `VEuc  1 e 1 @3870 ]
+"7420
+[v _ODCONC ODCONC `VEuc  1 e 1 @3871 ]
+"7482
+[v _WPUC WPUC `VEuc  1 e 1 @3872 ]
+"7544
+[v _ANSELC ANSELC `VEuc  1 e 1 @3873 ]
+"7669
+[v _INLVLE INLVLE `VEuc  1 e 1 @3882 ]
+"7690
+[v _WPUE WPUE `VEuc  1 e 1 @3885 ]
+"10919
+[v _ADACT ADACT `VEuc  1 e 1 @3926 ]
+"10971
+[v _ADCLK ADCLK `VEuc  1 e 1 @3927 ]
+"11029
+[v _ADREF ADREF `VEuc  1 e 1 @3928 ]
+"11070
+[v _ADCON1 ADCON1 `VEuc  1 e 1 @3929 ]
+[s S322 . 1 `uc 1 ADDSEN 1 0 :1:0 
+`uc 1 . 1 0 :4:1 
+`uc 1 ADGPOL 1 0 :1:5 
+`uc 1 ADIPEN 1 0 :1:6 
+`uc 1 ADPPOL 1 0 :1:7 
+]
+"11084
+[u S328 . 1 `S322 1 . 1 0 ]
+[v _ADCON1bits ADCON1bits `VES328  1 e 1 @3929 ]
+"11109
+[v _ADCON2 ADCON2 `VEuc  1 e 1 @3930 ]
+[s S258 . 1 `uc 1 ADMD 1 0 :3:0 
+`uc 1 ADACLR 1 0 :1:3 
+`uc 1 ADCRS 1 0 :3:4 
+`uc 1 ADPSIS 1 0 :1:7 
+]
+"11131
+[s S263 . 1 `uc 1 ADMD0 1 0 :1:0 
+`uc 1 ADMD1 1 0 :1:1 
+`uc 1 ADMD2 1 0 :1:2 
+`uc 1 . 1 0 :1:3 
+`uc 1 ADCRS0 1 0 :1:4 
+`uc 1 ADCRS1 1 0 :1:5 
+`uc 1 ADCRS2 1 0 :1:6 
+]
+[u S271 . 1 `S258 1 . 1 0 `S263 1 . 1 0 ]
+[v _ADCON2bits ADCON2bits `VES271  1 e 1 @3930 ]
+"11186
+[v _ADCON3 ADCON3 `VEuc  1 e 1 @3931 ]
+[s S229 . 1 `uc 1 ADTMD 1 0 :3:0 
+`uc 1 ADSOI 1 0 :1:3 
+`uc 1 ADCALC 1 0 :3:4 
+]
+"11207
+[s S233 . 1 `uc 1 ADTMD0 1 0 :1:0 
+`uc 1 ADTMD1 1 0 :1:1 
+`uc 1 ADTMD2 1 0 :1:2 
+`uc 1 . 1 0 :1:3 
+`uc 1 ADCALC0 1 0 :1:4 
+`uc 1 ADCALC1 1 0 :1:5 
+`uc 1 ADCALC2 1 0 :1:6 
+]
+[u S241 . 1 `S229 1 . 1 0 `S233 1 . 1 0 ]
+[v _ADCON3bits ADCON3bits `VES241  1 e 1 @3931 ]
+"11257
+[v _ADACQ ADACQ `VEuc  1 e 1 @3932 ]
+"11327
+[v _ADCAP ADCAP `VEuc  1 e 1 @3933 ]
+"11379
+[v _ADPRE ADPRE `VEuc  1 e 1 @3934 ]
+"11449
+[v _ADPCH ADPCH `VEuc  1 e 1 @3935 ]
+"11507
+[v _ADCON0 ADCON0 `VEuc  1 e 1 @3936 ]
+[s S175 . 1 `uc 1 ADGO 1 0 :1:0 
+`uc 1 . 1 0 :1:1 
+`uc 1 ADFM 1 0 :1:2 
+`uc 1 . 1 0 :1:3 
+`uc 1 ADCS 1 0 :1:4 
+`uc 1 . 1 0 :1:5 
+`uc 1 ADCONT 1 0 :1:6 
+`uc 1 ADON 1 0 :1:7 
+]
+"11542
+[s S184 . 1 `uc 1 GO 1 0 :1:0 
+`uc 1 . 1 0 :1:1 
+`uc 1 ADFM0 1 0 :1:2 
+]
+[s S188 . 1 `uc 1 DONE 1 0 :1:0 
+]
+[s S190 . 1 `uc 1 GO_NOT_DONE 1 0 :1:0 
+]
+[s S192 . 1 `uc 1 GO_nDONE 1 0 :1:0 
+]
+[s S194 . 1 `uc 1 . 1 0 :7:0 
+`uc 1 ADCAL 1 0 :1:7 
+]
+[u S197 . 1 `S175 1 . 1 0 `S184 1 . 1 0 `S188 1 . 1 0 `S190 1 . 1 0 `S192 1 . 1 0 `S194 1 . 1 0 ]
+[v _ADCON0bits ADCON0bits `VES197  1 e 1 @3936 ]
+"11609
+[v _ADPREVL ADPREVL `VEuc  1 e 1 @3937 ]
+"11679
+[v _ADPREVH ADPREVH `VEuc  1 e 1 @3938 ]
+"11756
+[v _ADRESL ADRESL `VEuc  1 e 1 @3939 ]
+"11826
+[v _ADRESH ADRESH `VEuc  1 e 1 @3940 ]
+"11888
+[v _ADSTAT ADSTAT `VEuc  1 e 1 @3941 ]
+[s S290 . 1 `uc 1 ADSTAT 1 0 :3:0 
+`uc 1 . 1 0 :1:3 
+`uc 1 ADMATH 1 0 :1:4 
+`uc 1 ADLTHR 1 0 :1:5 
+`uc 1 ADUTHR 1 0 :1:6 
+`uc 1 ADAOV 1 0 :1:7 
+]
+"11908
+[s S297 . 1 `uc 1 ADSTAT0 1 0 :1:0 
+`uc 1 ADSTAT1 1 0 :1:1 
+`uc 1 ADSTAT2 1 0 :1:2 
+]
+[u S301 . 1 `S290 1 . 1 0 `S297 1 . 1 0 ]
+[v _ADSTATbits ADSTATbits `VES301  1 e 1 @3941 ]
+"11953
+[v _ADRPT ADRPT `VEuc  1 e 1 @3942 ]
+"12023
+[v _ADCNT ADCNT `VEuc  1 e 1 @3943 ]
+"12100
+[v _ADSTPTL ADSTPTL `VEuc  1 e 1 @3944 ]
+"12170
+[v _ADSTPTH ADSTPTH `VEuc  1 e 1 @3945 ]
+"12247
+[v _ADLTHL ADLTHL `VEuc  1 e 1 @3946 ]
+"12317
+[v _ADLTHH ADLTHH `VEuc  1 e 1 @3947 ]
+"12394
+[v _ADUTHL ADUTHL `VEuc  1 e 1 @3948 ]
+"12464
+[v _ADUTHH ADUTHH `VEuc  1 e 1 @3949 ]
+"12541
+[v _ADERRL ADERRL `VEuc  1 e 1 @3950 ]
+"12611
+[v _ADERRH ADERRH `VEuc  1 e 1 @3951 ]
+"12688
+[v _ADACCL ADACCL `VEuc  1 e 1 @3952 ]
+"12758
+[v _ADACCH ADACCH `VEuc  1 e 1 @3953 ]
+"12835
+[v _ADFLTRL ADFLTRL `VEuc  1 e 1 @3954 ]
+"12905
+[v _ADFLTRH ADFLTRH `VEuc  1 e 1 @3955 ]
+"13635
+[v _NVMADRL NVMADRL `VEuc  1 e 1 @3966 ]
+"13884
+[v _NVMDAT NVMDAT `VEuc  1 e 1 @3968 ]
+[s S939 . 1 `uc 1 RD 1 0 :1:0 
+`uc 1 WR 1 0 :1:1 
+`uc 1 WREN 1 0 :1:2 
+`uc 1 WRERR 1 0 :1:3 
+`uc 1 FREE 1 0 :1:4 
+`uc 1 . 1 0 :1:5 
+`uc 1 NVMREG 1 0 :2:6 
+]
+"13975
+[s S947 . 1 `uc 1 . 1 0 :6:0 
+`uc 1 NVMREG0 1 0 :1:6 
+`uc 1 NVMREG1 1 0 :1:7 
+]
+[u S951 . 1 `S939 1 . 1 0 `S947 1 . 1 0 ]
+[v _NVMCON1bits NVMCON1bits `VES951  1 e 1 @3969 ]
+"14020
+[v _NVMCON2 NVMCON2 `VEuc  1 e 1 @3970 ]
+"14040
+[v _LATA LATA `VEuc  1 e 1 @3971 ]
+"14152
+[v _LATB LATB `VEuc  1 e 1 @3972 ]
+"14264
+[v _LATC LATC `VEuc  1 e 1 @3973 ]
+"14376
+[v _TRISA TRISA `VEuc  1 e 1 @3976 ]
+"14498
+[v _TRISB TRISB `VEuc  1 e 1 @3977 ]
+"14620
+[v _TRISC TRISC `VEuc  1 e 1 @3978 ]
+"16055
+[v _RC1REG RC1REG `VEuc  1 e 1 @3993 ]
+"16109
+[v _TX1REG TX1REG `VEuc  1 e 1 @3994 ]
+"16170
+[v _SP1BRGL SP1BRGL `VEuc  1 e 1 @3995 ]
+"16240
+[v _SP1BRGH SP1BRGH `VEuc  1 e 1 @3996 ]
+"16294
+[v _RC1STA RC1STA `VEuc  1 e 1 @3997 ]
+[s S642 . 1 `uc 1 RX9D 1 0 :1:0 
+`uc 1 OERR 1 0 :1:1 
+`uc 1 FERR 1 0 :1:2 
+`uc 1 ADDEN 1 0 :1:3 
+`uc 1 CREN 1 0 :1:4 
+`uc 1 SREN 1 0 :1:5 
+`uc 1 RX9 1 0 :1:6 
+`uc 1 SPEN 1 0 :1:7 
+]
+"16335
+[s S651 . 1 `uc 1 . 1 0 :6:0 
+`uc 1 RC8_9 1 0 :1:6 
+]
+[s S654 . 1 `uc 1 . 1 0 :6:0 
+`uc 1 RC9 1 0 :1:6 
+]
+[s S657 . 1 `uc 1 RCD8 1 0 :1:0 
+]
+[s S659 . 1 `uc 1 . 1 0 :5:0 
+`uc 1 SRENA 1 0 :1:5 
+]
+[u S662 . 1 `S642 1 . 1 0 `S651 1 . 1 0 `S654 1 . 1 0 `S657 1 . 1 0 `S659 1 . 1 0 ]
+[v _RC1STAbits RC1STAbits `VES662  1 e 1 @3997 ]
+"16579
+[v _TX1STA TX1STA `VEuc  1 e 1 @3998 ]
+[s S554 . 1 `uc 1 TX9D 1 0 :1:0 
+`uc 1 TRMT 1 0 :1:1 
+`uc 1 BRGH 1 0 :1:2 
+`uc 1 SENDB 1 0 :1:3 
+`uc 1 SYNC 1 0 :1:4 
+`uc 1 TXEN 1 0 :1:5 
+`uc 1 TX9 1 0 :1:6 
+`uc 1 CSRC 1 0 :1:7 
+]
+"16643
+[s S563 . 1 `uc 1 . 1 0 :6:0 
+`uc 1 TX8_9 1 0 :1:6 
+]
+[s S566 . 1 `uc 1 TXD8 1 0 :1:0 
+]
+[s S568 . 1 `uc 1 . 1 0 :2:0 
+`uc 1 BRGH1 1 0 :1:2 
+]
+[s S571 . 1 `uc 1 . 1 0 :7:0 
+`uc 1 CSRC1 1 0 :1:7 
+]
+[s S574 . 1 `uc 1 . 1 0 :3:0 
+`uc 1 SENDB1 1 0 :1:3 
+]
+[s S577 . 1 `uc 1 . 1 0 :4:0 
+`uc 1 SYNC1 1 0 :1:4 
+]
+[s S580 . 1 `uc 1 . 1 0 :1:0 
+`uc 1 TRMT1 1 0 :1:1 
+]
+[s S583 . 1 `uc 1 . 1 0 :6:0 
+`uc 1 TX91 1 0 :1:6 
+]
+[s S586 . 1 `uc 1 TX9D1 1 0 :1:0 
+]
+[s S588 . 1 `uc 1 . 1 0 :5:0 
+`uc 1 TXEN1 1 0 :1:5 
+]
+[u S591 . 1 `S554 1 . 1 0 `S563 1 . 1 0 `S566 1 . 1 0 `S568 1 . 1 0 `S571 1 . 1 0 `S574 1 . 1 0 `S577 1 . 1 0 `S580 1 . 1 0 `S583 1 . 1 0 `S586 1 . 1 0 `S588 1 . 1 0 ]
+[v _TX1STAbits TX1STAbits `VES591  1 e 1 @3998 ]
+"17023
+[v _BAUD1CON BAUD1CON `VEuc  1 e 1 @3999 ]
+[s S57 . 1 `uc 1 INT0EDG 1 0 :1:0 
+`uc 1 INT1EDG 1 0 :1:1 
+`uc 1 INT2EDG 1 0 :1:2 
+`uc 1 . 1 0 :2:3 
+`uc 1 IPEN 1 0 :1:5 
+`uc 1 PEIE_GIEL 1 0 :1:6 
+`uc 1 GIE_GIEH 1 0 :1:7 
+]
+"24805
+[s S65 . 1 `uc 1 . 1 0 :6:0 
+`uc 1 PEIE 1 0 :1:6 
+`uc 1 GIE 1 0 :1:7 
+]
+[s S69 . 1 `uc 1 . 1 0 :6:0 
+`uc 1 GIEL 1 0 :1:6 
+`uc 1 GIEH 1 0 :1:7 
+]
+[u S73 . 1 `S57 1 . 1 0 `S65 1 . 1 0 `S69 1 . 1 0 ]
+[v _INTCONbits INTCONbits `VES73  1 e 1 @4082 ]
+"24907
+[v _TABLAT TABLAT `VEuc  1 e 1 @4085 ]
+"24936
+[v _TBLPTRL TBLPTRL `VEuc  1 e 1 @4086 ]
+"24956
+[v _TBLPTRH TBLPTRH `VEuc  1 e 1 @4087 ]
+"24976
+[v _TBLPTRU TBLPTRU `VEuc  1 e 1 @4088 ]
+"55 C:\Program Files\Microchip\xc8\v2.32\pic\sources\c99\common\doprnt.c
+[v _flags flags `i  1 s 2 flags ]
+[v _prec prec `i  1 s 2 prec ]
+[v _width width `i  1 s 2 width ]
+"69
+[v _nout nout `i  1 s 2 nout ]
+"62 C:\Users\A-A-Ron\git\weather-station\mcc_generated_files/eusart.c
+[v _eusartTxHead eusartTxHead `VEuc  1 e 1 0 ]
+"63
+[v _eusartTxTail eusartTxTail `VEuc  1 e 1 0 ]
+"64
+[v _eusartTxBuffer eusartTxBuffer `VE[8]uc  1 e 8 0 ]
+"65
+[v _eusartTxBufferRemaining eusartTxBufferRemaining `VEuc  1 e 1 0 ]
+"67
+[v _eusartRxHead eusartRxHead `VEuc  1 e 1 0 ]
+"68
+[v _eusartRxTail eusartRxTail `VEuc  1 e 1 0 ]
+"69
+[v _eusartRxBuffer eusartRxBuffer `VE[8]uc  1 e 8 0 ]
+[s S436 . 1 `uc 1 perr 1 0 :1:0 
+`uc 1 ferr 1 0 :1:1 
+`uc 1 oerr 1 0 :1:2 
+`uc 1 reserved 1 0 :5:3 
+]
+"70
+[u S441 . 1 `S436 1 . 1 0 `uc 1 status 1 0 ]
+[v _eusartRxStatusBuffer eusartRxStatusBuffer `VE[8]S441  1 e 8 0 ]
+"71
+[v _eusartRxCount eusartRxCount `VEuc  1 e 1 0 ]
+"72
+[v _eusartRxLastError eusartRxLastError `VES441  1 e 1 0 ]
+"77
+[v _EUSART_TxDefaultInterruptHandler EUSART_TxDefaultInterruptHandler `*.37(v  1 e 2 0 ]
+"78
+[v _EUSART_RxDefaultInterruptHandler EUSART_RxDefaultInterruptHandler `*.37(v  1 e 2 0 ]
+"80
+[v _EUSART_FramingErrorHandler EUSART_FramingErrorHandler `*.37(v  1 e 2 0 ]
+"81
+[v _EUSART_OverrunErrorHandler EUSART_OverrunErrorHandler `*.37(v  1 e 2 0 ]
+"82
+[v _EUSART_ErrorHandler EUSART_ErrorHandler `*.37(v  1 e 2 0 ]
+"30 C:\Users\A-A-Ron\git\weather-station\mcc_generated_files/ext_int.c
+[v _INT0_InterruptHandler INT0_InterruptHandler `*.37(v  1 e 2 0 ]
+"31
+[v _INT1_InterruptHandler INT1_InterruptHandler `*.37(v  1 e 2 0 ]
+"53 C:\Users\A-A-Ron\git\weather-station\main.c
+[v _main main `(v  1 e 1 0 ]
+{
+"73
+[v main@returnedData returnedData `[100]uc  1 a 100 3 ]
+"77
+[v main@i i `ui  1 a 2 105 ]
+"74
+[v main@TestTxData TestTxData `*.25uc  1 a 2 103 ]
+"85
+} 0
+"87
+[v _sendUartStr sendUartStr `(v  1 e 1 0 ]
+{
+[v sendUartStr@TxData TxData `*.25uc  1 p 2 5 ]
+"94
+} 0
+"142 C:\Users\A-A-Ron\git\weather-station\mcc_generated_files/eusart.c
+[v _EUSART_is_tx_done EUSART_is_tx_done `(a  1 e 1 0 ]
+{
+"145
+} 0
+"173
+[v _EUSART_Write EUSART_Write `(v  1 e 1 0 ]
+{
+[v EUSART_Write@txData txData `uc  1 a 1 wreg ]
+[v EUSART_Write@txData txData `uc  1 a 1 wreg ]
+[v EUSART_Write@txData txData `uc  1 a 1 4 ]
+"194
+} 0
+"5 C:\Program Files\Microchip\xc8\v2.32\pic\sources\c99\common\printf.c
+[v _printf printf `(i  1 e 2 0 ]
+{
+"8
+[v printf@ap ap `[1]*.39v  1 a 2 0 ]
+"5
+[v printf@fmt fmt `*.25Cuc  1 p 2 53 ]
+"13
+} 0
+"1390 C:\Program Files\Microchip\xc8\v2.32\pic\sources\c99\common\doprnt.c
+[v _vfprintf vfprintf `(i  1 e 2 0 ]
+{
+"1393
+[v vfprintf@cfmt cfmt `*.25uc  1 a 2 51 ]
+[s S1561 _IO_FILE 0 ]
+"1390
+[v vfprintf@fp fp `*.2S1561  1 p 2 45 ]
+[v vfprintf@fmt fmt `*.25Cuc  1 p 2 47 ]
+[v vfprintf@ap ap `*.39*.39v  1 p 2 49 ]
+"1404
+} 0
+"692
+[v _vfpfcnvrt vfpfcnvrt `(i  1 s 2 vfpfcnvrt ]
+{
+"694
+[v vfpfcnvrt@cp cp `*.39uc  1 a 2 43 ]
+[s S1561 _IO_FILE 0 ]
+"692
+[v vfpfcnvrt@fp fp `*.2S1561  1 p 2 35 ]
+[v vfpfcnvrt@fmt fmt `*.39*.25uc  1 p 2 37 ]
+[v vfpfcnvrt@ap ap `*.39*.39v  1 p 2 39 ]
+"1387
+} 0
+"568
+[v _stoa stoa `(i  1 s 2 stoa ]
+{
+"570
+[v stoa@nuls nuls `[7]uc  1 a 7 18 ]
+"571
+[v stoa@l l `i  1 a 2 33 ]
+[v stoa@p p `i  1 a 2 31 ]
+"570
+[v stoa@cp cp `*.39uc  1 a 2 29 ]
+"571
+[v stoa@w w `i  1 a 2 27 ]
+[v stoa@i i `i  1 a 2 25 ]
+[s S1561 _IO_FILE 0 ]
+"568
+[v stoa@fp fp `*.2S1561  1 p 2 13 ]
+[v stoa@s s `*.39uc  1 p 2 15 ]
+"570
+[v stoa@F1133 F1133 `[7]uc  1 s 7 F1133 ]
+"611
+} 0
+"5 C:\Program Files\Microchip\xc8\v2.32\pic\sources\c99\common\strlen.c
+[v _strlen strlen `(ui  1 e 2 0 ]
+{
+"7
+[v strlen@a a `*.39Cuc  1 a 2 6 ]
+"5
+[v strlen@s s `*.39Cuc  1 p 2 4 ]
+"12
+} 0
+"8 C:\Program Files\Microchip\xc8\v2.32\pic\sources\c99\common\nf_fputc.c
+[v _fputc fputc `(i  1 e 2 0 ]
+{
+[v fputc@c c `i  1 p 2 4 ]
+[s S1544 _IO_FILE 6 `*.2uc 1 buffer 2 0 `i 1 count 2 2 `i 1 limit 2 4 ]
+[v fputc@fp fp `*.2S1544  1 p 2 6 ]
+"24
+} 0
+"7 C:\Program Files\Microchip\xc8\v2.32\pic\sources\c99\common\putch.c
+[v _putch putch `(v  1 e 1 0 ]
+{
+"9
+} 0
+"50 C:\Users\A-A-Ron\git\weather-station\mcc_generated_files/mcc.c
+[v _SYSTEM_Initialize SYSTEM_Initialize `(v  1 e 1 0 ]
+{
+"59
+} 0
+"75
+[v _PMD_Initialize PMD_Initialize `(v  1 e 1 0 ]
+{
+"89
+} 0
+"55 C:\Users\A-A-Ron\git\weather-station\mcc_generated_files/pin_manager.c
+[v _PIN_MANAGER_Initialize PIN_MANAGER_Initialize `(v  1 e 1 0 ]
+{
+"119
+} 0
+"61 C:\Users\A-A-Ron\git\weather-station\mcc_generated_files/mcc.c
+[v _OSCILLATOR_Initialize OSCILLATOR_Initialize `(v  1 e 1 0 ]
+{
+"73
+} 0
+"52 C:\Users\A-A-Ron\git\weather-station\mcc_generated_files/interrupt_manager.c
+[v _INTERRUPT_Initialize INTERRUPT_Initialize `(v  1 e 1 0 ]
+{
+"56
+} 0
+"86 C:\Users\A-A-Ron\git\weather-station\mcc_generated_files/ext_int.c
+[v _EXT_INT_Initialize EXT_INT_Initialize `(v  1 e 1 0 ]
+{
+"106
+} 0
+"77
+[v _INT1_SetInterruptHandler INT1_SetInterruptHandler `(v  1 e 1 0 ]
+{
+[v INT1_SetInterruptHandler@InterruptHandler InterruptHandler `*.37(v  1 p 2 4 ]
+"79
+} 0
+"51
+[v _INT0_SetInterruptHandler INT0_SetInterruptHandler `(v  1 e 1 0 ]
+{
+[v INT0_SetInterruptHandler@InterruptHandler InterruptHandler `*.37(v  1 p 2 4 ]
+"53
+} 0
+"88 C:\Users\A-A-Ron\git\weather-station\mcc_generated_files/eusart.c
+[v _EUSART_Initialize EUSART_Initialize `(v  1 e 1 0 ]
+{
+"130
+} 0
+"276
+[v _EUSART_SetTxInterruptHandler EUSART_SetTxInterruptHandler `(v  1 e 1 0 ]
+{
+[v EUSART_SetTxInterruptHandler@interruptHandler interruptHandler `*.37(v  1 p 2 4 ]
+"278
+} 0
+"280
+[v _EUSART_SetRxInterruptHandler EUSART_SetRxInterruptHandler `(v  1 e 1 0 ]
+{
+[v EUSART_SetRxInterruptHandler@interruptHandler interruptHandler `*.37(v  1 p 2 4 ]
+"282
+} 0
+"268
+[v _EUSART_SetOverrunErrorHandler EUSART_SetOverrunErrorHandler `(v  1 e 1 0 ]
+{
+[v EUSART_SetOverrunErrorHandler@interruptHandler interruptHandler `*.37(v  1 p 2 4 ]
+"270
+} 0
+"264
+[v _EUSART_SetFramingErrorHandler EUSART_SetFramingErrorHandler `(v  1 e 1 0 ]
+{
+[v EUSART_SetFramingErrorHandler@interruptHandler interruptHandler `*.37(v  1 p 2 4 ]
+"266
+} 0
+"272
+[v _EUSART_SetErrorHandler EUSART_SetErrorHandler `(v  1 e 1 0 ]
+{
+[v EUSART_SetErrorHandler@interruptHandler interruptHandler `*.37(v  1 p 2 4 ]
+"274
+} 0
+"62 C:\Users\A-A-Ron\git\weather-station\mcc_generated_files/adcc.c
+[v _ADCC_Initialize ADCC_Initialize `(v  1 e 1 0 ]
+{
+"105
+} 0
+"132 C:\Users\A-A-Ron\git\weather-station\mcc_generated_files/eusart.c
+[v _EUSART_is_tx_ready EUSART_is_tx_ready `(a  1 e 1 0 ]
+{
+"135
+} 0
+"151
+[v _EUSART_Read EUSART_Read `(uc  1 e 1 0 ]
+{
+"153
+[v EUSART_Read@readValue readValue `uc  1 a 1 4 ]
+"171
+} 0
+"58 C:\Users\A-A-Ron\git\weather-station\mcc_generated_files/interrupt_manager.c
+[v _INTERRUPT_InterruptManager INTERRUPT_InterruptManager `IIH(v  1 e 1 0 ]
+{
+"88
+} 0
+"59 C:\Users\A-A-Ron\git\weather-station\mcc_generated_files/ext_int.c
+[v _INT1_ISR INT1_ISR `(v  1 e 1 0 ]
+{
+"65
+} 0
+"68
+[v _INT1_CallBack INT1_CallBack `(v  1 e 1 0 ]
+{
+"75
+} 0
+"81
+[v _INT1_DefaultInterruptHandler INT1_DefaultInterruptHandler `(v  1 e 1 0 ]
+{
+"84
+} 0
+"33
+[v _INT0_ISR INT0_ISR `(v  1 e 1 0 ]
+{
+"39
+} 0
+"42
+[v _INT0_CallBack INT0_CallBack `(v  1 e 1 0 ]
+{
+"49
+} 0
+"55
+[v _INT0_DefaultInterruptHandler INT0_DefaultInterruptHandler `(v  1 e 1 0 ]
+{
+"58
+} 0
+"197 C:\Users\A-A-Ron\git\weather-station\mcc_generated_files/eusart.c
+[v _EUSART_Transmit_ISR EUSART_Transmit_ISR `(v  1 e 1 0 ]
+{
+"214
+} 0
+"216
+[v _EUSART_Receive_ISR EUSART_Receive_ISR `(v  1 e 1 0 ]
+{
+"238
+} 0
+"252
+[v _EUSART_DefaultOverrunErrorHandler EUSART_DefaultOverrunErrorHandler `(v  1 e 1 0 ]
+{
+"258
+} 0
+"250
+[v _EUSART_DefaultFramingErrorHandler EUSART_DefaultFramingErrorHandler `(v  1 e 1 0 ]
+{
+} 0
+"260
+[v _EUSART_DefaultErrorHandler EUSART_DefaultErrorHandler `(v  1 e 1 0 ]
+{
+"262
+} 0
+"240
+[v _EUSART_RxDataHandler EUSART_RxDataHandler `(v  1 e 1 0 ]
+{
+"248
+} 0
