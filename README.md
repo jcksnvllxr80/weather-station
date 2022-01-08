@@ -18,7 +18,7 @@
 
 ## Description
 
-Using solar-powered ESP32-C3-Mini to communicate rain fall, wind speed, wind direction, and temperature with wunderground.com API. 
+Using solar-powered ESP32-C3-Mini to communicate rain fall, wind speed, wind direction, and temperature with wunderground.com or app.weathercloud.net API.
 
 ## Prerequisites
 
