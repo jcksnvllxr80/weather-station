@@ -30,7 +30,7 @@ The following classes (which are all in this repo) must be manually loaded onto 
 
 - add ability to take asynchronous requests over network via REST so that local nagios can query weather status
 
-### Use Thonny to write the followiong code to ESP32-C3-Mini
+### Use Thonny to write the following code to ESP32-C3-Mini
 
 ```python
 # 1-wire DS18B20
