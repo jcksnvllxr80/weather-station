@@ -1,0 +1,15 @@
+{
+  "wifi": {
+    "ssid": "VGhpcyBpcyBub3QgYSByZWFsIFNTSUQ=",
+    "password": "VGhpcyBpcyBhIG5vdCBhIHJlYWwgUDQkJHcwcmQh",
+    "hostname": "weather-station"
+  },
+  "time_api": {
+    "host": "worldtimeapi.org",
+    "path": "/api/timezone/America/New_York"
+  },
+  "weather_api": {
+    "host": "developer.example.com",
+    "path": "/path/to/api"
+  }
+}
