@@ -24,7 +24,11 @@ Using solar-powered ESP32-C3-Mini to communicate rain fall, wind speed, wind dir
 
 The following classes (which are all in this repo) must be manually loaded onto the pico for this project to work (main.py also necessary):
 
+- conf directory with 'config.json' inside... use the example i provided (will need to use an online converter to base64 encode your ssid and password)
 - base64.py
+- time_utils.py
+- http_utils.py
+- mrequests.py
 
 ## Erase and flash micropython on the ESP32-C3-Mini from windows CMD
 
