@@ -27,13 +27,15 @@ WIFI_CHECK_PERIOD = 3_600_000  # milliseconds (hourly)
 WEATHER_UPDATE_PERIOD = 1_000
 DEFAULT_TIME_API_HOST = "worldtimeapi.org"
 DEFAULT_TIME_API_PATH = "/api/timezone/America/New_York"
+NUM_RGB_LEDS = 1
+LED_POSITION = NUM_RGB_LEDS - 1
 # HOURS_PER_DAY = 24
 # HOURS_TO_SYNC_TIME = list(range(HOURS_PER_DAY))
 # HOUR_POSITION = 4
 
 temp_sensor_pin = Pin(TEMP_SENSOR_IN_PIN)
 wind_dir_pin = ADC(Pin(WIND_DIR_IN_PIN))
-wifi_indicator = neopixel.NeoPixel(Pin(WIFI_LED_OUT_PIN), 1)  # just 1 RGB LED
+wifi_indicator = neopixel.NeoPixel(Pin(WIFI_LED_OUT_PIN), NUM_RGB_LEDS)
 wind_speed_pin = Pin(WIND_SPD_SENSOR_IN_PIN, Pin.IN)
 rain_counter_pin = Pin(RAIN_CNT_SENSOR_IN_PIN, Pin.IN)
 rtc = RTC()
@@ -65,12 +67,12 @@ def time_settings():
 
 
 def wifi_led_red():
-    wifi_indicator[0] = (2, 0, 0)  # dim red
+    wifi_indicator[LED_POSITION] = (2, 0, 0)  # dim red
     wifi_indicator.write()
 
 
 def wifi_led_green():
-    wifi_indicator[0] = (0, 2, 0)  # dim green
+    wifi_indicator[LED_POSITION] = (0, 2, 0)  # dim green
     wifi_indicator.write()
 
 
