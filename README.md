@@ -50,5 +50,5 @@ print("Found ds18x20 devices: {}".format(roms))
 ds_sensor.convert_temp()
 time.sleep_ms(750)
 for rom in roms:
-	print(ds_sensor.read_temp(rom))
+  print(ds_sensor.read_temp(rom))
 ```
