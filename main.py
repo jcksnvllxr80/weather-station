@@ -1,7 +1,8 @@
 # Example using PIO to drive a set of WS2812 LEDs.
 
 import sys
-from machine import Pin, SPI, Timer, I2C, RTC
+import network
+from machine import Pin, Timer, RTC
 from utime import sleep_ms, time
 import random
 import base64
@@ -27,6 +28,7 @@ red_wifi_led = Pin(11, Pin.OUT)
 button = Pin(15, Pin.IN, Pin.PULL_UP)
 onboard_led = Pin(25, Pin.OUT)
 rtc = RTC()
+wlan = network.WLAN(network.STA_IF)
 
 
 def read_config_file(filename):
@@ -51,44 +53,23 @@ wifi_led_red()
 
 
 def init_esp8266():
-    esp8266_at_ver = None
-    print("StartUP", esp01.startUP())
-    print("Echo-Off", esp01.echoING())
-    print("\n")
-
-    '''
-    Print ESP8266 AT comand version and SDK details
-    '''
-    esp8266_at_ver = esp01.getVersion()
-    if(esp8266_at_ver != None):
-        print(esp8266_at_ver)
-
-    '''
-    set the current WiFi in SoftAP+STA
-    '''
-    esp01.setCurrentWiFiMode(WIFI_MODE)
-    esp01.deviceHostname(config["wifi"]["hostname"])
-    print(esp01.deviceHostname())
-    # apList = esp01.getAvailableAPs()
-    # for items in apList:
-    #    print(items)
+    wlan.active(True)
+    wlan.config(dhcp_hostname=config["wifi"]["hostname"])
 
 
 def connect_wifi():
     print("Attempting to connect to wifi AP!")
-    ssid = bytes(config["wifi"]["ssid"], 'utf-8')
-    password = bytes(config["wifi"]["password"], 'utf-8')
-    connection_status = esp01.connectWiFi(
-        base64.b64decode(ssid).decode("utf-8"),
-        base64.b64decode(password).decode("utf-8")
-    )
-    if connection_status in ESP8266_WIFI_CONNECTED:
+    ssid = base64.b64decode(bytes(config["wifi"]["ssid"], 'utf-8'))
+    password = base64.b64decode(bytes(config["wifi"]["password"], 'utf-8'))
+    wlan.connect(ssid.decode("utf-8"), password.decode("utf-8"))
+    connection_status = wlan.isconnected()
+    if connection_status:
         print("Successfully connected to the wifi AP!")
     return connection_status
 
 
 def get_wifi_conn_status(conn_status, bool_query_time):
-    if conn_status and conn_status in ESP8266_WIFI_CONNECTED:
+    if conn_status:
         wifi_led_green()
         if bool_query_time:
             conn_status = set_time()
@@ -101,7 +82,7 @@ def get_wifi_conn_status(conn_status, bool_query_time):
 
 def set_time():
     query_time_api(config["time_api"]["host"], config["time_api"]["path"])
-    status = get_wifi_conn_status(esp01.getWifiAccessPointConnectionStatus(), False)
+    status = get_wifi_conn_status(wlan.isconnected(), False)
 
 
 def set_rtc(re_match, response_json):
@@ -131,7 +112,7 @@ def clean_json(response):
 
 
 def query_time_api(host, path):
-    httpCode, httpRes = esp01.doHttpGet(host, path)
+    httpCode, httpRes = wlan.doHttpGet(host, path)
     if httpRes:
         print("\nResponse from {} --> {}\n".format(host + path, httpRes))
         json_resp_obj = ujson.loads(clean_json(str(httpRes)))
@@ -159,7 +140,7 @@ connection = get_wifi_conn_status(connect_wifi(), True)
 def update_conn_status(wifi_timer):
     global connection
     # if rtc.datetime()[HOUR_POSITION] in HOURS_TO_SYNC_TIME:
-    if esp01.getWifiAccessPointConnectionStatus() not in ESP8266_WIFI_CONNECTED:
+    if not wlan.isconnected():
         connection = get_wifi_conn_status(connect_wifi(), True)
     else:
         set_time()
