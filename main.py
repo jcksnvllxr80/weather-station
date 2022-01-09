@@ -19,7 +19,7 @@ RAIN_UNITS = "inches"
 TEMPERATURE_UNITS = "F"
 WIFI_MODE = 3
 WIFI_CHECK_PERIOD = 3_600_000  # milliseconds (hourly)
-WIND_DIR_PERIOD = 10_000
+WEATHER_UPDATE_PERIOD = 1_000
 DEFAULT_TIME_API_HOST = "worldtimeapi.org"
 DEFAULT_TIME_API_PATH = "/api/timezone/America/New_York"
 # HOURS_PER_DAY = 24
@@ -29,6 +29,7 @@ temp_sensor_pin = Pin(19)
 wind_dir_pin = ADC(Pin(4))
 # grn_wifi_led = Pin(10, Pin.OUT)
 # red_wifi_led = Pin(11, Pin.OUT)
+wind_speed_pin = Pin(6, Pin.IN)
 rain_counter_pin = Pin(5, Pin.IN)
 rtc = RTC()
 wlan = network.WLAN(network.STA_IF)
@@ -68,10 +69,17 @@ def time_settings():
 #     grn_wifi_led.on()
 
 
+last_wind_speed_interrupt = 0
 connection = ""
-rain = 0.0  # in mm
-wind = "None"
-Temp = 0.0
+weather = {
+    "rain": 0.0,
+    "wind": {
+        "direction": "None",
+        "speed": 0.0
+    },
+    "temperature": 0.0
+}
+
 # wifi_led_red()
 
 
@@ -127,16 +135,39 @@ def update_conn_status(wifi_timer):
         )
 
 
-def update_sensors(sensors_timer):
-    global wind, temp
-    wind = get_wind_dir()
-    temp = get_temperature()
+def set_wind_param(param, val):
+    global weather
+    wind = weather.get("wind", None)
+    if not wind:
+        weather.update({
+            "wind": {
+                "direction": "None",
+                "speed": 0.0
+            }
+        })
+        wind = weather["wind"]
+    if param in ["direction", "speed"]:
+        wind[param] = val
+
+
+def update_weather(sensors_timer):
+    set_wind_param("direction", get_wind_dir())
+    set_wind_param("speed", get_wind_spd())
+    set_rain_count(get_rain_count())
+    set_temperature(get_temperature())
 
 
 def rain_counter_isr(irq):
-    global rain
-    rain += 0.2794
+    set_rain_count(get_rain_count() + 0.2794)
     print('Current rain-fall is {} {}.'.format(get_rain(RAIN_UNITS), RAIN_UNITS))
+
+
+def wind_speed_isr(irq):
+    # TODO: figure this out
+    global last_wind_speed_interrupt
+    now = time.now()
+    delta_t = now - last_wind_speed_interrupt
+    last_wind_speed_interrupt = now
 
 
 def wind_adc_to_direction(wind_adc_val):
@@ -150,6 +181,11 @@ def get_wind_dir():
     return wind_dir
 
 
+def get_wind_spd():
+    # TODO: use (deltaClick/deltaTime = windspeed) for conversion
+    return 0.0
+
+
 def get_temperature(unit="C"):
     temp = temp_sensor.read_temp(roms[0])
     if unit == "C":
@@ -158,7 +194,28 @@ def get_temperature(unit="C"):
         return (temp * 1.8) + 32  # convert from C to F
 
 
+def set_temperature(val):
+    global weather
+    if not weather.get("temp", None):
+        weather.update({"temp": val})
+    else:
+        weather["temp"] = val
+
+
+def get_rain_count():
+    return weather.get("rain", 0.0)
+
+
+def set_rain_count(val):
+    global weather
+    if not weather.get("rain", None):
+        weather.update({"rain": val})
+    else:
+        weather["rain"] = val
+
+
 def get_rain(unit="mm"):
+    rain = get_rain_count()
     if unit == "mm":
         return rain
     else:  # else return rain in inches
@@ -166,7 +223,8 @@ def get_rain(unit="mm"):
 
 
 rain_counter_pin.irq(trigger=Pin.IRQ_RISING, handler=rain_counter_isr)
+wind_speed_pin.irq(trigger=Pin.IRQ_RISING, handler=wind_speed_isr)
 wifi_timer.init(period=WIFI_CHECK_PERIOD, mode=Timer.PERIODIC, callback=update_conn_status)
-sensors_timer.init(period=WIND_DIR_PERIOD, mode=Timer.PERIODIC, callback=update_sensors)
+sensors_timer.init(period=WEATHER_UPDATE_PERIOD, mode=Timer.PERIODIC, callback=update_weather)
 while True:
     sleep_ms(100)
