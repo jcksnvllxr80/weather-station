@@ -1,5 +1,7 @@
 from ujson import loads
 import re
+import http_utils
+import mrequests as requests
 
 OPENING_BRACE = '{'
 CLOSING_BRACE = '}'
@@ -68,11 +70,14 @@ def get_time_tuple(now):
     return (int(hours / 10), hours % 10, int(minutes / 10), minutes % 10)
 
 
-def query_time_api(host, path, wlan, rtc):
-    httpCode, httpRes = wlan.doHttpGet(host, path)
-    if httpRes:
-        print("\nResponse from {} --> {}\n".format(host + path, httpRes))
-        json_resp_obj = loads(clean_json(str(httpRes)))
+def query_time_api(host, path, rtc):
+    http_res = requests.get(url="".join(["http://", host, path]))
+    http_parser = http_utils.HttpParser()
+    http_res_code = http_parser.parse_http(http_res)
+    if http_res_code:
+        http_res_json = http_parser.get_http_response()
+        print("\nResponse from {} --> {}\n".format(host + path, http_res))
+        json_resp_obj = loads(clean_json(str(http_res_json)))
         print("json obj --> {}\n".format(json_resp_obj))
         datetime_regex_string = r'(\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d.\d\d)'
         match = re.search(datetime_regex_string, json_resp_obj['datetime'])

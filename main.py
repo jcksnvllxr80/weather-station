@@ -24,7 +24,7 @@ RAIN_UNITS = "inches"
 TEMPERATURE_UNITS = "F"
 WIFI_MODE = 3
 WIFI_CHECK_PERIOD = 3_600_000  # milliseconds (hourly)
-WEATHER_UPDATE_PERIOD = 1_000
+WEATHER_UPDATE_PERIOD = 5_000
 DEFAULT_TIME_API_HOST = "worldtimeapi.org"
 DEFAULT_TIME_API_PATH = "/api/timezone/America/New_York"
 NUM_RGB_LEDS = 1
@@ -47,7 +47,7 @@ roms = temp_sensor.scan()
 temp_sensor.convert_temp()
 
 def set_time(host, path):
-    time_utils.query_time_api(host, path, wlan, rtc)
+    time_utils.query_time_api(host, path, rtc)
     return get_wifi_conn_status(wlan.isconnected(), False)
 
 
@@ -99,8 +99,10 @@ def connect_wifi():
     print("Attempting to connect to wifi AP!")
     ssid = base64.b64decode(bytes(wifi_settings().get("ssid", ""), 'utf-8'))
     password = base64.b64decode(bytes(wifi_settings().get("password", ""), 'utf-8'))
-    wlan.connect(ssid.decode("utf-8"), password.decode("utf-8"))
     connection_status = wlan.isconnected()
+    if not connection_status:
+        wlan.connect(ssid.decode("utf-8"), password.decode("utf-8"))
+        connection_status = wlan.isconnected()
     if connection_status:
         print("Successfully connected to the wifi AP!")
     return connection_status
@@ -114,7 +116,7 @@ def get_wifi_conn_status(conn_status, bool_query_time):
                 time_settings().get("host", DEFAULT_TIME_API_HOST),
                 time_settings().get("path", DEFAULT_TIME_API_PATH)
             )
-        print("wifi connected --> {}".format(conn_status))
+        # print("wifi connected --> {}".format(conn_status))
     else:
         wifi_led_red()
         print("sorry, cant connect to wifi AP! connection --> {}".format(conn_status))
@@ -124,10 +126,10 @@ def get_wifi_conn_status(conn_status, bool_query_time):
 # create dict from config file
 config = read_config_file(CONFIG_FILE)
 # Create an ESP8266 Object, init, and connect to wifi AP
-wifi_timer = Timer()
+wifi_timer = Timer(0)
 init_wlan()
 connection = get_wifi_conn_status(connect_wifi(), True)
-sensors_timer = Timer()
+weather_timer = Timer(0)
 
 
 def update_conn_status(wifi_timer):
@@ -157,7 +159,7 @@ def set_wind_param(param, val):
         wind[param] = val
 
 
-def update_weather(sensors_timer):
+def update_weather(weather_timer):
     set_wind_param("direction", get_wind_dir())
     set_wind_param("speed", get_wind_spd())
     set_rain_count(get_rain_count())
@@ -233,6 +235,6 @@ def get_rain(unit="mm"):
 rain_counter_pin.irq(trigger=Pin.IRQ_RISING, handler=rain_counter_isr)
 wind_speed_pin.irq(trigger=Pin.IRQ_RISING, handler=wind_speed_isr)
 wifi_timer.init(period=WIFI_CHECK_PERIOD, mode=Timer.PERIODIC, callback=update_conn_status)
-sensors_timer.init(period=WEATHER_UPDATE_PERIOD, mode=Timer.PERIODIC, callback=update_weather)
+weather_timer.init(period=WEATHER_UPDATE_PERIOD, mode=Timer.PERIODIC, callback=update_weather)
 while True:
     sleep_ms(100)
