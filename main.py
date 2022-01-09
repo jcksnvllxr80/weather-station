@@ -2,13 +2,12 @@
 
 import sys
 import network
+import onewire, ds18x20
 from machine import Pin, Timer, RTC, ADC
 from utime import sleep_ms, time, sleep
-import random
 import base64
-import ujson
-import re
-import utils
+from ujson import load
+import time_utils
 
 print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
 print("RPi-Pico MicroPython Ver:", sys.version)
@@ -16,56 +15,64 @@ print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
 
 CONFIG_FILE = "conf/config.json"
 INACTIVITY_TIMER = 7
-COLON = ':'
-OPENING_BRACE = '{'
-CLOSING_BRACE = '}'
+RAIN_UNITS = "inches"
+TEMPERATURE_UNITS = "F"
 WIFI_MODE = 3
 WIFI_CHECK_PERIOD = 3_600_000  # milliseconds (hourly)
 WIND_DIR_PERIOD = 10_000
+DEFAULT_TIME_API_HOST = "worldtimeapi.org"
+DEFAULT_TIME_API_PATH = "/api/timezone/America/New_York"
 # HOURS_PER_DAY = 24
 # HOURS_TO_SYNC_TIME = list(range(HOURS_PER_DAY))
 # HOUR_POSITION = 4
+temp_sensor_pin = Pin(19)
 wind_dir_pin = ADC(Pin(4))
-wind_dir_pin.atten(ADC.ATTN_11DB)
-grn_wifi_led = Pin(10, Pin.OUT)
-red_wifi_led = Pin(11, Pin.OUT)
+# grn_wifi_led = Pin(10, Pin.OUT)
+# red_wifi_led = Pin(11, Pin.OUT)
 rain_counter_pin = Pin(5, Pin.IN)
-onboard_led = Pin(25, Pin.OUT)
 rtc = RTC()
 wlan = network.WLAN(network.STA_IF)
-rain = 0.0  # in mm
+wind_dir_pin.atten(ADC.ATTN_11DB)
+temp_sensor = ds18x20.DS18X20(onewire.OneWire(temp_sensor_pin))
+roms = temp_sensor.scan()
+# print("Found ds18x20 devices: {}".format(roms))
+temp_sensor.convert_temp()
 
-
-def get_rain(unit="mm"):
-    if unit == "mm":
-        return rain
-    else:
-        return rain / 25.4  # 25.4 mm / inch
+def set_time(host, path):
+    time_utils.query_time_api(host, path, wlan, rtc)
+    return get_wifi_conn_status(wlan.isconnected(), False)
 
 
 def read_config_file(filename):
     json_data = None
     with open(filename) as fp:
-        json_data = ujson.load(fp)
+        json_data = load(fp)
     return json_data
-
-
-def wifi_led_red():
-    grn_wifi_led.off()
-    red_wifi_led.on()
-
-
-def wifi_led_green():
-    red_wifi_led.off()
-    grn_wifi_led.on()
-
-
-connection = ""
-wifi_led_red()
 
 
 def wifi_settings():
     return config.get("wifi", {})
+
+
+def time_settings():
+    return config.get("time_api", {})
+
+
+# def wifi_led_red():
+#     grn_wifi_led.off()
+#     red_wifi_led.on()
+
+
+# def wifi_led_green():
+#     red_wifi_led.off()
+#     grn_wifi_led.on()
+
+
+connection = ""
+rain = 0.0  # in mm
+wind = "None"
+Temp = 0.0
+# wifi_led_red()
 
 
 def init_wlan():
@@ -86,63 +93,17 @@ def connect_wifi():
 
 def get_wifi_conn_status(conn_status, bool_query_time):
     if conn_status:
-        wifi_led_green()
+        # wifi_led_green()
         if bool_query_time:
-            conn_status = set_time()
+            conn_status = set_time(
+                time_settings().get("host", DEFAULT_TIME_API_HOST),
+                time_settings().get("path", DEFAULT_TIME_API_PATH)
+            )
         print("wifi connected --> {}".format(conn_status))
     else:
-        wifi_led_red()
+        # wifi_led_red()
         print("sorry, cant connect to wifi AP! connection --> {}".format(conn_status))
     return conn_status
-
-
-def set_time():
-    query_time_api(config["time_api"]["host"], config["time_api"]["path"])
-    return get_wifi_conn_status(wlan.isconnected(), False)
-
-
-def set_rtc(re_match, response_json):
-    date_formatted_str = re_match.group(0).replace("T", "-")\
-        .replace(":", "-").replace(".", "-").split("-")
-    time_list = list(map(int, date_formatted_str))
-    rtc.datetime((
-        time_list[0],
-        time_list[1],
-        time_list[2],
-        int(response_json['day_of_week']),
-        time_list[3],
-        time_list[4],
-        time_list[5],
-        time_list[6]
-    ))
-
-
-def clean_json(response):
-    if not response[0] == OPENING_BRACE:
-        print("Stripping characters from before the opening brace at the start of the json string: {}".format(response))
-        response = response[response.find('{'):]
-    if not response[-1] == CLOSING_BRACE:
-        print("Stripping characters from after the ending brace of the json string: {}".format(response))
-        response = response[:response.find('}') + 1]
-    return response
-
-
-def query_time_api(host, path):
-    httpCode, httpRes = wlan.doHttpGet(host, path)
-    if httpRes:
-        print("\nResponse from {} --> {}\n".format(host + path, httpRes))
-        json_resp_obj = ujson.loads(clean_json(str(httpRes)))
-        print("json obj --> {}\n".format(json_resp_obj))
-        datetime_regex_string = r'(\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d.\d\d)'
-        match = re.search(datetime_regex_string, json_resp_obj['datetime'])
-        if match:
-            set_rtc(match, json_resp_obj)
-            print("RTC was set from internet time API: {}".format(match.group(0)))
-        else:
-            print("Error parsing time from http response; cant set RTC.")
-    else:
-        print("Error; no response from host: {}; cant set RTC."\
-              .format(host+path))
 
 
 # create dict from config file
@@ -151,7 +112,7 @@ config = read_config_file(CONFIG_FILE)
 wifi_timer = Timer()
 init_wlan()
 connection = get_wifi_conn_status(connect_wifi(), True)
-wind_dir_timer = Timer()
+sensors_timer = Timer()
 
 
 def update_conn_status(wifi_timer):
@@ -160,36 +121,27 @@ def update_conn_status(wifi_timer):
     if not wlan.isconnected():
         connection = get_wifi_conn_status(connect_wifi(), True)
     else:
-        connection = set_time()
+        connection = set_time(
+            time_settings().get("host", DEFAULT_TIME_API_HOST),
+            time_settings().get("path", DEFAULT_TIME_API_PATH)
+        )
 
 
-def update_wind(wind_dir_timer):
-    global wind
+def update_sensors(sensors_timer):
+    global wind, temp
     wind = get_wind_dir()
+    temp = get_temperature()
 
 
 def rain_counter_isr(irq):
     global rain
     rain += 0.2794
-    print('Current rain-fall is {}mm.'.format(rain))
-
-
-def get_date_string(now):
-    year = str(now[0])
-    month = utils.get_month(now[1])
-    day = now[2]
-    day_of_wk = utils.get_day_of_week(now[3])
-    return ''.join([day_of_wk, ', ', "{0}{1:2}".format(month, day), ', ', year])
-
-
-def get_time_tuple(now):
-    hours = now[4]
-    minutes = now[5]
-    return (int(hours / 10), hours % 10, int(minutes / 10), minutes % 10)
+    print('Current rain-fall is {} {}.'.format(get_rain(RAIN_UNITS), RAIN_UNITS))
 
 
 def wind_adc_to_direction(wind_adc_val):
-    return ""
+    # TODO: Need to convert voltages to direction
+    return "Need to convert voltages to direction"
 
 
 def get_wind_dir():
@@ -198,8 +150,23 @@ def get_wind_dir():
     return wind_dir
 
 
+def get_temperature(unit="C"):
+    temp = temp_sensor.read_temp(roms[0])
+    if unit == "C":
+        return temp
+    else:  # else return temp in F
+        return (temp * 1.8) + 32  # convert from C to F
+
+
+def get_rain(unit="mm"):
+    if unit == "mm":
+        return rain
+    else:  # else return rain in inches
+        return rain / 25.4  # 25.4 mm / inch
+
+
 rain_counter_pin.irq(trigger=Pin.IRQ_RISING, handler=rain_counter_isr)
 wifi_timer.init(period=WIFI_CHECK_PERIOD, mode=Timer.PERIODIC, callback=update_conn_status)
-wind_dir_timer.init(period=WIND_DIR_PERIOD, mode=Timer.PERIODIC, callback=update_wind)
+sensors_timer.init(period=WIND_DIR_PERIOD, mode=Timer.PERIODIC, callback=update_sensors)
 while True:
     sleep_ms(100)
