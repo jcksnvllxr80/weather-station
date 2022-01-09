@@ -1,6 +1,7 @@
 # Example using PIO to drive a set of WS2812 LEDs.
 
 import sys
+import neopixel
 import network
 import onewire, ds18x20
 from machine import Pin, Timer, RTC, ADC
@@ -14,7 +15,11 @@ print("RPi-Pico MicroPython Ver:", sys.version)
 print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
 
 CONFIG_FILE = "conf/config.json"
-INACTIVITY_TIMER = 7
+TEMP_SENSOR_IN_PIN = 19
+WIND_DIR_IN_PIN = 4
+WIFI_LED_OUT_PIN = 8
+WIND_SPD_SENSOR_IN_PIN = 6
+RAIN_CNT_SENSOR_IN_PIN = 5
 RAIN_UNITS = "inches"
 TEMPERATURE_UNITS = "F"
 WIFI_MODE = 3
@@ -25,12 +30,12 @@ DEFAULT_TIME_API_PATH = "/api/timezone/America/New_York"
 # HOURS_PER_DAY = 24
 # HOURS_TO_SYNC_TIME = list(range(HOURS_PER_DAY))
 # HOUR_POSITION = 4
-temp_sensor_pin = Pin(19)
-wind_dir_pin = ADC(Pin(4))
-# grn_wifi_led = Pin(10, Pin.OUT)
-# red_wifi_led = Pin(11, Pin.OUT)
-wind_speed_pin = Pin(6, Pin.IN)
-rain_counter_pin = Pin(5, Pin.IN)
+
+temp_sensor_pin = Pin(TEMP_SENSOR_IN_PIN)
+wind_dir_pin = ADC(Pin(WIND_DIR_IN_PIN))
+wifi_indicator = neopixel.NeoPixel(Pin(WIFI_LED_OUT_PIN), 1)  # just 1 RGB LED
+wind_speed_pin = Pin(WIND_SPD_SENSOR_IN_PIN, Pin.IN)
+rain_counter_pin = Pin(RAIN_CNT_SENSOR_IN_PIN, Pin.IN)
 rtc = RTC()
 wlan = network.WLAN(network.STA_IF)
 wind_dir_pin.atten(ADC.ATTN_11DB)
@@ -59,14 +64,14 @@ def time_settings():
     return config.get("time_api", {})
 
 
-# def wifi_led_red():
-#     grn_wifi_led.off()
-#     red_wifi_led.on()
+def wifi_led_red():
+    wifi_indicator[0] = (2, 0, 0)  # dim red
+    wifi_indicator.write()
 
 
-# def wifi_led_green():
-#     red_wifi_led.off()
-#     grn_wifi_led.on()
+def wifi_led_green():
+    wifi_indicator[0] = (0, 2, 0)  # dim green
+    wifi_indicator.write()
 
 
 last_wind_speed_interrupt = 0
@@ -80,7 +85,7 @@ weather = {
     "temperature": 0.0
 }
 
-# wifi_led_red()
+wifi_led_red()
 
 
 def init_wlan():
@@ -101,7 +106,7 @@ def connect_wifi():
 
 def get_wifi_conn_status(conn_status, bool_query_time):
     if conn_status:
-        # wifi_led_green()
+        wifi_led_green()
         if bool_query_time:
             conn_status = set_time(
                 time_settings().get("host", DEFAULT_TIME_API_HOST),
@@ -109,7 +114,7 @@ def get_wifi_conn_status(conn_status, bool_query_time):
             )
         print("wifi connected --> {}".format(conn_status))
     else:
-        # wifi_led_red()
+        wifi_led_red()
         print("sorry, cant connect to wifi AP! connection --> {}".format(conn_status))
     return conn_status
 
@@ -155,6 +160,7 @@ def update_weather(sensors_timer):
     set_wind_param("speed", get_wind_spd())
     set_rain_count(get_rain_count())
     set_temperature(get_temperature())
+    print(str(weather))
 
 
 def rain_counter_isr(irq):
