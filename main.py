@@ -2,12 +2,13 @@
 
 import sys
 import network
-from machine import Pin, Timer, RTC
-from utime import sleep_ms, time
+from machine import Pin, Timer, RTC, ADC
+from utime import sleep_ms, time, sleep
 import random
 import base64
 import ujson
 import re
+import utils
 
 print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
 print("RPi-Pico MicroPython Ver:", sys.version)
@@ -20,15 +21,26 @@ OPENING_BRACE = '{'
 CLOSING_BRACE = '}'
 WIFI_MODE = 3
 WIFI_CHECK_PERIOD = 3_600_000  # milliseconds (hourly)
+WIND_DIR_PERIOD = 10_000
 # HOURS_PER_DAY = 24
 # HOURS_TO_SYNC_TIME = list(range(HOURS_PER_DAY))
 # HOUR_POSITION = 4
+wind_dir_pin = ADC(Pin(4))
+wind_dir_pin.atten(ADC.ATTN_11DB)
 grn_wifi_led = Pin(10, Pin.OUT)
 red_wifi_led = Pin(11, Pin.OUT)
-button = Pin(15, Pin.IN, Pin.PULL_UP)
+rain_counter_pin = Pin(5, Pin.IN)
 onboard_led = Pin(25, Pin.OUT)
 rtc = RTC()
 wlan = network.WLAN(network.STA_IF)
+rain = 0.0  # in mm
+
+
+def get_rain(unit="mm"):
+    if unit == "mm":
+        return rain
+    else:
+        return rain / 25.4  # 25.4 mm / inch
 
 
 def read_config_file(filename):
@@ -52,15 +64,19 @@ connection = ""
 wifi_led_red()
 
 
-def init_esp8266():
+def wifi_settings():
+    return config.get("wifi", {})
+
+
+def init_wlan():
     wlan.active(True)
-    wlan.config(dhcp_hostname=config["wifi"]["hostname"])
+    wlan.config(dhcp_hostname=wifi_settings().get("hostname", "esp32-default-host"))
 
 
 def connect_wifi():
     print("Attempting to connect to wifi AP!")
-    ssid = base64.b64decode(bytes(config["wifi"]["ssid"], 'utf-8'))
-    password = base64.b64decode(bytes(config["wifi"]["password"], 'utf-8'))
+    ssid = base64.b64decode(bytes(wifi_settings().get("ssid", ""), 'utf-8'))
+    password = base64.b64decode(bytes(wifi_settings().get("password", ""), 'utf-8'))
     wlan.connect(ssid.decode("utf-8"), password.decode("utf-8"))
     connection_status = wlan.isconnected()
     if connection_status:
@@ -82,7 +98,7 @@ def get_wifi_conn_status(conn_status, bool_query_time):
 
 def set_time():
     query_time_api(config["time_api"]["host"], config["time_api"]["path"])
-    status = get_wifi_conn_status(wlan.isconnected(), False)
+    return get_wifi_conn_status(wlan.isconnected(), False)
 
 
 def set_rtc(re_match, response_json):
@@ -133,8 +149,9 @@ def query_time_api(host, path):
 config = read_config_file(CONFIG_FILE)
 # Create an ESP8266 Object, init, and connect to wifi AP
 wifi_timer = Timer()
-init_esp8266()
+init_wlan()
 connection = get_wifi_conn_status(connect_wifi(), True)
+wind_dir_timer = Timer()
 
 
 def update_conn_status(wifi_timer):
@@ -143,22 +160,25 @@ def update_conn_status(wifi_timer):
     if not wlan.isconnected():
         connection = get_wifi_conn_status(connect_wifi(), True)
     else:
-        set_time()
+        connection = set_time()
 
 
-# def button_press_isr(irq):
-#     global last_button_press, onboard_led
-#     last_button_press = time()
-#     onboard_led.on()
-#     go_to_next_style()
-#     onboard_led.off()
+def update_wind(wind_dir_timer):
+    global wind
+    wind = get_wind_dir()
+
+
+def rain_counter_isr(irq):
+    global rain
+    rain += 0.2794
+    print('Current rain-fall is {}mm.'.format(rain))
 
 
 def get_date_string(now):
     year = str(now[0])
-    month = img_utils.get_month(now[1])
+    month = utils.get_month(now[1])
     day = now[2]
-    day_of_wk = img_utils.get_day_of_week(now[3])
+    day_of_wk = utils.get_day_of_week(now[3])
     return ''.join([day_of_wk, ', ', "{0}{1:2}".format(month, day), ', ', year])
 
 
@@ -168,8 +188,18 @@ def get_time_tuple(now):
     return (int(hours / 10), hours % 10, int(minutes / 10), minutes % 10)
 
 
-# button.irq(trigger=Pin.IRQ_FALLING, handler=button_press_isr)
+def wind_adc_to_direction(wind_adc_val):
+    return ""
+
+
+def get_wind_dir():
+    wind_dir = wind_adc_to_direction(wind_dir_pin.read())
+    print(wind_dir)
+    return wind_dir
+
+
+rain_counter_pin.irq(trigger=Pin.IRQ_RISING, handler=rain_counter_isr)
 wifi_timer.init(period=WIFI_CHECK_PERIOD, mode=Timer.PERIODIC, callback=update_conn_status)
-# last_button_press = time()
+wind_dir_timer.init(period=WIND_DIR_PERIOD, mode=Timer.PERIODIC, callback=update_wind)
 while True:
-    pass
+    sleep_ms(100)
