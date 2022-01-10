@@ -29,6 +29,7 @@ The following classes (which are all in this repo) must be manually loaded onto 
 - time_utils.py
 - http_utils.py
 - mrequests.py
+- weather.py
 
 ## Erase and flash micropython on the ESP32-C3-Mini from windows CMD
 
