@@ -44,9 +44,8 @@ rtc = RTC()
 wlan = network.WLAN(network.STA_IF)
 wind_dir_pin.atten(ADC.ATTN_11DB)
 temp_sensor = ds18x20.DS18X20(onewire.OneWire(temp_sensor_pin))
-weather_obj = weather.Weather(TEMPERATURE_UNITS, RAIN_UNITS, RAIN_UNITS)
 roms = temp_sensor.scan()
-temp_sensor.convert_temp()
+weather_obj = weather.Weather(TEMPERATURE_UNITS, RAIN_UNITS, RAIN_UNITS)
 
 def set_time(host, path):
     time_utils.query_time_api(host, path, rtc)
@@ -126,8 +125,13 @@ def update_conn_status(wifi_timer):
 
 def update_weather(weather_timer):
     weather_obj.set_wind_direction(weather_obj.wind_adc_to_direction(wind_dir_pin.read()))
-    weather_obj.set_temperature(temp_sensor.read_temp(roms[TEMP_SENSOR_POSITION]))
+    weather_obj.set_temperature(read_temperature())
     print(repr(weather_obj))
+
+def read_temperature():
+    temp_sensor.convert_temp()
+    sleep_ms(50)
+    return temp_sensor.read_temp(roms[TEMP_SENSOR_POSITION])
 
 def rain_counter_isr(irq):
     weather_obj.increment_rain_count()
