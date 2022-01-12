@@ -3,7 +3,7 @@ import neopixel
 import network
 import onewire, ds18x20
 from machine import Pin, Timer, RTC, ADC
-from utime import sleep_ms, sleep
+import time
 import base64
 from ujson import load
 import time_utils
@@ -14,14 +14,14 @@ print("RPi-Pico MicroPython Ver:", sys.version)
 print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
 
 CONFIG_FILE = "conf/config.json"
-TEMP_SENSOR_IN_PIN = 19
-WIND_DIR_IN_PIN = 4
+TEMPERATURE_SENSOR_IN_PIN = 19
+WIND_DIR_SENSOR_IN_PIN = 4
 WIFI_LED_OUT_PIN = 8
 WIND_SPD_SENSOR_IN_PIN = 6
 RAIN_CNT_SENSOR_IN_PIN = 5
-RAIN_UNITS = "INCH"
-TEMPERATURE_UNITS = "F"
-SPEED_UNITS = "MPH"
+RAIN_UNITS = "mm"
+TEMPERATURE_UNITS = "C"
+SPEED_UNITS = "km/h"
 # WIFI_MODE = 3
 WIFI_CHECK_PERIOD = 3_600_000  # milliseconds (hourly)
 WEATHER_UPDATE_PERIOD = 5_000
@@ -35,8 +35,8 @@ TEMP_SENSOR_POSITION = NUM_TEMP_SENSORS - 1
 # HOURS_TO_SYNC_TIME = list(range(HOURS_PER_DAY))
 # HOUR_POSITION = 4
 
-temp_sensor_pin = Pin(TEMP_SENSOR_IN_PIN)
-wind_dir_pin = ADC(Pin(WIND_DIR_IN_PIN))
+temp_sensor_pin = Pin(TEMPERATURE_SENSOR_IN_PIN)
+wind_dir_pin = ADC(Pin(WIND_DIR_SENSOR_IN_PIN))
 wifi_indicator = neopixel.NeoPixel(Pin(WIFI_LED_OUT_PIN), NUM_RGB_LEDS)
 wind_speed_pin = Pin(WIND_SPD_SENSOR_IN_PIN, Pin.IN)
 rain_counter_pin = Pin(RAIN_CNT_SENSOR_IN_PIN, Pin.IN)
@@ -124,24 +124,29 @@ def update_conn_status(wifi_timer):
         )
 
 def update_weather(weather_timer):
+    global weather_update_time
     weather_obj.set_wind_direction(weather_obj.wind_adc_to_direction(wind_dir_pin.read()))
     weather_obj.set_temperature(read_temperature())
+    delta_t = int(time.ticks_diff(time.ticks_ms(), weather_update_time) / 1000)
+    weather_obj.set_wind_speed(weather_obj.calculate_avg_wind_speed(delta_t))
+    weather_update_time = time.ticks_ms()
     print(repr(weather_obj))
 
 def read_temperature():
     temp_sensor.convert_temp()
-    sleep_ms(50)
+    time.sleep_ms(50)
     return temp_sensor.read_temp(roms[TEMP_SENSOR_POSITION])
 
 def rain_counter_isr(irq):
     weather_obj.increment_rain_count()
 
 def wind_speed_isr(irq):
-    weather_obj.wind_speed(weather_obj.calculate_wind_speed())
+    weather_obj.add_wind_speed_pulse()
 
 rain_counter_pin.irq(trigger=Pin.IRQ_RISING, handler=rain_counter_isr)
 wind_speed_pin.irq(trigger=Pin.IRQ_RISING, handler=wind_speed_isr)
 wifi_timer.init(period=WIFI_CHECK_PERIOD, mode=Timer.PERIODIC, callback=update_conn_status)
 weather_timer.init(period=WEATHER_UPDATE_PERIOD, mode=Timer.PERIODIC, callback=update_weather)
+weather_update_time = time.ticks_ms()
 while True:
-    sleep_ms(100)
+    time.sleep_ms(100)

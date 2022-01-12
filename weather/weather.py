@@ -5,6 +5,8 @@ WIND_KEY = "Wind"
 SPEED_KEY = "Speed"
 DIRECTION_KEY = "Direction"
 RAIN_KEY = "Rain"
+RAIN_COUNT_CONSTANT = 0.2794  # mm's rain
+ANEMOMETER_CONSTANT = 2.4  # km/h
 
 
 class Weather:
@@ -13,10 +15,10 @@ class Weather:
         self.temp_units = temp_units
         self.speed_units = speed_units
         self.rain_units = rain_units
-        self.last_anemometer_interrupt = 0
         self.__rain_count = 0.0
         self.__wind_direction = 0
         self.__wind_speed = 0.0
+        self.__wind_speed_pulses = 0
         self.__temperature = 0.0
         self.__weather_dict = {
             RAIN_KEY: self.__rain_count,
@@ -57,25 +59,34 @@ class Weather:
     def set_temperature(self, val):
         if not self.temp_units == "C":
             val = Weather.celsius2fahrenheit(val)
-        self.__temperature = float("{:.2f}".format(val))
+        self.__temperature = Weather.two_decimals(val)
         self.__weather_dict[TEMPERATURE_KEY] = self.__temperature
 
     def increment_rain_count(self):
         if self.rain_units == "mm":
-            self.__rain_count += 0.2794
+            self.__rain_count += RAIN_COUNT_CONSTANT
         else:
-            self.__rain_count += Weather.millimeters2inches(0.2794)
-        self.set_rain_count(float("{:.2f}".format(self.__rain_count)))
+            self.__rain_count += Weather.millimeters2inches(RAIN_COUNT_CONSTANT)
+        self.set_rain_count(Weather.two_decimals(self.__rain_count))
 
-    # def get_anemometer_time_delta(self):
-    #     right_now = time.now()
-    #     delta_t = right_now - self.last_anemometer_interrupt
-    #     self.last_wind_speed_interrupt = right_now
-    #     return delta_t
+    def add_wind_speed_pulse(self):
+        self.__wind_speed_pulses += 1
+
+    def calculate_avg_wind_speed(self, delta_time):
+        mph_conversion_divisor = 1.0
+        if not self.speed_units == "km/h":
+            mph_conversion_divisor = 1.6093
+        avg_wind_spd = ANEMOMETER_CONSTANT * self.__wind_speed_pulses / (mph_conversion_divisor * delta_time)
+        self.__wind_speed_pulses = 0
+        return Weather.two_decimals(avg_wind_spd)
 
     def wind_adc_to_direction(self, wind_adc_val):
         # TODO: Need to convert voltages to direction
         return 0
+    
+    @staticmethod
+    def two_decimals(val):
+        return float("{:.2f}".format(val))
 
     @staticmethod
     def celsius2fahrenheit(val):
