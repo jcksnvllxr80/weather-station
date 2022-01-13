@@ -101,8 +101,9 @@ https://api.weather.com/v2/pws/observations/current?stationId=KMAHANOV10&format=
 ```
 
 NOTE:
-precipRate = Rate of precipitation - instantaneous precipitation rate.  How much rain would fall if the precipitation intensity did not change for one hour
-precipTotal = Accumulated precipitation for today from midnight to present.
+
+>- precipRate = Rate of precipitation - instantaneous precipitation rate.  How much rain would fall if the precipitation intensity did not change for one hour
+>- precipTotal = Accumulated precipitation for today from midnight to present.
 
 ### Use Thonny to write the following code to ESP32-C3-Mini
 
