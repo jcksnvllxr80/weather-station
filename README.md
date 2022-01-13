@@ -33,15 +33,41 @@ The following classes (which are all in this repo) must be manually loaded onto 
 
 ## Erase and flash micropython on the ESP32-C3-Mini from windows CMD
 
-- download and unzip https://github.com/espressif/esptool
-- download the MicroPython firmware https://micropython.org/download/esp32c3/ (I used esp32c3-20210902-v1.17.bin)
+- download and unzip <https://github.com/espressif/esptool>
+- download the MicroPython firmware <https://micropython.org/download/esp32c3/> (I used esp32c3-20210902-v1.17.bin)
 - python esptool.py -p COM<your_com_num> -b 1000000 --before default_reset erase_flash
 - python esptool.py -p COM<your_com_num> -b 1500000 --before default_reset write_flash -z 0x0000 esp32c3-20210902-v1.17.bin
-- the above two commands worked for me but here is a helpful link just in case: http://embedded-things.blogspot.com/2021/10/flash-micropython-firmware-on-esp32-c3.html
+- the above two commands worked for me but here is a helpful link just in case: <http://embedded-things.blogspot.com/2021/10/flash-micropython-firmware-on-esp32-c3.html>
 
 ## TODO
 
 - add ability to take asynchronous requests over network via REST so that local nagios can query weather status
+
+## Weather Vane voltage values and direction table
+
+```c
+/* Weather vane / 3.3 V input / using R=33K 
+
+Dir       Ri         Vi       Angle       R           Vo          ADC
+N        33000       3.3       0          33000       1.650       2335
+N/NE     33000       3.3       22.5       6570        0.548       930
+NE       33000       3.3       45         8200        0.657       925
+E/NE     33000       3.3       67.5       891         0.087       123
+E        33000       3.3       90         1000        0.097       140
+E/SE     33000       3.3       112.5      688         0.067       300
+SE       33000       3.3       135        2200        0.206       294
+S/SE     33000       3.3       157.5      1410        0.135       190
+S        33000       3.3       180        3900        0.349       494
+S/SW     33000       3.3       202.5      3140        0.287       1516
+SW       33000       3.3       225        16000       1.078       1525
+W/SW     33000       3.3       247.5      14120       0.989       1400
+W        33000       3.3       270        120000      2.588       3706
+W/NW     33000       3.3       292.5      42120       1.850       2625
+NW       33000       3.3       315        64900       2.188       3101
+N/NW     33000       3.3       337.5      21880       1.316       1866
+
+ */
+```
 
 ### Use Thonny to write the following code to ESP32-C3-Mini
 

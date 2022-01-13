@@ -125,7 +125,7 @@ def update_conn_status(wifi_timer):
 
 def update_weather(weather_timer):
     global weather_update_time
-    weather_obj.set_wind_direction(weather_obj.wind_adc_to_direction(wind_dir_pin.read()))
+    weather_obj.set_wind_direction(wind_dir_pin.read())
     weather_obj.set_temperature(read_temperature())
     delta_t = int(time.ticks_diff(time.ticks_ms(), weather_update_time) / 1000)
     weather_obj.set_wind_speed(weather_obj.calculate_avg_wind_speed(delta_t))
@@ -141,12 +141,17 @@ def rain_counter_isr(irq):
     weather_obj.increment_rain_count()
 
 def wind_speed_isr(irq):
-    weather_obj.add_wind_speed_pulse()
+    global wind_speed_last_intrpt  # software debounce mechanical reed switch
+    if time.ticks_diff(time.ticks_ms(), wind_speed_last_intrpt) > 2:
+        weather_obj.add_wind_speed_pulse()
+        wind_speed_last_intrpt = time.ticks_ms()
 
 rain_counter_pin.irq(trigger=Pin.IRQ_RISING, handler=rain_counter_isr)
 wind_speed_pin.irq(trigger=Pin.IRQ_RISING, handler=wind_speed_isr)
 wifi_timer.init(period=WIFI_CHECK_PERIOD, mode=Timer.PERIODIC, callback=update_conn_status)
 weather_timer.init(period=WEATHER_UPDATE_PERIOD, mode=Timer.PERIODIC, callback=update_weather)
-weather_update_time = time.ticks_ms()
+begin_time = time.ticks_ms()
+weather_update_time = begin_time
+wind_speed_last_intrpt = begin_time
 while True:
     time.sleep_ms(100)

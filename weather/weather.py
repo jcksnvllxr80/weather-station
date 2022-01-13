@@ -16,7 +16,7 @@ class Weather:
         self.speed_units = speed_units
         self.rain_units = rain_units
         self.__rain_count = 0.0
-        self.__wind_direction = 0
+        self.__wind_direction = "N"
         self.__wind_speed = 0.0
         self.__wind_speed_pulses = 0
         self.__temperature = 0.0
@@ -42,8 +42,8 @@ class Weather:
     def get_wind_direction(self):
         return self.__wind_direction
 
-    def set_wind_direction(self, val):
-        self.__wind_direction = val
+    def set_wind_direction(self, adc_val):
+        self.__wind_direction = Weather.wind_adc_to_direction(adc_val)
         self.__weather_dict[WIND_KEY][DIRECTION_KEY] = self.__wind_direction
 
     def get_wind_speed(self):
@@ -71,6 +71,7 @@ class Weather:
 
     def add_wind_speed_pulse(self):
         self.__wind_speed_pulses += 1
+        # print(self.__wind_speed_pulses)
 
     def calculate_avg_wind_speed(self, delta_time):
         mph_conversion_divisor = 1.0
@@ -80,10 +81,44 @@ class Weather:
         self.__wind_speed_pulses = 0
         return Weather.two_decimals(avg_wind_spd)
 
-    def wind_adc_to_direction(self, wind_adc_val):
-        # TODO: Need to convert voltages to direction
-        return 0
-    
+    @staticmethod
+    def wind_adc_to_direction(wind_adc_val):
+        if (wind_adc_val in range(123, 132)):
+            wind_direction = "E/NE"
+        elif (wind_adc_val in range(132, 165)):
+            wind_direction = "E"
+        elif (wind_adc_val in range(165, 242)):
+            wind_direction = "S/SE"
+        elif (wind_adc_val in range(242, 297)):
+            wind_direction = "SE"
+        elif (wind_adc_val in range(297, 397)):
+            wind_direction = "E/SE"
+        elif (wind_adc_val in range(397, 709)) :
+            wind_direction = "S"
+        elif (wind_adc_val in range(709, 927)):
+            wind_direction = "NE"
+        elif (wind_adc_val in range(927, 1165)):
+            wind_direction = "N/NE"
+        elif (wind_adc_val in range(1165, 1458)):
+            wind_direction = "W/SW"
+        elif (wind_adc_val in range(1458, 1520)):
+            wind_direction = "S/SW"
+        elif (wind_adc_val in range(1520, 1695)):
+            wind_direction = "SW"
+        elif (wind_adc_val in range(1695, 2100)):
+            wind_direction = "N/NW"
+        elif (wind_adc_val in range(2100, 2480)):
+            wind_direction = "N"
+        elif (wind_adc_val in range(2480, 2863)):
+            wind_direction = "W/NW"
+        elif (wind_adc_val in range(2863, 3403)):
+            wind_direction = "NW"
+        elif (wind_adc_val in range(3403, 3800)):
+            wind_direction = "W"
+        else:
+            wind_direction = "ERROR"
+        return wind_direction
+
     @staticmethod
     def two_decimals(val):
         return float("{:.2f}".format(val))
@@ -95,8 +130,3 @@ class Weather:
     @staticmethod
     def millimeters2inches(val):
         return val / 25.4  # 25.4 mm / inch
-
-    @staticmethod
-    def calculate_wind_speed():
-        # TODO: figure this out
-        return 0.0
