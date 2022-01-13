@@ -42,6 +42,9 @@ The following classes (which are all in this repo) must be manually loaded onto 
 ## TODO
 
 - add ability to take asynchronous requests over network via REST so that local nagios can query weather status
+- fix intermittent connect to AP on boot
+- add timer to reset rain count at midnight
+- figure out how to calculate precip rate
 
 ## Weather Vane voltage values and direction table
 
@@ -68,6 +71,38 @@ N/NW     33000       3.3       337.5      21880       1.316       1866
 
  */
 ```
+
+## wunderground API call
+
+```json
+https://api.weather.com/v2/pws/observations/current?stationId=KMAHANOV10&format=json&units=e&apiKey=yourApiKey
+{
+  observations: [
+    {
+      stationID: "KFLJACKS4049",
+      obsTimeUtc: "2019-02-04T14:53:14Z",
+      neighborhood: "The Crossings",
+      softwareType: "custom",
+      country: "US",
+      realtimeFrequency: 5,
+      epoch: 1549291994,
+      winddir: 329,
+      qcStatus: -1,
+      imperial: {
+        temp: 53,
+        windSpeed: 2,
+        windGust: null,
+        precipRate: 0.0,
+        precipTotal: 0.0
+      }
+    }
+  ]
+}
+```
+
+NOTE:
+precipRate = Rate of precipitation - instantaneous precipitation rate.  How much rain would fall if the precipitation intensity did not change for one hour
+precipTotal = Accumulated precipitation for today from midnight to present.
 
 ### Use Thonny to write the following code to ESP32-C3-Mini
 
