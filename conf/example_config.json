@@ -10,6 +10,8 @@
   },
   "weather_api": {
     "host": "developer.example.com",
-    "path": "/path/to/api"
+    "path": "/path/to/api",
+    "station_id": "<your_station_ID>",
+    "api_key": "<your_API_key>"
   }
 }
