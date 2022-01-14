@@ -47,6 +47,7 @@ The following classes (which are all in this repo) must be manually loaded onto 
 - add api key encrypted to the config
 - add station ID to the config
 - fill out message and send to weather underground
+- add proper images to this readme including fritzing diagram
 
 ## Weather Vane voltage values and direction table
 

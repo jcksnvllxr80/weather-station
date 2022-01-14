@@ -5,6 +5,7 @@
 observation_dict = {
     "stationID": "",
     "obsTimeUtc": "1970-01-01T00:00:00Z",
+    "obsTimeLocal": "1970-01-01T00:00:00Z",
     "neighborhood": "",
     "softwareType": "",
     "country": "",
