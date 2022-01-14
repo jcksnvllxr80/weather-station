@@ -24,16 +24,16 @@ TEMPERATURE_UNITS = "C"
 SPEED_UNITS = "km/h"
 # WIFI_MODE = 3
 WIFI_CHECK_PERIOD = 3_600_000  # milliseconds (hourly)
-WEATHER_UPDATE_PERIOD = 5_000
+WEATHER_UPDATE_PERIOD = 600_000
 DEFAULT_TIME_API_HOST = "worldtimeapi.org"
 DEFAULT_TIME_API_PATH = "/api/timezone/America/New_York"
 NUM_RGB_LEDS = 1
 LED_POSITION = NUM_RGB_LEDS - 1
 NUM_TEMP_SENSORS = 1
 TEMP_SENSOR_POSITION = NUM_TEMP_SENSORS - 1
-# HOURS_PER_DAY = 24
-# HOURS_TO_SYNC_TIME = list(range(HOURS_PER_DAY))
-# HOUR_POSITION = 4
+MIDNIGHT_HOUR = 0
+HOUR_POSITION = 4
+MINUTE_POSITION = 5
 
 temp_sensor_pin = Pin(TEMPERATURE_SENSOR_IN_PIN)
 wind_dir_pin = ADC(Pin(WIND_DIR_SENSOR_IN_PIN))
@@ -114,7 +114,6 @@ weather_timer = Timer(0)
 
 def update_conn_status(wifi_timer):
     global connection
-    # if rtc.datetime()[HOUR_POSITION] in HOURS_TO_SYNC_TIME:
     if not wlan.isconnected():
         connection = get_wifi_conn_status(connect_wifi(), True)
     else:
@@ -123,6 +122,11 @@ def update_conn_status(wifi_timer):
             time_settings().get("path", DEFAULT_TIME_API_PATH)
         )
 
+def reset_rain_counter_daily(daily_rain_timer):
+    if rtc.datetime()[MINUTE_POSITION] == 0:
+        if rtc.datetime()[HOUR_POSITION] == MIDNIGHT_HOUR:
+            weather_obj.reset_daily_rain_count()
+
 def update_weather(weather_timer):
     global weather_update_time
     weather_obj.set_wind_direction(wind_dir_pin.read())
@@ -130,15 +134,17 @@ def update_weather(weather_timer):
     delta_t = int(time.ticks_diff(time.ticks_ms(), weather_update_time) / 1000)
     weather_obj.set_wind_speed(weather_obj.calculate_avg_wind_speed(delta_t))
     weather_update_time = time.ticks_ms()
+    weather_obj.set_rain_rate(weather_obj.calculate_rain_rate(delta_t))
     print(repr(weather_obj))
+    weather_obj.reset_wind_gust()
 
 def read_temperature():
     temp_sensor.convert_temp()
-    time.sleep_ms(50)
+    # time.sleep_ms(50)
     return temp_sensor.read_temp(roms[TEMP_SENSOR_POSITION])
 
 def rain_counter_isr(irq):
-    weather_obj.increment_rain_count()
+    weather_obj.increment_rain()
 
 def wind_speed_isr(irq):
     global wind_speed_last_intrpt  # software debounce mechanical reed switch

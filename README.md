@@ -18,7 +18,7 @@
 
 ## Description
 
-Using solar-powered ESP32-C3-Mini to communicate rain fall, wind speed, wind direction, and temperature with wunderground.com or app.weathercloud.net API.
+Using solar-powered ESP32-C3-Mini to transmit rain fall, wind speed, wind direction, and temperature with wunderground.com API.
 
 ## Prerequisites
 
@@ -43,8 +43,10 @@ The following classes (which are all in this repo) must be manually loaded onto 
 
 - add ability to take asynchronous requests over network via REST so that local nagios can query weather status
 - fix intermittent connect to AP on boot
-- add timer to reset rain count at midnight
-- figure out how to calculate precip rate
+- add some of the json data to the config
+- add api key encrypted to the config
+- add station ID to the config
+- fill out message and send to weather underground
 
 ## Weather Vane voltage values and direction table
 
@@ -79,9 +81,10 @@ https://api.weather.com/v2/pws/observations/current?stationId=KMAHANOV10&format=
 {
   observations: [
     {
-      stationID: "KFLJACKS4049",
+      stationID: "",
       obsTimeUtc: "2019-02-04T14:53:14Z",
-      neighborhood: "The Crossings",
+      obsTimeLocal: "2019-02-04 09:53:14",
+      neighborhood: "",
       softwareType: "custom",
       country: "US",
       realtimeFrequency: 5,
