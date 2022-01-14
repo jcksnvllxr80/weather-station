@@ -9,8 +9,8 @@
     "path": "/api/timezone/America/New_York"
   },
   "weather_api": {
-    "host": "developer.example.com",
-    "path": "/path/to/api",
+    "host": "api.weather.com",
+    "path": "/v2/pws/observations/current?",
     "station_id": "<your_station_ID>",
     "api_key": "<your_API_key>"
   }
