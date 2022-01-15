@@ -118,11 +118,6 @@ https://weatherstation.wunderground.com/weatherstation/updateweatherstation.php?
 
 ```
 
-NOTE:
-
->- precipRate = Rate of precipitation - instantaneous precipitation rate.  How much rain would fall if the precipitation intensity did not change for one hour
->- precipTotal = Accumulated precipitation for today from midnight to present.
-
 ### Use Thonny to write the following code to ESP32-C3-Mini
 
 ```python
