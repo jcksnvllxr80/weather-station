@@ -11,7 +11,7 @@
   "weather_api": {
     "host": "api.weather.com",
     "path": "/v2/pws/observations/current?",
-    "station_id": "<your_station_ID>",
-    "api_key": "<your_API_key>"
+    "station_id": "<your_byte64_encoded_station_ID>",
+    "api_key": "<your_byte64_encoded_API_key>"
   }
 }

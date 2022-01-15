@@ -63,6 +63,9 @@ def wifi_settings():
 def time_settings():
     return config.get("time_api", {})
 
+def weather_settings():
+    return config.get("weather_api", {})
+
 def wifi_led_red():
     wifi_indicator[LED_POSITION] = (2, 0, 0)  # dim red
     wifi_indicator.write()
@@ -70,9 +73,6 @@ def wifi_led_red():
 def wifi_led_green():
     wifi_indicator[LED_POSITION] = (0, 2, 0)  # dim green
     wifi_indicator.write()
-
-connection = ""
-wifi_led_red()
 
 def init_wlan():
     wlan.active(True)
@@ -103,14 +103,6 @@ def get_wifi_conn_status(conn_status, bool_query_time):
         wifi_led_red()
         print("sorry, cant connect to wifi AP! connection --> {}".format(conn_status))
     return conn_status
-
-# create dict from config file
-config = read_config_file(CONFIG_FILE)
-# Create an ESP8266 Object, init, and connect to wifi AP
-wifi_timer = Timer(0)
-init_wlan()
-connection = get_wifi_conn_status(connect_wifi(), True)
-weather_timer = Timer(0)
 
 def update_conn_status(wifi_timer):
     global connection
@@ -151,6 +143,17 @@ def wind_speed_isr(irq):
     if time.ticks_diff(time.ticks_ms(), wind_speed_last_intrpt) > 2:
         weather_obj.add_wind_speed_pulse()
         wind_speed_last_intrpt = time.ticks_ms()
+
+
+connection = ""
+wifi_led_red()
+# create dict from config file
+config = read_config_file(CONFIG_FILE)
+# Create an ESP8266 Object, init, and connect to wifi AP
+wifi_timer = Timer(0)
+weather_timer = Timer(0)
+init_wlan()
+connection = get_wifi_conn_status(connect_wifi(), True)
 
 rain_counter_pin.irq(trigger=Pin.IRQ_RISING, handler=rain_counter_isr)
 wind_speed_pin.irq(trigger=Pin.IRQ_RISING, handler=wind_speed_isr)
