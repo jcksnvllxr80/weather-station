@@ -3,33 +3,36 @@ import re
 import http_utils
 import mrequests as requests
 
-# wrap up observations in a dictionary ike this
-# {
-#     "observations": []
-# }
+TEMPERATURE_KEY = "Temperature"
+WIND_KEY = "Wind"
+WIND_GUST_KEY = "Gust"
+WIND_SPEED_KEY = "Speed"
+WIND_DIRECTION_KEY = "Direction"
+RAIN_KEY = "Rain"
+RAIN_COUNT_DAILY_KEY = "Daily"
+RAIN_COUNT_HOURLY_KEY = "Hourly"
 
-observation_dict = {
-    "stationID": "",
-    "obsTimeUtc": "1970-01-01T00:00:00Z",
-    "obsTimeLocal": "1970-01-01T00:00:00Z",
-    "neighborhood": "",
-    "softwareType": "",
-    "country": "",
-    "realtimeFrequency": 10,
-    "epoch": 0,
-    "winddir": 0,
-    "qcStatus": -1,
-    "imperial": {
-        "temp": 0,
-        "windSpeed": 0,
-        "windGust": 0,
-        "precipRate": 0.0,
-        "precipTotal": 0.0
-    }
-}
+def get_data_str(id, key, data):
+    return "".join(
+        [
+            'ID=', id,
+            '&PASSWORD=', key,
+            '&dateutc=now',
+            '&winddir=', data[WIND_KEY][WIND_DIRECTION_KEY],
+            '&windspeedmph=', data[WIND_KEY][WIND_SPEED_KEY],
+            '&windgustmph=', data[WIND_KEY][WIND_GUST_KEY],
+            '&tempf=', data[TEMPERATURE_KEY],
+            '&rainin=', data[RAIN_KEY][RAIN_COUNT_HOURLY_KEY],
+            '&dailyrainin=', data[RAIN_KEY][RAIN_COUNT_DAILY_KEY],
+            '&softwaretype=custom',
+            '&action=updateraw'
+        ]
+    )
 
-def query_time_api(host, path, rtc):
-    http_res = requests.get(url="".join(["http://", host, path]))
+def update_weather_api(host, path, station_id, station_key, weather):
+    http_res = requests.get(
+        url="https://{}{}{}".format(host, path, get_data_str(station_id, station_key, loads(weather)))
+    )
     http_parser = http_utils.HttpParser()
     http_res_code = http_parser.parse_http(http_res)
     if http_res_code:

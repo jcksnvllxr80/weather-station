@@ -1,13 +1,6 @@
 import time
-
-TEMPERATURE_KEY = "Temperature"
-WIND_KEY = "Wind"
-WIND_GUST_KEY = "Gust"
-WIND_SPEED_KEY = "Speed"
-WIND_DIRECTION_KEY = "Direction"
-RAIN_KEY = "Rain"
-RAIN_COUNT_KEY = "Count"
-RAIN_RATE_KEY = "Rate"
+from weather_api_utils import TEMPERATURE_KEY, WIND_KEY, WIND_GUST_KEY, \
+WIND_SPEED_KEY, WIND_DIRECTION_KEY, RAIN_KEY, RAIN_COUNT_DAILY_KEY, RAIN_COUNT_HOURLY_KEY
 RAIN_COUNT_CONSTANT = 0.2794  # mm's rain
 ANEMOMETER_CONSTANT = 2.4  # km/h
 SECONDS_PER_HOUR = 3_600
@@ -51,13 +44,13 @@ WIND_ANGLE_DICT = {
 
 class Weather:
 
-    def __init__(self, temp_units="F", speed_units="MPH", rain_units="inches"):
+    def __init__(self, temp_units="F", speed_units="MPH", rain_units="in", updates_per_hr=6):
         self.temp_units = temp_units
         self.speed_units = speed_units
         self.rain_units = rain_units
-        self.__rain_count = 0.0
-        self.__rain_rate = 0.0
-        self.__rain_rate_factor = 0.0
+        self.__rain_hourly_list = [0.0]*updates_per_hr
+        self.__rain_count_daily = 0.0
+        self.__rain_count_hourly = 0.0
         self.__wind_direction = "N"
         self.__wind_speed = 0.0
         self.__wind_speed_pulses = 0
@@ -66,8 +59,8 @@ class Weather:
         self.__temperature = 0.0
         self.__weather_dict = {
             RAIN_KEY: {
-                RAIN_COUNT_KEY: self.__rain_count,
-                RAIN_RATE_KEY: self.__rain_rate
+                RAIN_COUNT_DAILY_KEY: self.__rain_count_daily,
+                RAIN_COUNT_HOURLY_KEY: self.__rain_count_hourly
             },
             WIND_KEY: {
                 WIND_DIRECTION_KEY: self.__wind_direction,
@@ -80,25 +73,22 @@ class Weather:
     def __repr__(self):
         return repr(self.__weather_dict)
 
-    def get_rain_count(self):
-        return self.__rain_count
+    def get_weather_data(self):
+        return self.__weather_dict
 
-    def set_rain_count(self, val):
-        self.__rain_count = val
-        self.__weather_dict[RAIN_KEY][RAIN_COUNT_KEY] = self.__rain_count
+    def get_rain_count_daily(self):
+        return self.__rain_count_daily
 
-    def get_rain_rate(self):
-        return self.__rain_rate
+    def set_rain_count_daily(self, val):
+        self.__rain_count_daily = val
+        self.__weather_dict[RAIN_KEY][RAIN_COUNT_DAILY_KEY] = self.__rain_count_daily
 
-    def set_rain_rate(self, val):
-        self.__rain_rate = val
-        self.__weather_dict[RAIN_KEY][RAIN_RATE_KEY] = self.__rain_rate
+    def get_rain_count_hourly(self):
+        return self.__rain_count_hourly
 
-    def get_rain_rate_factor(self):
-        return self.__rain_rate_factor
-
-    def set_rain_rate_factor(self, val):
-        self.__rain_rate_factor = val
+    def set_rain_count_hourly(self, val):
+        self.__rain_count_hourly = val
+        self.__weather_dict[RAIN_KEY][RAIN_COUNT_HOURLY_KEY] = self.__rain_count_hourly
 
     def get_wind_gust(self):
         return self.__max_wind_gust
@@ -132,14 +122,14 @@ class Weather:
 
     def increment_rain(self):
         if self.rain_units == "mm":
-            rain_count = self.get_rain_count() + RAIN_COUNT_CONSTANT
-            rain_rate = self.get_rain_rate_factor() + RAIN_COUNT_CONSTANT
+            rain_count_daily = self.get_rain_count_daily() + RAIN_COUNT_CONSTANT
+            self.__rain_hourly_list[-1] += RAIN_COUNT_CONSTANT
         else:
             rain_unit = Weather.millimeters2inches(RAIN_COUNT_CONSTANT)
-            rain_count = self.get_rain_count() + rain_unit
-            rain_rate = self.get_rain_rate_factor() + rain_unit
-        self.set_rain_count(Weather.two_decimals(rain_count))
-        self.set_rain_rate_factor(Weather.two_decimals(rain_rate))
+            rain_count_daily = self.get_rain_count_daily() + rain_unit
+            self.__rain_hourly_list[-1] += rain_unit
+        self.set_rain_count_daily(Weather.two_decimals(rain_count_daily))
+        self.set_rain_count_hourly(self.calculate_hourly_rain)
 
     def add_wind_speed_pulse(self):
         self.__wind_speed_pulses += 1
@@ -176,19 +166,18 @@ class Weather:
             mph_conversion_divisor = 1.6093
         return mph_conversion_divisor
 
-    def calculate_rain_rate(self, time_since_last_update):
-        rain_rate = self.get_rain_rate_factor() * (SECONDS_PER_HOUR / time_since_last_update)
-        self.reset_rain_rate_factor()
-        return Weather.two_decimals(rain_rate)
+    def calculate_hourly_rain(self):
+        return Weather.two_decimals(sum(self.__rain_hourly_list))
+
+    def rotate_hourly_rain_buckets(self):
+        self.__rain_hourly_list.append(0.0)  # init float at end of list with 0.0
+        self.__rain_hourly_list.pop(0)  # remove first element in list
 
     def reset_wind_gust(self):
         self.set_wind_gust(0.0)
 
     def reset_daily_rain_count(self):
-        self.set_rain_count(0.0)
-
-    def reset_rain_rate_factor(self):
-        self.set_rain_rate_factor(0.0)
+        self.set_rain_count_daily(0.0)
 
     @staticmethod
     def wind_adc_to_direction(wind_adc_val):

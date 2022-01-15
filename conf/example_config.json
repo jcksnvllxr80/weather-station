@@ -9,9 +9,11 @@
     "path": "/api/timezone/America/New_York"
   },
   "weather_api": {
-    "host": "api.weather.com",
-    "path": "/v2/pws/observations/current?",
-    "station_id": "<your_byte64_encoded_station_ID>",
-    "api_key": "<your_byte64_encoded_API_key>"
+    "host": "weatherstation.wunderground.com",
+    "path": "/weatherstation/updateweatherstation.php?",
+    "credentials": {
+      "station_id": "<your_byte64_encoded_station_ID>",
+      "station_key": "<your_byte64_encoded_station_key>"
+    }
   }
 }

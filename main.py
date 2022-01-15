@@ -5,10 +5,11 @@ import onewire, ds18x20
 from machine import Pin, Timer, RTC, ADC
 import time
 import base64
-from ujson import load
+from ujson import load, dumps
 import time_utils
 import weather
 import _thread
+import weather_api_utils
 
 print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
 print("RPi-Pico MicroPython Ver:", sys.version)
@@ -20,12 +21,15 @@ WIND_DIR_SENSOR_IN_PIN = 4
 WIFI_LED_OUT_PIN = 8
 WIND_SPD_SENSOR_IN_PIN = 6
 RAIN_CNT_SENSOR_IN_PIN = 5
-RAIN_UNITS = "mm"
-TEMPERATURE_UNITS = "C"
-SPEED_UNITS = "km/h"
+RAIN_UNITS = "in"
+TEMPERATURE_UNITS = "F"
+SPEED_UNITS = "MPH"
 # WIFI_MODE = 3
-WIFI_CHECK_PERIOD = 3_600_000  # milliseconds (hourly)
+HOURLY = 3_600_000  # milliseconds
+WIFI_CHECK_PERIOD = HOURLY
+MINUTE_PERIOD = 60_000
 WEATHER_UPDATE_PERIOD = 600_000
+UPDATES_PER_HOUR = int(HOURLY / 600_000)
 DEFAULT_TIME_API_HOST = "worldtimeapi.org"
 DEFAULT_TIME_API_PATH = "/api/timezone/America/New_York"
 NUM_RGB_LEDS = 1
@@ -46,10 +50,14 @@ wlan = network.WLAN(network.STA_IF)
 wind_dir_pin.atten(ADC.ATTN_11DB)
 temp_sensor = ds18x20.DS18X20(onewire.OneWire(temp_sensor_pin))
 roms = temp_sensor.scan()
-weather_obj = weather.Weather(TEMPERATURE_UNITS, RAIN_UNITS, RAIN_UNITS)
+weather_obj = weather.Weather(TEMPERATURE_UNITS, RAIN_UNITS, RAIN_UNITS, UPDATES_PER_HOUR)
 
-def set_time(host, path):
-    time_utils.query_time_api(host, path, rtc)
+def set_time():
+    time_utils.query_time_api(
+        time_settings().get("host", DEFAULT_TIME_API_HOST),
+        time_settings().get("path", DEFAULT_TIME_API_PATH),
+        rtc
+    )
     return get_wifi_conn_status(wlan.isconnected(), False)
 
 def read_config_file(filename):
@@ -95,10 +103,7 @@ def get_wifi_conn_status(conn_status, bool_query_time):
     if conn_status:
         wifi_led_green()
         if bool_query_time:
-            conn_status = set_time(
-                time_settings().get("host", DEFAULT_TIME_API_HOST),
-                time_settings().get("path", DEFAULT_TIME_API_PATH)
-            )
+            conn_status = set_time()
         # print("wifi connected --> {}".format(conn_status))
     else:
         wifi_led_red()
@@ -110,12 +115,9 @@ def update_conn_status(wifi_timer):
     if not wlan.isconnected():
         connection = get_wifi_conn_status(connect_wifi(), True)
     else:
-        connection = set_time(
-            time_settings().get("host", DEFAULT_TIME_API_HOST),
-            time_settings().get("path", DEFAULT_TIME_API_PATH)
-        )
+        connection = set_time()
 
-def reset_rain_counter_daily(daily_rain_timer):
+def reset_rain_counter_daily(rain_timer):
     if rtc.datetime()[MINUTE_POSITION] == 0:
         if rtc.datetime()[HOUR_POSITION] == MIDNIGHT_HOUR:
             weather_obj.reset_daily_rain_count()
@@ -126,9 +128,10 @@ def update_weather(weather_timer):
     weather_obj.set_temperature(read_temperature())
     delta_t = int(time.ticks_diff(time.ticks_ms(), weather_update_time) / 1000)
     weather_obj.set_wind_speed(weather_obj.calculate_avg_wind_speed(delta_t))
+    _thread.start_new_thread(update_weather_api_thread, ())
     weather_update_time = time.ticks_ms()
-    weather_obj.set_rain_rate(weather_obj.calculate_rain_rate(delta_t))
     print(repr(weather_obj))
+    weather_obj.rotate_hourly_rain_buckets()
     weather_obj.reset_wind_gust()
 
 def read_temperature():
@@ -144,19 +147,21 @@ def wind_speed_isr(irq):
         weather_obj.add_wind_speed_pulse()
         wind_speed_last_intrpt = time.ticks_ms()
 
-# TODO: thread the api call to weather underground
-# def update_weather_api_thread():
-#   for i in range(10):
-#     print("{}: Hello from thread".format(i))
-#     time.sleep(2)
-#
-# _thread.start_new_thread(testThread, ())
+def update_weather_api_thread():
+    # if get_wifi_conn_status(wlan.isconnected(), False):
+    weather_api_utils.update_weather_api(
+        weather_settings().get("host", ""),
+        weather_settings().get("path", ""),
+        weather_settings().get("credentials", {}),
+        dumps(weather_obj.get_weather_data())
+    )
 
 connection = ""
 wifi_led_red()
 config = read_config_file(CONFIG_FILE)
 wifi_timer = Timer(0)
 weather_timer = Timer(0)
+rain_timer = Timer(0)
 init_wlan()
 connection = get_wifi_conn_status(connect_wifi(), True)
 
@@ -164,6 +169,7 @@ rain_counter_pin.irq(trigger=Pin.IRQ_RISING, handler=rain_counter_isr)
 wind_speed_pin.irq(trigger=Pin.IRQ_RISING, handler=wind_speed_isr)
 wifi_timer.init(period=WIFI_CHECK_PERIOD, mode=Timer.PERIODIC, callback=update_conn_status)
 weather_timer.init(period=WEATHER_UPDATE_PERIOD, mode=Timer.PERIODIC, callback=update_weather)
+rain_timer.init(period=MINUTE_PERIOD, mode=Timer.PERIODIC, callback=reset_rain_counter_daily)
 begin_time = time.ticks_ms()
 weather_update_time = begin_time
 wind_speed_last_intrpt = begin_time

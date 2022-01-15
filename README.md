@@ -45,10 +45,6 @@ The following classes (which are all in this repo) must be manually loaded onto 
 
 - add ability to take asynchronous requests over network via REST so that local nagios can query weather status
 - fix intermittent connect to AP on boot
-- add some of the json data to the config
-- add api key encrypted to the config
-- add station ID to the config
-- fill out message and send to weather underground
 - add finished image to this readme
 
 ## Weather Vane voltage values and direction table
@@ -83,6 +79,42 @@ learn more here: <https://support.weather.com/s/article/PWS-Upload-Protocol?lang
 
 ```text
 https://weatherstation.wunderground.com/weatherstation/updateweatherstation.php?ID=KCASANFR5&PASSWORD=XXXXXX&dateutc=2000-01-01+10%3A32%3A35&winddir=230&windspeedmph=12&windgustmph=12&tempf=70&rainin=0&baromin=29.1&dewptf=68.2&humidity=90&weather=&clouds=&softwaretype=vws%20versionxx&action=updateraw
+
+GET parameters
+NOT all fields need to be set, the _required_ elements are:
+ID
+PASSWORD 
+dateutc
+IMPORTANT all fields must be url escaped
+reference http://www.w3schools.com/tags/ref_urlencode.asp
+example
+  2001-01-01 10:32:35
+   becomes
+  2000-01-01+10%3A32%3A35
+if the weather station is not capable of producing a timestamp, our system will accept "now". Example:
+dateutc=now
+list of fields:
+action [action=updateraw] -- always supply this parameter to indicate you are making a weather observation upload
+ID [ID as registered by wunderground.com]
+PASSWORD [Station Key registered with this PWS ID, case sensitive]
+dateutc - [YYYY-MM-DD HH:MM:SS (mysql format)] In Universal Coordinated Time (UTC) Not local time
+winddir - [0-360 instantaneous wind direction]
+windspeedmph - [mph instantaneous wind speed]
+windgustmph - [mph current wind gust, using software specific time period]
+windgustdir - [0-360 using software specific time period]
+windspdmph_avg2m  - [mph 2 minute average wind speed mph]
+winddir_avg2m - [0-360 2 minute average wind direction]
+windgustmph_10m - [mph past 10 minutes wind gust mph ]
+windgustdir_10m - [0-360 past 10 minutes wind gust direction]
+humidity - [% outdoor humidity 0-100%]
+dewptf- [F outdoor dewpoint F]
+tempf - [F outdoor temperature]
+* for extra outdoor sensors use temp2f, temp3f, and so on
+rainin - [rain inches over the past hour)] -- the accumulated rainfall in the past 60 min
+dailyrainin - [rain inches so far today in local time]
+
+mine will look more like this:
+https://weatherstation.wunderground.com/weatherstation/updateweatherstation.php?ID=my_id&PASSWORD=my_key&dateutc=now&winddir=230&windspeedmph=12&windgustmph=12&tempf=70&rainin=0&dailyrainin=0&softwaretype=custom&action=updateraw
 
 ```
 
