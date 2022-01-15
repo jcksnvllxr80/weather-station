@@ -6,11 +6,13 @@
 [![GitHub issues](https://img.shields.io/github/issues/jcksnvllxr80/weather-station.svg)](lib-issues)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](lib-licence)
 
-## Image of project // still a WIP
+## Schematic
 
 <p align="center">
-<img src="<jpg_imageurl>" width="800">
+<img src="https://www.flickr.com/photos/189147921@N05/51820944746/in/dateposted-public/" title="weather-station_schem"><img src="https://live.staticflickr.com/65535/51820944746_9f174e4951_k.jpg" width="800">
 </p>
+
+## Image of project // still a WIP
 
 <p align="center">
 <img src="<jpg_imageurl>" width="800">
