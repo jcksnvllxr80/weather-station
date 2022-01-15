@@ -8,7 +8,6 @@ import base64
 from ujson import load, dumps
 import time_utils
 import weather
-import _thread
 import weather_api_utils
 
 print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
@@ -28,8 +27,8 @@ SPEED_UNITS = "MPH"
 HOURLY = 3_600_000  # milliseconds
 WIFI_CHECK_PERIOD = HOURLY
 MINUTE_PERIOD = 60_000
-WEATHER_UPDATE_PERIOD = 600_000
-UPDATES_PER_HOUR = int(HOURLY / 600_000)
+WEATHER_UPDATE_PERIOD = MINUTE_PERIOD * 10
+UPDATES_PER_HOUR = int(HOURLY / WEATHER_UPDATE_PERIOD)
 DEFAULT_TIME_API_HOST = "worldtimeapi.org"
 DEFAULT_TIME_API_PATH = "/api/timezone/America/New_York"
 NUM_RGB_LEDS = 1
@@ -128,7 +127,7 @@ def update_weather(weather_timer):
     weather_obj.set_temperature(read_temperature())
     delta_t = int(time.ticks_diff(time.ticks_ms(), weather_update_time) / 1000)
     weather_obj.set_wind_speed(weather_obj.calculate_avg_wind_speed(delta_t))
-    _thread.start_new_thread(update_weather_api_thread, ())
+    update_weather_api()
     weather_update_time = time.ticks_ms()
     print(repr(weather_obj))
     weather_obj.rotate_hourly_rain_buckets()
@@ -147,21 +146,25 @@ def wind_speed_isr(irq):
         weather_obj.add_wind_speed_pulse()
         wind_speed_last_intrpt = time.ticks_ms()
 
-def update_weather_api_thread():
-    # if get_wifi_conn_status(wlan.isconnected(), False):
-    weather_api_utils.update_weather_api(
-        weather_settings().get("host", ""),
-        weather_settings().get("path", ""),
-        weather_settings().get("credentials", {}),
-        dumps(weather_obj.get_weather_data())
-    )
+def update_weather_api():
+    if get_wifi_conn_status(wlan.isconnected(), False):
+        creds = weather_settings().get("credentials", {})
+        station_id = base64.b64decode(bytes(creds.get("station_id", ""), 'utf-8'))
+        station_key = base64.b64decode(bytes(creds.get("station_key", ""), 'utf-8'))
+        weather_api_utils.update_weather_api(
+            weather_settings().get("host", ""),
+            weather_settings().get("path", ""),
+            station_id.decode("utf-8"),
+            station_key.decode("utf-8"),
+            weather_obj.get_weather_data()
+        )
 
 connection = ""
 wifi_led_red()
 config = read_config_file(CONFIG_FILE)
 wifi_timer = Timer(0)
 weather_timer = Timer(0)
-rain_timer = Timer(0)
+rain_timer = Timer(2)
 init_wlan()
 connection = get_wifi_conn_status(connect_wifi(), True)
 

@@ -30,6 +30,7 @@ The following classes (which are all in this repo) must be manually loaded onto 
 - base64.py
 - time_utils.py
 - http_utils.py
+- weather_api_utils.py
 - mrequests.py
 - weather.py
 
