@@ -45,7 +45,6 @@ The following classes (which are all in this repo) must be manually loaded onto 
 ## TODO
 
 - add ability to take asynchronous requests over network via REST so that local nagios can query weather status
-- fix intermittent connect to AP on boot
 - add finished image to this readme
 
 ## Weather Vane voltage values and direction table
