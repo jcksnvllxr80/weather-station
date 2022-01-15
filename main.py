@@ -8,6 +8,7 @@ import base64
 from ujson import load
 import time_utils
 import weather
+import _thread
 
 print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
 print("RPi-Pico MicroPython Ver:", sys.version)
@@ -132,7 +133,6 @@ def update_weather(weather_timer):
 
 def read_temperature():
     temp_sensor.convert_temp()
-    # time.sleep_ms(50)
     return temp_sensor.read_temp(roms[TEMP_SENSOR_POSITION])
 
 def rain_counter_isr(irq):
@@ -144,12 +144,17 @@ def wind_speed_isr(irq):
         weather_obj.add_wind_speed_pulse()
         wind_speed_last_intrpt = time.ticks_ms()
 
+# TODO: thread the api call to weather underground
+# def update_weather_api_thread():
+#   for i in range(10):
+#     print("{}: Hello from thread".format(i))
+#     time.sleep(2)
+#
+# _thread.start_new_thread(testThread, ())
 
 connection = ""
 wifi_led_red()
-# create dict from config file
 config = read_config_file(CONFIG_FILE)
-# Create an ESP8266 Object, init, and connect to wifi AP
 wifi_timer = Timer(0)
 weather_timer = Timer(0)
 init_wlan()

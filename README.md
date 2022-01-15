@@ -79,31 +79,11 @@ N/NW     33000       3.3       337.5      21880       1.316       1866
 
 ## wunderground API call
 
-```json
-https://api.weather.com/v2/pws/observations/current?stationId=KMAHANOV10&format=json&units=e&apiKey=yourApiKey
-{
-  observations: [
-    {
-      stationID: "",
-      obsTimeUtc: "2019-02-04T14:53:14Z",
-      obsTimeLocal: "2019-02-04 09:53:14",
-      neighborhood: "",
-      softwareType: "custom",
-      country: "US",
-      realtimeFrequency: 5,
-      epoch: 1549291994,
-      winddir: 329,
-      qcStatus: -1,
-      imperial: {
-        temp: 53,
-        windSpeed: 2,
-        windGust: null,
-        precipRate: 0.0,
-        precipTotal: 0.0
-      }
-    }
-  ]
-}
+learn more here: <https://support.weather.com/s/article/PWS-Upload-Protocol?language=en_US>
+
+```text
+https://weatherstation.wunderground.com/weatherstation/updateweatherstation.php?ID=KCASANFR5&PASSWORD=XXXXXX&dateutc=2000-01-01+10%3A32%3A35&winddir=230&windspeedmph=12&windgustmph=12&tempf=70&rainin=0&baromin=29.1&dewptf=68.2&humidity=90&weather=&clouds=&softwaretype=vws%20versionxx&action=updateraw
+
 ```
 
 NOTE:

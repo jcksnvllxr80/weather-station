@@ -31,14 +31,11 @@ days_dict = {
     6: "Sun"
 }
 
-
 def get_month(month_id):
     return months_dict.get(month_id, month_id)
 
-
 def get_day_of_week(day_of_week_id):
     return days_dict.get(day_of_week_id, str(day_of_week_id))
-
 
 def set_rtc(re_match, response_json, rtc):
     date_formatted_str = re_match.group(0).replace("T", "-")\
@@ -55,7 +52,6 @@ def set_rtc(re_match, response_json, rtc):
         time_list[6]
     ))
 
-
 def get_date_string(now):
     year = str(now[0])
     month = get_month(now[1])
@@ -63,12 +59,10 @@ def get_date_string(now):
     day_of_wk = get_day_of_week(now[3])
     return ''.join([day_of_wk, ', ', "{0}{1:2}".format(month, day), ', ', year])
 
-
 def get_time_tuple(now):
     hours = now[4]
     minutes = now[5]
     return (int(hours / 10), hours % 10, int(minutes / 10), minutes % 10)
-
 
 def query_time_api(host, path, rtc):
     http_res = requests.get(url="".join(["http://", host, path]))
@@ -88,7 +82,6 @@ def query_time_api(host, path, rtc):
             print("Error parsing time from http response; cant set RTC.")
     else:
         print("Error; no response from host: {}; cant set RTC.".format(host+path))
-
 
 def clean_json(response):
     if not response[0] == OPENING_BRACE:
