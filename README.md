@@ -20,11 +20,11 @@
 
 ## Description
 
-Using solar-powered ESP32-C3-Mini to transmit rain fall, wind speed, wind direction, and temperature here -> <https://www.wunderground.com/dashboard/pws/KFLJACKS4049>.
+Using solar-power and a ESP32-C3-Mini to transmit rain fall, wind speed, wind direction, and temperature here -> <https://www.wunderground.com/dashboard/pws/KFLJACKS4049>.
 
 ## Prerequisites
 
-The following classes (which are all in this repo) must be manually loaded onto the pico for this project to work (main.py also necessary):
+The following classes (which are all in this repo) must be manually loaded onto the esp32-c3 for this project to work (main.py also necessary):
 
 - conf directory with 'config.json' inside... use the example i provided (will need to use an online converter to base64 encode your ssid and password)
 - base64.py
