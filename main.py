@@ -92,13 +92,11 @@ def connect_wifi():
     ssid = base64.b64decode(bytes(wifi_settings().get("ssid", ""), 'utf-8'))
     password = base64.b64decode(bytes(wifi_settings().get("password", ""), 'utf-8'))
     connection_status = wlan.isconnected()
-    print("wlan.isconnected() [line 94] -> {}".format(connection_status))
     if not connection_status:
         wlan.connect(ssid.decode("utf-8"), password.decode("utf-8"))
         while not wlan.isconnected():
             pass
         connection_status = wlan.isconnected()
-        print("wlan.isconnected() [line 100] -> {}".format(connection_status))
     if connection_status:
         print("Successfully connected to the wifi AP!")
     return connection_status
@@ -108,7 +106,6 @@ def get_wifi_conn_status(conn_status, bool_query_time):
         wifi_led_green()
         if bool_query_time:
             conn_status = set_time()
-        # print("wifi connected --> {}".format(conn_status))
     else:
         wifi_led_red()
         print("sorry, cant connect to wifi AP! connection --> {}".format(conn_status))
