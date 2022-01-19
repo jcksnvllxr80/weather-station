@@ -175,6 +175,8 @@ wind_speed_pin.irq(trigger=Pin.IRQ_RISING, handler=wind_speed_isr)
 wifi_timer.init(period=WIFI_CHECK_PERIOD, mode=Timer.PERIODIC, callback=update_conn_status)
 weather_timer.init(period=WEATHER_UPDATE_PERIOD, mode=Timer.PERIODIC, callback=update_weather)
 rain_timer.init(period=MINUTE_PERIOD, mode=Timer.PERIODIC, callback=reset_rain_counter_daily)
+trash_temperature_reading = read_temperature()
+del trash_temperature_reading
 begin_time = time.ticks_ms()
 weather_update_time = begin_time
 wind_speed_last_intrpt = begin_time
