@@ -10,7 +10,7 @@
 ## Image of project
 
 <p align="center">
-<img src="<https://live.staticflickr.com/65535/51849793428_41a067f149_k.jpg>" width="800">
+<img src="https://live.staticflickr.com/65535/51849793428_41a067f149_k.jpg" width="800">
 </p>
 
 ## Schematic
