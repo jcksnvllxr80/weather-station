@@ -129,7 +129,7 @@ class Weather:
             rain_count_daily = self.get_rain_count_daily() + rain_unit
             self.__rain_hourly_list[-1] += rain_unit
         self.set_rain_count_daily(Weather.two_decimals(rain_count_daily))
-        self.set_rain_count_hourly(self.calculate_hourly_rain)
+        self.set_rain_count_hourly(self.calculate_hourly_rain())
 
     def add_wind_speed_pulse(self):
         self.__wind_speed_pulses += 1
