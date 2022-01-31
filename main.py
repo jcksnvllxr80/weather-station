@@ -26,9 +26,12 @@ SPEED_UNITS = "MPH"
 # WIFI_MODE = 3
 HOURLY = 3_600_000  # milliseconds
 WIFI_CHECK_PERIOD = HOURLY
-MINUTE_PERIOD = 60_000
-WEATHER_UPDATE_PERIOD = MINUTE_PERIOD * 10
+SECOND_PERIOD = 1000
+WIND_DIR_CHECK_PERIOD = 5 * SECOND_PERIOD
+MINUTE_PERIOD = 60 * SECOND_PERIOD
+WEATHER_UPDATE_PERIOD = 5 * MINUTE_PERIOD
 UPDATES_PER_HOUR = int(HOURLY / WEATHER_UPDATE_PERIOD)
+WIND_DIR_CHECKS_PER_UPDATE = int(WEATHER_UPDATE_PERIOD / WIND_DIR_CHECK_PERIOD)
 DEFAULT_TIME_API_HOST = "worldtimeapi.org"
 DEFAULT_TIME_API_PATH = "/api/timezone/America/New_York"
 NUM_RGB_LEDS = 1
@@ -50,7 +53,8 @@ wlan.active(True)
 wind_dir_pin.atten(ADC.ATTN_11DB)
 temp_sensor = ds18x20.DS18X20(onewire.OneWire(temp_sensor_pin))
 roms = temp_sensor.scan()
-weather_obj = weather.Weather(TEMPERATURE_UNITS, RAIN_UNITS, RAIN_UNITS, UPDATES_PER_HOUR)
+weather_obj = weather.Weather(TEMPERATURE_UNITS, RAIN_UNITS, RAIN_UNITS, UPDATES_PER_HOUR, \
+    WIND_DIR_CHECKS_PER_UPDATE)
 
 def set_time():
     time_utils.query_time_api(
@@ -125,7 +129,7 @@ def reset_rain_counter_daily(rain_timer):
 
 def update_weather(weather_timer):
     global weather_update_time
-    weather_obj.set_wind_direction(wind_dir_pin.read())
+    weather_obj.set_wind_direction(weather_obj.calculate_avg_wind_dir())
     weather_obj.set_temperature(read_temperature())
     delta_t = int(time.ticks_diff(time.ticks_ms(), weather_update_time) / 1000)
     weather_obj.set_wind_speed(weather_obj.calculate_avg_wind_speed(delta_t))
@@ -146,9 +150,14 @@ def rain_counter_isr(irq):
 
 def wind_speed_isr(irq):
     global wind_speed_last_intrpt  # software debounce mechanical reed switch
-    if time.ticks_diff(time.ticks_ms(), wind_speed_last_intrpt) > 2:
-        weather_obj.add_wind_speed_pulse()
+    if time.ticks_diff(time.ticks_ms(), wind_speed_last_intrpt) > 5:  # no less than 5ms between pulses
         wind_speed_last_intrpt = time.ticks_ms()
+        weather_obj.add_wind_speed_pulse()
+
+
+def add_wind_dir_data_point(wind_dir_timer):
+    weather_obj.add_wind_dir_reading(wind_dir_pin.read())
+
 
 def update_weather_api():
     if get_wifi_conn_status(wlan.isconnected(), False):
@@ -169,6 +178,7 @@ config = read_config_file(CONFIG_FILE)
 wifi_timer = Timer(0)
 weather_timer = Timer(0)
 rain_timer = Timer(2)
+wind_dir_timer = Timer(2)
 init_wlan()
 connection = get_wifi_conn_status(connect_wifi(), True)
 
@@ -177,6 +187,7 @@ wind_speed_pin.irq(trigger=Pin.IRQ_RISING, handler=wind_speed_isr)
 wifi_timer.init(period=WIFI_CHECK_PERIOD, mode=Timer.PERIODIC, callback=update_conn_status)
 weather_timer.init(period=WEATHER_UPDATE_PERIOD, mode=Timer.PERIODIC, callback=update_weather)
 rain_timer.init(period=MINUTE_PERIOD, mode=Timer.PERIODIC, callback=reset_rain_counter_daily)
+wind_dir_timer.init(period=WIND_DIR_CHECK_PERIOD, mode=Timer.PERIODIC, callback=add_wind_dir_data_point)
 trash_temperature_reading = read_temperature(initial_reading=True)
 del trash_temperature_reading
 begin_time = time.ticks_ms()

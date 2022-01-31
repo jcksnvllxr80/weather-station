@@ -46,11 +46,15 @@ The following classes (which are all in this repo) must be manually loaded onto 
 ## TODO
 
 - add ability to take asynchronous requests over network via REST so that local nagios can query weather status
-- add finished image to this readme
+- send updates to a database (influxdb) on the local network running in docker on raspberrypi
+- work on calculating average wind gust and average temp
+- get the humidity and pressure sensors working and possibly calculate a dewpoint using sensor data
+- eventually get the UV sensor added to this weather station
+- add solar radiation shield to give more accurate temperature readings (direct sunlight is brutal)
 
 ## Weather Vane voltage values and direction table
 
-```c
+```R
 /* Weather vane / 3.3 V input / using R=33K 
 
 Dir       Ri         Vi       Angle       R           Vo          ADC
