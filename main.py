@@ -133,10 +133,11 @@ def update_weather(weather_timer):
     weather_obj.set_temperature(weather_obj.calculate_avg_temperature())
     delta_t_s = int(time.ticks_diff(time.ticks_ms(), weather_update_time) / 1000)  # convert to seconds
     weather_obj.set_wind_speed(weather_obj.calculate_avg_wind_speed(delta_t_s))
+    weather_obj.set_rain_count_hourly(weather_obj.calculate_hourly_rain())
+    weather_obj.rotate_hourly_rain_buckets()
     update_weather_api()
     weather_update_time = time.ticks_ms()
     print(repr(weather_obj))
-    weather_obj.rotate_hourly_rain_buckets()
     weather_obj.reset_wind_gust()
 
 def read_temperature(initial_reading=False):

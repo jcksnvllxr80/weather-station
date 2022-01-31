@@ -137,7 +137,6 @@ class Weather:
             rain_count_daily = self.get_rain_count_daily() + rain_unit
             self.__rain_hourly_list[-1] += rain_unit
         self.set_rain_count_daily(rain_count_daily)
-        self.set_rain_count_hourly(self.calculate_hourly_rain())
 
     def add_wind_dir_reading(self, val):
         coordinate = Weather.wind_adc_to_coordinate(val)
