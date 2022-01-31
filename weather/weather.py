@@ -62,8 +62,8 @@ class Weather:
         self.__wind_direction = 0.0
         self.__wind_speed = 0.0
         self.__wind_speed_pulses = 0
+        self.__wind_gust_pulses = 0
         self.__max_wind_gust = 0.0
-        self.__last_wind_speed_pulse = 0
         self.__temperature = 0.0
         self.__weather_dict = {
             RAIN_KEY: {
@@ -149,31 +149,29 @@ class Weather:
         self.__temperature_list.append(temp_val)
         self.__temperature_list.pop(0)
 
-    def check_wind_gust(self):
-        pass
+    def check_wind_gust(self, last_gust_start_time):
+        gust_window_start_time = time.ticks_ms()
+        if self.last_gust_time:
+            delta_t_gust = time.ticks_diff(gust_window_start_time, last_gust_start_time)
+            current_gust = self.calculate_wind_gust(delta_t_gust)
+            if current_gust > self.__max_wind_gust:
+                self.set_wind_gust(current_gust)
+        return gust_window_start_time
 
     def add_wind_speed_pulse(self):
         self.__wind_speed_pulses += 1
-        now = time.ticks_ms()
-        self.wind_gust()
-        self.__last_wind_speed_pulse = now
-
-    def wind_gust(self):
-        if self.__last_wind_speed_pulse:
-            delta_t_wind_ticks = time.ticks_diff(time.ticks_ms(), self.__last_wind_speed_pulse)
-            current_gust = self.calculate_wind_gust(delta_t_wind_ticks)
-            if current_gust > self.__max_wind_gust:
-                self.set_wind_gust(current_gust)
-            self.__last_wind_speed_pulse = time.ticks_ms()
+        self.__wind_gust_pulses += 1
 
     def calculate_wind_gust(self, delta_time_ms):
-        if self.__wind_speed_pulses == 0:
+        if not self.__wind_gust_pulses:
             gust = 0.0
         else:
-            delta_time_s = (delta_time_ms / 1000.0)  # need delta in s to match ANEMOMETER_CONSTANT
-            mph_conversion_divisor = self.get_mph_divisor()
-            gust = ANEMOMETER_CONSTANT / (mph_conversion_divisor * delta_time_s)
+            gust = self.do_wind_speed_calc(self.__wind_gust_pulses, (delta_time_ms / 1000.0))
+        self.__wind_gust_pulses = 0
         return gust
+
+    def do_wind_speed_calc(self, wind_pulses, delta_time_s):
+        return ANEMOMETER_CONSTANT * wind_pulses / (self.get_mph_divisor() * delta_time_s)
 
     def calculate_avg_wind_dir(self):
         x_coord = sum(x for x, y in self.__rain_wind_dir_list) / len(self.__rain_wind_dir_list)
@@ -183,9 +181,8 @@ class Weather:
     def calculate_avg_temperature(self):
         return sum(self.__temperature_list) / len(self.__temperature_list)
 
-    def calculate_avg_wind_speed(self, delta_time):
-        mph_conversion_divisor = self.get_mph_divisor()
-        avg_wind_spd = ANEMOMETER_CONSTANT * self.__wind_speed_pulses / (mph_conversion_divisor * delta_time)
+    def calculate_avg_wind_speed(self, delta_time_s):
+        avg_wind_spd = self.do_wind_speed_calc(self.__wind_speed_pulses, delta_time_s)
         self.__wind_speed_pulses = 0
         return avg_wind_spd
 

@@ -131,8 +131,8 @@ def update_weather(weather_timer):
     global weather_update_time
     weather_obj.set_wind_direction(weather_obj.calculate_avg_wind_dir())
     weather_obj.set_temperature(weather_obj.calculate_avg_temperature())
-    delta_t = int(time.ticks_diff(time.ticks_ms(), weather_update_time) / 1000)
-    weather_obj.set_wind_speed(weather_obj.calculate_avg_wind_speed(delta_t))
+    delta_t_s = int(time.ticks_diff(time.ticks_ms(), weather_update_time) / 1000)  # convert to seconds
+    weather_obj.set_wind_speed(weather_obj.calculate_avg_wind_speed(delta_t_s))
     update_weather_api()
     weather_update_time = time.ticks_ms()
     print(repr(weather_obj))
@@ -155,9 +155,10 @@ def wind_speed_isr(irq):
         weather_obj.add_wind_speed_pulse()
 
 def record_weather_data_points(data_check_timer):
+    global gust_start_timer
     weather_obj.add_wind_dir_reading(wind_dir_pin.read())
     weather_obj.add_temperature_reading(read_temperature())
-    weather_obj.check_wind_gust(wind_dir_pin.read())
+    gust_start_timer = weather_obj.check_wind_gust(gust_start_timer)
 
 def update_weather_api():
     if get_wifi_conn_status(wlan.isconnected(), False):
@@ -193,5 +194,6 @@ del trash_temperature_reading  # first reading is always wrong so just put it in
 begin_time = time.ticks_ms()
 weather_update_time = begin_time
 wind_speed_last_intrpt = begin_time
+gust_start_timer = begin_time
 while True:
     time.sleep_ms(100)
