@@ -141,10 +141,15 @@ def update_weather(weather_timer):
     weather_obj.reset_wind_gust()
 
 def read_temperature(initial_reading=False):
-    temp_sensor.convert_temp()
-    if initial_reading:
-        time.sleep_ms(1000)
-    return temp_sensor.read_temp(roms[TEMP_SENSOR_POSITION])
+    reading = None
+    try:
+        temp_sensor.convert_temp()
+        if initial_reading:
+            time.sleep_ms(1000)
+        reading = temp_sensor.read_temp(roms[TEMP_SENSOR_POSITION])
+    except Exception as e:
+        print("There was an error reading from the temp sensor.")
+    return reading
 
 def rain_counter_isr(irq):
     weather_obj.increment_rain()

@@ -150,7 +150,7 @@ class Weather:
 
     def check_wind_gust(self, last_gust_start_time):
         gust_window_start_time = time.ticks_ms()
-        if self.last_gust_time:
+        if last_gust_start_time:
             delta_t_gust = time.ticks_diff(gust_window_start_time, last_gust_start_time)
             current_gust = self.calculate_wind_gust(delta_t_gust)
             if current_gust > self.__max_wind_gust:
