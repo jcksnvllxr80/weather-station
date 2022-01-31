@@ -50,12 +50,13 @@ WIND_DIR_DICT = {
 
 class Weather:
 
-    def __init__(self, temp_units="F", speed_units="MPH", rain_units="in", updates_per_hr=12, wind_dir_data_pts=60):
+    def __init__(self, temp_units="F", speed_units="MPH", rain_units="in", updates_per_hr=12, sensor_data_pts=60):
         self.temp_units = temp_units
         self.speed_units = speed_units
         self.rain_units = rain_units
         self.__rain_hourly_list = [0.0] * updates_per_hr
-        self.__rain_wind_dir_list = [(0.0, 0.0)] * wind_dir_data_pts  # (x, y) tuple coords for each direction recorded
+        self.__rain_wind_dir_list = [(0.0, 0.0)] * sensor_data_pts  # (x, y) tuple coords for each direction recorded
+        self.__temperature_list = [0.0] * sensor_data_pts
         self.__rain_count_daily = 0.0
         self.__rain_count_hourly = 0.0
         self.__wind_direction = 0.0
@@ -87,35 +88,35 @@ class Weather:
         return self.__rain_count_daily
 
     def set_rain_count_daily(self, val):
-        self.__rain_count_daily = val
+        self.__rain_count_daily = Weather.two_decimals(val)
         self.__weather_dict[RAIN_KEY][RAIN_COUNT_DAILY_KEY] = self.__rain_count_daily
 
     def get_rain_count_hourly(self):
         return self.__rain_count_hourly
 
     def set_rain_count_hourly(self, val):
-        self.__rain_count_hourly = val
+        self.__rain_count_hourly = Weather.two_decimals(val)
         self.__weather_dict[RAIN_KEY][RAIN_COUNT_HOURLY_KEY] = self.__rain_count_hourly
 
     def get_wind_gust(self):
         return self.__max_wind_gust
 
     def set_wind_gust(self, val):
-        self.__max_wind_gust = val
+        self.__max_wind_gust = Weather.two_decimals(val)
         self.__weather_dict[WIND_KEY][WIND_GUST_KEY] = self.__max_wind_gust
 
     def get_wind_direction(self):
         return self.__wind_direction
 
     def set_wind_direction(self, val):
-        self.__wind_direction = val
+        self.__wind_direction = Weather.two_decimals(val)
         self.__weather_dict[WIND_KEY][WIND_DIRECTION_KEY] = self.__wind_direction
 
     def get_wind_speed(self):
         return self.__wind_speed
 
     def set_wind_speed(self, val):
-        self.__wind_speed = val
+        self.__wind_speed = Weather.two_decimals(val)
         self.__weather_dict[WIND_KEY][WIND_SPEED_KEY] = self.__wind_speed
 
     def get_temperature(self):
@@ -135,7 +136,7 @@ class Weather:
             rain_unit = Weather.millimeters2inches(RAIN_COUNT_CONSTANT)
             rain_count_daily = self.get_rain_count_daily() + rain_unit
             self.__rain_hourly_list[-1] += rain_unit
-        self.set_rain_count_daily(Weather.two_decimals(rain_count_daily))
+        self.set_rain_count_daily(rain_count_daily)
         self.set_rain_count_hourly(self.calculate_hourly_rain())
 
     def add_wind_dir_reading(self, val):
@@ -143,6 +144,13 @@ class Weather:
         if coordinate:
             self.__rain_wind_dir_list.append(coordinate)
             self.__rain_wind_dir_list.pop(0)
+
+    def add_temperature_reading(self, temp_val):
+        self.__temperature_list.append(temp_val)
+        self.__temperature_list.pop(0)
+
+    def check_wind_gust(self):
+        pass
 
     def add_wind_speed_pulse(self):
         self.__wind_speed_pulses += 1
@@ -155,7 +163,7 @@ class Weather:
             delta_t_wind_ticks = time.ticks_diff(time.ticks_ms(), self.__last_wind_speed_pulse)
             current_gust = self.calculate_wind_gust(delta_t_wind_ticks)
             if current_gust > self.__max_wind_gust:
-                self.set_wind_gust(Weather.two_decimals(current_gust))
+                self.set_wind_gust(current_gust)
             self.__last_wind_speed_pulse = time.ticks_ms()
 
     def calculate_wind_gust(self, delta_time_ms):
@@ -171,13 +179,15 @@ class Weather:
         x_coord = sum(x for x, y in self.__rain_wind_dir_list) / len(self.__rain_wind_dir_list)
         y_coord = sum(y for x, y in self.__rain_wind_dir_list) / len(self.__rain_wind_dir_list)
         return Weather.get_angle_in_degrees(x_coord, y_coord)
-        
+
+    def calculate_avg_temperature(self):
+        return sum(self.__temperature_list) / len(self.__temperature_list)
 
     def calculate_avg_wind_speed(self, delta_time):
         mph_conversion_divisor = self.get_mph_divisor()
         avg_wind_spd = ANEMOMETER_CONSTANT * self.__wind_speed_pulses / (mph_conversion_divisor * delta_time)
         self.__wind_speed_pulses = 0
-        return Weather.two_decimals(avg_wind_spd)
+        return avg_wind_spd
 
     def get_mph_divisor(self):
         mph_conversion_divisor = 1.0
@@ -186,7 +196,7 @@ class Weather:
         return mph_conversion_divisor
 
     def calculate_hourly_rain(self):
-        return Weather.two_decimals(sum(self.__rain_hourly_list))
+        return sum(self.__rain_hourly_list)
 
     def rotate_hourly_rain_buckets(self):
         self.__rain_hourly_list.append(0.0)  # init float at end of list with 0.0
@@ -210,7 +220,7 @@ class Weather:
 
     @staticmethod
     def get_angle_in_degrees(x, y):
-        return float("{:.2f}".format(degrees(atan2(y, x))))
+        return float(degrees(atan2(y, x)))
 
     @staticmethod
     def celsius2fahrenheit(val):
