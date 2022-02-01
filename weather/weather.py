@@ -216,7 +216,9 @@ class Weather:
 
     @staticmethod
     def get_angle_in_degrees(x, y):
-        return float(degrees(atan2(y, x)))
+        # degrees returns angles in the range [-180, 180] 
+        # in python modulo (n % 360) works to turn these angles into range [0, 360]
+        return float(degrees(atan2(y, x)) % 360)
 
     @staticmethod
     def celsius2fahrenheit(val):
