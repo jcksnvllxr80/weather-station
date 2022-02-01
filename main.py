@@ -141,7 +141,7 @@ def update_weather(weather_timer):
     weather_obj.reset_wind_gust()
 
 def read_temperature(initial_reading=False):
-    reading = None
+    reading = 0
     try:
         temp_sensor.convert_temp()
         if initial_reading:
