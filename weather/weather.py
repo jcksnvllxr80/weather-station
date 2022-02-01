@@ -30,7 +30,7 @@ WIND_ANGLE_COORDINATE_DICT = {
 }
 
 WIND_DIR_DICT = {
-    WIND_ANGLE_COORDINATE_DICT["E/NE"]: range(123, 132),
+    WIND_ANGLE_COORDINATE_DICT["E/NE"]: range(0, 132),
     WIND_ANGLE_COORDINATE_DICT["E"]: range(132, 165),
     WIND_ANGLE_COORDINATE_DICT["S/SE"]: range(165, 242),
     WIND_ANGLE_COORDINATE_DICT["SE"]: range(242, 297),
@@ -139,10 +139,8 @@ class Weather:
         self.set_rain_count_daily(rain_count_daily)
 
     def add_wind_dir_reading(self, val):
-        coordinate = Weather.wind_adc_to_coordinate(val)
-        if coordinate:
-            self.__rain_wind_dir_list.append(coordinate)
-            self.__rain_wind_dir_list.pop(0)
+        self.__rain_wind_dir_list.append(Weather.wind_adc_to_coordinate(val))
+        self.__rain_wind_dir_list.pop(0)
 
     def add_temperature_reading(self, temp_val):
         self.__temperature_list.append(temp_val)
@@ -208,7 +206,9 @@ class Weather:
     def wind_adc_to_coordinate(wind_adc_val):
         for wind_direction_coord, voltage_range in WIND_DIR_DICT.items():
             if wind_adc_val in voltage_range:
-                return wind_direction_coord
+                return wind_direction_coord  # early return b/c found voltage range
+        # return default direction when not voltage in range of other directions
+        return WIND_ANGLE_COORDINATE_DICT["W"]  
 
     @staticmethod
     def two_decimals(val):
