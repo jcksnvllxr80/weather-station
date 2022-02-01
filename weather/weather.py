@@ -55,7 +55,7 @@ class Weather:
         self.speed_units = speed_units
         self.rain_units = rain_units
         self.__rain_hourly_list = [0.0] * updates_per_hr
-        self.__rain_wind_dir_list = [(0.0, 0.0)] * sensor_data_pts  # (x, y) tuple coords for each direction recorded
+        self.__wind_dir_list = [(0.0, 0.0)] * sensor_data_pts  # (x, y) tuple coords for each direction recorded
         self.__temperature_list = [0.0] * sensor_data_pts
         self.__rain_count_daily = 0.0
         self.__rain_count_hourly = 0.0
@@ -139,8 +139,8 @@ class Weather:
         self.set_rain_count_daily(rain_count_daily)
 
     def add_wind_dir_reading(self, val):
-        self.__rain_wind_dir_list.append(Weather.wind_adc_to_coordinate(val))
-        self.__rain_wind_dir_list.pop(0)
+        self.__wind_dir_list.append(Weather.wind_adc_to_coordinate(val))
+        self.__wind_dir_list.pop(0)
 
     def add_temperature_reading(self, temp_val):
         self.__temperature_list.append(temp_val)
@@ -171,8 +171,8 @@ class Weather:
         return ANEMOMETER_CONSTANT * wind_pulses / (self.get_mph_divisor() * delta_time_s)
 
     def calculate_avg_wind_dir(self):
-        x_coord = sum(x for x, y in self.__rain_wind_dir_list) / len(self.__rain_wind_dir_list)
-        y_coord = sum(y for x, y in self.__rain_wind_dir_list) / len(self.__rain_wind_dir_list)
+        x_coord = sum(x for x, y in self.__wind_dir_list) / len(self.__wind_dir_list)
+        y_coord = sum(y for x, y in self.__wind_dir_list) / len(self.__wind_dir_list)
         return Weather.get_angle_in_degrees(x_coord, y_coord)
 
     def calculate_avg_temperature(self):
