@@ -4,6 +4,9 @@
     "password": "VGhpcyBpcyBhIG5vdCBhIHJlYWwgUDQkJHcwcmQh",
     "hostname": "weather-station"
   },
+  "webrepl": {
+    "password": "dGVzdFBhc3M="
+  },
   "time_api": {
     "host": "worldtimeapi.org",
     "path": "/api/timezone/America/New_York"

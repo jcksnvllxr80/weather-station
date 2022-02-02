@@ -9,6 +9,7 @@ from ujson import load, dumps
 import time_utils
 import weather
 import weather_api_utils
+import webrepl
 
 print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
 print("RPi-Pico MicroPython Ver:", sys.version)
@@ -72,6 +73,9 @@ def read_config_file(filename):
 
 def wifi_settings():
     return config.get("wifi", {})
+
+def webrepl_settings():
+    return config.get("webrepl", {})
 
 def time_settings():
     return config.get("time_api", {})
@@ -179,6 +183,10 @@ def update_weather_api():
             weather_obj.get_weather_data()
         )
 
+def init_webrepl():
+    webrepl_pw = webrepl_settings().get("password", "")
+    webrepl.start(password=base64.b64decode(bytes(webrepl_pw, 'utf-8')))
+
 connection = ""
 wifi_led_red()
 config = read_config_file(CONFIG_FILE)
@@ -189,6 +197,8 @@ data_check_timer = Timer(2)
 init_wlan()
 connection = get_wifi_conn_status(connect_wifi(), True)
 
+
+# init_webrepl()
 rain_counter_pin.irq(trigger=Pin.IRQ_RISING, handler=rain_counter_isr)
 wind_speed_pin.irq(trigger=Pin.IRQ_RISING, handler=wind_speed_isr)
 wifi_timer.init(period=WIFI_CHECK_PERIOD, mode=Timer.PERIODIC, callback=update_conn_status)
