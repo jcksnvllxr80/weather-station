@@ -24,7 +24,7 @@ The following classes (which are all in this repo) must be manually loaded onto 
 
 - conf directory with 'config.json' inside... use the example i provided (will need to use an online converter to base64 encode your ssid and password)
 - ``base64.py``
-- time_utils.py
+- ==time_utils.py==
 - http_utils.py
 - weather_api_utils.py
 - mrequests.py
