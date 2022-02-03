@@ -6,8 +6,6 @@
 [![GitHub issues](https://img.shields.io/github/issues/jcksnvllxr80/weather-station.svg)](lib-issues)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](lib-licence)
 
-:cloud: :cyclone: :ocean: :zap: :sunny: :umbrella: :snowman: :foggy:
-
 ## Image of project
 
 ![alt text](https://live.staticflickr.com/65535/51849793428_41a067f149_k.jpg "Image of WIP project")
@@ -18,6 +16,7 @@
 
 ## Description
 
+:cloud: :cyclone: :ocean: :zap: :sunny: :umbrella: :snowman: :foggy:
 Using solar-power and a ESP32-C3-Mini to transmit rain fall, wind speed, wind direction, and temperature here -> <https://www.wunderground.com/dashboard/pws/KFLJACKS4049>.
 
 ## Prerequisites
@@ -50,7 +49,7 @@ The following classes (which are all in this repo) must be manually loaded onto 
 
 ## Weather Vane voltage values and direction table
 
-```R
+<!-- ```R
 /* Weather vane / 3.3 V input / using R=33K 
 
 Dir       Ri         Vi       Angle       R           Vo          ADC
@@ -72,21 +71,25 @@ NW       33000       3.3       315        64900       2.188       3101
 N/NW     33000       3.3       337.5      21880       1.316       1866
 
  */
-```
-
-================  ============================================================
-Supported         Support status
-================  ============================================================
-atmel-samd        ``SAMD21`` stable | ``SAMD51`` stable
-cxd56             stable
-espressif         ``ESP32-C3`` beta | ``ESP32-S2`` stable | ``ESP32-S3`` beta
-litex             alpha
-mimxrt10xx        alpha
-nrf               stable
-raspberrypi       stable
-stm               ``F4`` stable | ``others`` beta
-unix              alpha
-================  ============================================================
+``` -->
+| Dir      | Ri          | Vi        | Angle      | R           | Vo          | ADC         |
+| :---     |    :----:   |   :----:  |   :----:   |    :----:   |    :----:   |        ---: |
+| N        | 33000       | 3.3       | 0          | 33000       | 1.650       | 2335        |
+| N/NE     | 33000       | 3.3       | 22.5       | 6570        | 0.548       | 930         |
+| NE       | 33000       | 3.3       | 45         | 8200        | 0.657       | 925         |
+| E/NE     | 33000       | 3.3       | 67.5       | 891         | 0.087       | 123         |
+| E        | 33000       | 3.3       | 90         | 1000        | 0.097       | 140         |
+| E/SE     | 33000       | 3.3       | 112.5      | 688         | 0.067       | 300         |
+| SE       | 33000       | 3.3       | 135        | 2200        | 0.206       | 294         |
+| S        | 33000       | 3.3       | 180        | 3900        | 0.349       | 494         |
+| S/SE     | 33000       | 3.3       | 157.5      | 1410        | 0.135       | 190         |
+| S/SW     | 33000       | 3.3       | 202.5      | 3140        | 0.287       | 1516        |
+| SW       | 33000       | 3.3       | 225        | 16000       | 1.078       | 1525        |
+| W/SW     | 33000       | 3.3       | 247.5      | 14120       | 0.989       | 1400        |
+| W        | 33000       | 3.3       | 270        | 120000      | 2.588       | 3706        |
+| NW       | 33000       | 3.3       | 315        | 64900       | 2.188       | 3101        |
+| W/NW     | 33000       | 3.3       | 292.5      | 42120       | 1.850       | 2625        |
+| N/NW     | 33000       | 3.3       | 337.5      | 21880       | 1.316       | 1866        |
 
 ## wunderground API call
 
