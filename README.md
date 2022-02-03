@@ -17,6 +17,7 @@
 ## Description
 
 :cloud: :cyclone: :ocean: :zap: :sunny: :umbrella: :snowman: :foggy:
+
 Using solar-power and a ESP32-C3-Mini to transmit rain fall, wind speed, wind direction, and temperature here -> <https://www.wunderground.com/dashboard/pws/KFLJACKS4049>.
 
 ## Prerequisites
