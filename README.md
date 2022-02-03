@@ -23,7 +23,7 @@ Using solar-power and a ESP32-C3-Mini to transmit rain fall, wind speed, wind di
 The following classes (which are all in this repo) must be manually loaded onto the esp32-c3 for this project to work (main.py also necessary):
 
 - conf directory with 'config.json' inside... use the example i provided (will need to use an online converter to base64 encode your ssid and password)
-- base64.py
+- ``base64.py``
 - time_utils.py
 - http_utils.py
 - weather_api_utils.py
