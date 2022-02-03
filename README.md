@@ -6,6 +6,8 @@
 [![GitHub issues](https://img.shields.io/github/issues/jcksnvllxr80/weather-station.svg)](lib-issues)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](lib-licence)
 
+:cloud: :cyclone: :ocean: :zap: :sunny: :umbrella: :snowman: :foggy:
+
 ## Image of project
 
 ![alt text](https://live.staticflickr.com/65535/51849793428_41a067f149_k.jpg "Image of WIP project")
@@ -24,11 +26,11 @@ The following classes (which are all in this repo) must be manually loaded onto 
 
 - conf directory with 'config.json' inside... use the example i provided (will need to use an online converter to base64 encode your ssid and password)
 - ``base64.py``
-- time_utils.py
-- http_utils.py
-- weather_api_utils.py
-- mrequests.py
-- weather.py
+- ``time_utils.py``
+- ``http_utils.py``
+- ``weather_api_utils.py``
+- ``mrequests.py``
+- ``weather.py``
 
 ## Erase and flash micropython on the ESP32-C3-Mini from windows CMD
 
@@ -71,6 +73,20 @@ N/NW     33000       3.3       337.5      21880       1.316       1866
 
  */
 ```
+
+================  ============================================================
+Supported         Support status
+================  ============================================================
+atmel-samd        ``SAMD21`` stable | ``SAMD51`` stable
+cxd56             stable
+espressif         ``ESP32-C3`` beta | ``ESP32-S2`` stable | ``ESP32-S3`` beta
+litex             alpha
+mimxrt10xx        alpha
+nrf               stable
+raspberrypi       stable
+stm               ``F4`` stable | ``others`` beta
+unix              alpha
+================  ============================================================
 
 ## wunderground API call
 
