@@ -6,7 +6,6 @@
 [![GitHub issues](https://img.shields.io/github/issues/jcksnvllxr80/weather-station.svg)](lib-issues)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](lib-licence)
 
-
 ## Image of project
 
 <!-- <p align="center">
