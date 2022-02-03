@@ -13,7 +13,7 @@
 <img src="https://live.staticflickr.com/65535/51849793428_41a067f149_k.jpg" width="800">
 </p>
 
-.. image:: https://live.staticflickr.com/65535/51849793428_41a067f149_k.jpg
+![alt text](https://live.staticflickr.com/65535/51849793428_41a067f149_k.jpg)
 
 ## Schematic
 
