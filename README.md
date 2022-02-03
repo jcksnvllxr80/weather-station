@@ -8,11 +8,11 @@
 
 ## Image of project
 
-![alt text](https://live.staticflickr.com/65535/51849793428_41a067f149_k.jpg)
+![alt text](https://live.staticflickr.com/65535/51849793428_41a067f149_k.jpg "Image of WIP project")
 
 ## Schematic
 
-![alt text](https://live.staticflickr.com/65535/51820944746_9f174e4951_k.jpg)
+![alt text](https://live.staticflickr.com/65535/51820944746_9f174e4951_k.jpg "Schematic")
 
 ## Description
 
