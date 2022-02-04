@@ -1,10 +1,11 @@
 import sys
-import neopixel
-import network
-import onewire, ds18x20
+from neopixel import NeoPixel
+from network import WLAN, STA_IF
+from onewire import OneWire
+from ds18x20 import DS18X20
 from machine import Pin, Timer, RTC, ADC
-import time
-import base64
+from time import ticks_ms, ticks_diff, sleep_ms
+from base64 import b64decode
 from ujson import load
 import time_utils
 import weather
@@ -44,14 +45,14 @@ MINUTE_POSITION = 5
 
 temp_sensor_pin = Pin(TEMPERATURE_SENSOR_IN_PIN)
 wind_dir_pin = ADC(Pin(WIND_DIR_SENSOR_IN_PIN))
-wifi_indicator = neopixel.NeoPixel(Pin(WIFI_LED_OUT_PIN), NUM_RGB_LEDS)
+wifi_indicator = NeoPixel(Pin(WIFI_LED_OUT_PIN), NUM_RGB_LEDS)
 wind_speed_pin = Pin(WIND_SPD_SENSOR_IN_PIN, Pin.IN)
 rain_counter_pin = Pin(RAIN_CNT_SENSOR_IN_PIN, Pin.IN)
 rtc = RTC()
-wlan = network.WLAN(network.STA_IF)
+wlan = WLAN(STA_IF)
 wlan.active(True)
 wind_dir_pin.atten(ADC.ATTN_11DB)
-temp_sensor = ds18x20.DS18X20(onewire.OneWire(temp_sensor_pin))
+temp_sensor = DS18X20(OneWire(temp_sensor_pin))
 roms = temp_sensor.scan()
 weather_obj = weather.Weather(TEMPERATURE_UNITS, RAIN_UNITS, RAIN_UNITS, UPDATES_PER_HOUR, \
     DATA_POINTS_PER_UPDATE)
@@ -96,8 +97,8 @@ def init_wlan():
 
 def connect_wifi():
     print("Attempting to connect to wifi AP!")
-    ssid = base64.b64decode(bytes(wifi_settings().get("ssid", ""), 'utf-8'))
-    password = base64.b64decode(bytes(wifi_settings().get("password", ""), 'utf-8'))
+    ssid = b64decode(bytes(wifi_settings().get("ssid", ""), 'utf-8'))
+    password = b64decode(bytes(wifi_settings().get("password", ""), 'utf-8'))
     connection_status = wlan.isconnected()
     if not connection_status:
         wlan.connect(ssid.decode("utf-8"), password.decode("utf-8"))
@@ -134,11 +135,11 @@ def update_weather(weather_timer):
     global weather_update_time
     weather_obj.set_wind_direction(weather_obj.calculate_avg_wind_dir())
     weather_obj.set_temperature(weather_obj.calculate_avg_temperature())
-    delta_t_s = int(time.ticks_diff(time.ticks_ms(), weather_update_time) / 1000)  # convert to seconds
+    delta_t_s = int(ticks_diff(ticks_ms(), weather_update_time) / 1000)  # convert to seconds
     weather_obj.set_wind_speed(weather_obj.calculate_avg_wind_speed(delta_t_s))
     weather_obj.set_rain_count_hourly(weather_obj.calculate_hourly_rain())
     weather_obj.rotate_hourly_rain_buckets()
-    weather_update_time = time.ticks_ms()
+    weather_update_time = ticks_ms()
     if get_wifi_conn_status(wlan.isconnected(), False):
         update_weather_api()
         update_database()
@@ -150,7 +151,7 @@ def read_temperature(initial_reading=False):
     try:
         temp_sensor.convert_temp()
         if initial_reading:
-            time.sleep_ms(1000)
+            sleep_ms(1000)
         reading = temp_sensor.read_temp(roms[TEMP_SENSOR_POSITION])
     except Exception as e:
         print("There was an error reading from the temp sensor.")
@@ -161,8 +162,8 @@ def rain_counter_isr(irq):
 
 def wind_speed_isr(irq):
     global wind_speed_last_intrpt  # software debounce mechanical reed switch
-    if time.ticks_diff(time.ticks_ms(), wind_speed_last_intrpt) > 5:  # no less than 5ms between pulses
-        wind_speed_last_intrpt = time.ticks_ms()
+    if ticks_diff(ticks_ms(), wind_speed_last_intrpt) > 5:  # no less than 5ms between pulses
+        wind_speed_last_intrpt = ticks_ms()
         weather_obj.add_wind_speed_pulse()
 
 def record_weather_data_points(data_check_timer):
@@ -173,8 +174,8 @@ def record_weather_data_points(data_check_timer):
 
 def update_weather_api():
     creds = weather_settings().get("credentials", {})
-    station_id = base64.b64decode(bytes(creds.get("station_id", ""), 'utf-8'))
-    station_key = base64.b64decode(bytes(creds.get("station_key", ""), 'utf-8'))
+    station_id = b64decode(bytes(creds.get("station_id", ""), 'utf-8'))
+    station_key = b64decode(bytes(creds.get("station_key", ""), 'utf-8'))
     api_utils.update_weather_api(
         weather_settings().get("host", ""),
         weather_settings().get("path", ""),
@@ -209,9 +210,9 @@ rain_timer.init(period=MINUTE_PERIOD, mode=Timer.PERIODIC, callback=reset_rain_c
 data_check_timer.init(period=DATA_POINT_CHECK_PERIOD, mode=Timer.PERIODIC, callback=record_weather_data_points)
 trash_temperature_reading = read_temperature(initial_reading=True)
 del trash_temperature_reading  # first reading is always wrong so just put it in the garbage
-begin_time = time.ticks_ms()
+begin_time = ticks_ms()
 weather_update_time = begin_time
 wind_speed_last_intrpt = begin_time
 gust_start_timer = begin_time
 while True:
-    time.sleep_ms(100)
+    sleep_ms(100)
