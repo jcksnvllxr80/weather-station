@@ -5,7 +5,7 @@ import onewire, ds18x20
 from machine import Pin, Timer, RTC, ADC
 import time
 import base64
-from ujson import load, dumps
+from ujson import load
 import time_utils
 import weather
 import api_utils
