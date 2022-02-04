@@ -43,11 +43,11 @@ def update_weather_api(host, path, station_id, station_key, weather):
 
 def send_json_to_telegraf_api(host, port, path, weather_dict):
     url_str = "http://{}:{}{}".format(host, port, path)
-    http_res = requests.post(url=url_str, json=dumps(weather_dict))
+    http_res = requests.post(url=url_str, data=dumps(weather_dict))
     http_parser = http_utils.HttpParser()
     http_res_code = http_parser.parse_http(http_res)
     if http_res_code:
         http_res_text = http_parser.get_http_response()
         print("\nResponse from {} --> {}".format(url_str, http_res_text))
     else:
-        print("Error; not a good response from host: {}.".format(url_str))
+        print("Error; no response from host: {}.".format(url_str))
