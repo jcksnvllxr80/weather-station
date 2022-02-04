@@ -202,6 +202,10 @@ data_check_timer = Timer(2)
 init_wlan()
 connection = get_wifi_conn_status(connect_wifi(), True)
 
+begin_time = ticks_ms()
+weather_update_time = begin_time
+wind_speed_last_intrpt = begin_time
+gust_start_timer = begin_time
 rain_counter_pin.irq(trigger=Pin.IRQ_RISING, handler=rain_counter_isr)
 wind_speed_pin.irq(trigger=Pin.IRQ_RISING, handler=wind_speed_isr)
 wifi_timer.init(period=WIFI_CHECK_PERIOD, mode=Timer.PERIODIC, callback=update_conn_status)
@@ -210,9 +214,5 @@ rain_timer.init(period=MINUTE_PERIOD, mode=Timer.PERIODIC, callback=reset_rain_c
 data_check_timer.init(period=DATA_POINT_CHECK_PERIOD, mode=Timer.PERIODIC, callback=record_weather_data_points)
 trash_temperature_reading = read_temperature(initial_reading=True)
 del trash_temperature_reading  # first reading is always wrong so just put it in the garbage
-begin_time = ticks_ms()
-weather_update_time = begin_time
-wind_speed_last_intrpt = begin_time
-gust_start_timer = begin_time
 while True:
     sleep_ms(100)

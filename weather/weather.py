@@ -1,6 +1,6 @@
 import time
 from math import pi, sin, cos, atan2, degrees, radians
-from weather_api_utils import TEMPERATURE_KEY, WIND_KEY, WIND_GUST_KEY, \
+from api_utils import TEMPERATURE_KEY, WIND_KEY, WIND_GUST_KEY, \
 WIND_SPEED_KEY, WIND_DIRECTION_KEY, RAIN_KEY, RAIN_COUNT_DAILY_KEY, RAIN_COUNT_HOURLY_KEY
 RAIN_COUNT_CONSTANT = 0.2794  # mm's rain
 ANEMOMETER_CONSTANT = 2.4  # km/h
