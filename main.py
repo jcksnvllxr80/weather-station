@@ -8,7 +8,7 @@ import base64
 from ujson import load, dumps
 import time_utils
 import weather
-import weather_api_utils
+import api_utils
 
 print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
 print("RPi-Pico MicroPython Ver:", sys.version)
@@ -79,6 +79,9 @@ def time_settings():
 def weather_settings():
     return config.get("weather_api", {})
 
+def database_settings():
+    return config.get("database_api", {})
+
 def wifi_led_red():
     wifi_indicator[LED_POSITION] = (2, 0, 0)  # dim red
     wifi_indicator.write()
@@ -135,8 +138,10 @@ def update_weather(weather_timer):
     weather_obj.set_wind_speed(weather_obj.calculate_avg_wind_speed(delta_t_s))
     weather_obj.set_rain_count_hourly(weather_obj.calculate_hourly_rain())
     weather_obj.rotate_hourly_rain_buckets()
-    update_weather_api()
     weather_update_time = time.ticks_ms()
+    if get_wifi_conn_status(wlan.isconnected(), False):
+        update_weather_api()
+        update_database()
     print(repr(weather_obj))
     weather_obj.reset_wind_gust()
 
@@ -167,17 +172,24 @@ def record_weather_data_points(data_check_timer):
     gust_start_timer = weather_obj.check_wind_gust(gust_start_timer)
 
 def update_weather_api():
-    if get_wifi_conn_status(wlan.isconnected(), False):
-        creds = weather_settings().get("credentials", {})
-        station_id = base64.b64decode(bytes(creds.get("station_id", ""), 'utf-8'))
-        station_key = base64.b64decode(bytes(creds.get("station_key", ""), 'utf-8'))
-        weather_api_utils.update_weather_api(
-            weather_settings().get("host", ""),
-            weather_settings().get("path", ""),
-            station_id.decode("utf-8"),
-            station_key.decode("utf-8"),
-            weather_obj.get_weather_data()
-        )
+    creds = weather_settings().get("credentials", {})
+    station_id = base64.b64decode(bytes(creds.get("station_id", ""), 'utf-8'))
+    station_key = base64.b64decode(bytes(creds.get("station_key", ""), 'utf-8'))
+    api_utils.update_weather_api(
+        weather_settings().get("host", ""),
+        weather_settings().get("path", ""),
+        station_id.decode("utf-8"),
+        station_key.decode("utf-8"),
+        weather_obj.get_weather_data()
+    )
+
+def update_database():
+    api_utils.send_json_to_telegraf_api(
+        database_settings().get("host", ""),
+        database_settings().get("port", 8080),
+        database_settings().get("path", ""),
+        weather_obj.get_weather_data()
+    )
 
 connection = ""
 wifi_led_red()

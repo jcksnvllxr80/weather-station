@@ -15,5 +15,10 @@
       "station_id": "<your_byte64_encoded_station_ID>",
       "station_key": "<your_byte64_encoded_station_key>"
     }
+  },
+  "database_api": {
+    "host": "<hostname>",
+    "port": 8080,
+    "path": "/telegraf"
   }
 }
