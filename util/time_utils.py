@@ -1,5 +1,5 @@
 from ujson import loads
-import re
+from re import search
 import http_utils
 import mrequests as requests
 
@@ -74,7 +74,7 @@ def query_time_api(host, path, rtc):
         json_resp_obj = loads(clean_json(str(http_res_json)))
         print("json obj --> {}\n".format(json_resp_obj))
         datetime_regex_string = r'(\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d.\d\d)'
-        match = re.search(datetime_regex_string, json_resp_obj['datetime'])
+        match = search(datetime_regex_string, json_resp_obj['datetime'])
         if match:
             set_rtc(match, json_resp_obj, rtc)
             print("RTC was set from internet time API: {}".format(match.group(0)))
