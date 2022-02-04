@@ -30,24 +30,17 @@ def get_data_str(id, key, data):
 
 def update_weather_api(host, path, station_id, station_key, weather):
     url_str = "https://{}{}{}".format(host, path, get_data_str(station_id, station_key, weather))
-    # print("string sent -> {}".format(url_str))
-    http_res = requests.get(url=url_str)
-    http_parser = http_utils.HttpParser()
-    http_res_code = http_parser.parse_http(http_res)
-    if http_res_code:
-        http_res_text = http_parser.get_http_response()
-        print("\nResponse from {} --> {}\n".format(host + path, http_res))
-        print("Posting data on wunderground was a {}".format(http_res_text))
-    else:
-        print("Error; no response from host: {}; cant set RTC.".format(host+path))
+    get_response(url_str, requests.get(url=url_str))
 
 def send_json_to_telegraf_api(host, port, path, weather_dict):
     url_str = "http://{}:{}{}".format(host, port, path)
-    http_res = requests.post(url=url_str, data=dumps(weather_dict))
+    get_response(url_str, requests.post(url=url_str, data=dumps(weather_dict)))
+
+def get_response(url_str, http_res):
     http_parser = http_utils.HttpParser()
     http_res_code = http_parser.parse_http(http_res)
     if http_res_code:
         http_res_text = http_parser.get_http_response()
-        print("\nResponse from {} --> {}".format(url_str, http_res_text))
+        print("Response from {} --> {}".format(url_str, http_res_text))
     else:
         print("Error; no response from host: {}.".format(url_str))
