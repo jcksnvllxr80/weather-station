@@ -1,6 +1,6 @@
 import http_utils
 import mrequests as requests
-from json import dumps
+from ujson import dumps
 
 TEMPERATURE_KEY = "Temperature"
 WIND_KEY = "Wind"
