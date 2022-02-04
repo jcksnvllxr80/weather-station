@@ -1,4 +1,4 @@
-import sys
+from sys import version
 from neopixel import NeoPixel
 from network import WLAN, STA_IF
 from onewire import OneWire
@@ -12,7 +12,7 @@ import weather
 import api_utils
 
 print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
-print("RPi-Pico MicroPython Ver:", sys.version)
+print("RPi-Pico MicroPython Ver:", version)
 print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
 
 CONFIG_FILE = "conf/config.json"
