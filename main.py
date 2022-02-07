@@ -4,7 +4,7 @@ from network import WLAN, STA_IF
 from onewire import OneWire
 from ds18x20 import DS18X20
 from machine import Pin, Timer, RTC, ADC
-from time import ticks_ms, ticks_diff, sleep_ms
+from time import ticks_ms, ticks_diff, sleep_ms, time, mktime
 from base64 import b64decode
 from ujson import load
 import time_utils
@@ -39,9 +39,6 @@ NUM_RGB_LEDS = 1
 LED_POSITION = NUM_RGB_LEDS - 1
 NUM_TEMP_SENSORS = 1
 TEMP_SENSOR_POSITION = NUM_TEMP_SENSORS - 1
-MIDNIGHT_HOUR = 0
-HOUR_POSITION = 4
-MINUTE_POSITION = 5
 
 temp_sensor_pin = Pin(TEMPERATURE_SENSOR_IN_PIN)
 wind_dir_pin = ADC(Pin(WIND_DIR_SENSOR_IN_PIN))
@@ -127,9 +124,8 @@ def update_conn_status(wifi_timer):
         connection = set_time()
 
 def reset_rain_counter_daily(rain_timer):
-    if rtc.datetime()[MINUTE_POSITION] == 0:
-        if rtc.datetime()[HOUR_POSITION] == MIDNIGHT_HOUR:
-            weather_obj.reset_daily_rain_count()
+    weather_obj.reset_daily_rain_count()
+    rain_timer.init(period=ms_until_midnight(), mode=Timer.ONE_SHOT, callback=reset_rain_counter_daily)
 
 def update_weather(weather_timer):
     global weather_update_time
@@ -192,6 +188,13 @@ def update_database():
         weather_obj.get_weather_data()
     )
 
+def ms_until_midnight():
+    '''
+    return the difference between future midnight and now, in ms
+    '''
+    now = rtc.datetime()
+    return mktime((now[0], now[1], now[2] + 1, 0, 0, 0, 0, 0)) - time()
+
 connection = ""
 wifi_led_red()
 config = read_config_file(CONFIG_FILE)
@@ -210,7 +213,7 @@ rain_counter_pin.irq(trigger=Pin.IRQ_RISING, handler=rain_counter_isr)
 wind_speed_pin.irq(trigger=Pin.IRQ_RISING, handler=wind_speed_isr)
 wifi_timer.init(period=WIFI_CHECK_PERIOD, mode=Timer.PERIODIC, callback=update_conn_status)
 weather_timer.init(period=WEATHER_UPDATE_PERIOD, mode=Timer.PERIODIC, callback=update_weather)
-rain_timer.init(period=MINUTE_PERIOD, mode=Timer.PERIODIC, callback=reset_rain_counter_daily)
+rain_timer.init(period=ms_until_midnight(), mode=Timer.ONE_SHOT, callback=reset_rain_counter_daily)
 data_check_timer.init(period=DATA_POINT_CHECK_PERIOD, mode=Timer.PERIODIC, callback=record_weather_data_points)
 trash_temperature_reading = read_temperature(initial_reading=True)
 del trash_temperature_reading  # first reading is always wrong so just put it in the garbage
