@@ -1,7 +1,8 @@
 import time
 from math import pi, sin, cos, atan2, degrees, radians
 from api_utils import TEMPERATURE_KEY, WIND_KEY, WIND_GUST_KEY, \
-WIND_SPEED_KEY, WIND_DIRECTION_KEY, RAIN_KEY, RAIN_COUNT_DAILY_KEY, RAIN_COUNT_HOURLY_KEY
+WIND_SPEED_KEY, WIND_DIRECTION_KEY, RAIN_KEY, RAIN_COUNT_DAILY_KEY, \
+RAIN_COUNT_HOURLY_KEY, PRESSURE_KEY, HUMIDITY_KEY
 RAIN_COUNT_CONSTANT = 0.2794  # mm's rain
 ANEMOMETER_CONSTANT = 2.4  # km/h
 N_NE_ANGLE_RAD = radians(22.5)
@@ -50,13 +51,22 @@ WIND_DIR_DICT = {
 
 class Weather:
 
-    def __init__(self, temp_units="F", speed_units="MPH", rain_units="in", updates_per_hr=12, sensor_data_pts=60):
+    def __init__(
+        self, 
+        temp_units="F",
+        speed_units="MPH",
+        rain_units="in",
+        updates_per_hr=12,
+        sensor_data_pts=60
+    ):
         self.temp_units = temp_units
         self.speed_units = speed_units
         self.rain_units = rain_units
         self.__rain_hourly_list = [0.0] * updates_per_hr
         self.__wind_dir_list = [(0.0, 0.0)] * sensor_data_pts  # (x, y) tuple coords for each direction recorded
         self.__temperature_list = [0.0] * sensor_data_pts
+        self.__pressure_list = [0.0] * sensor_data_pts
+        self.__humidity_list = [0.0] * sensor_data_pts
         self.__rain_count_daily = 0.0
         self.__rain_count_hourly = 0.0
         self.__wind_direction = 0.0
@@ -65,6 +75,8 @@ class Weather:
         self.__wind_gust_pulses = 0
         self.__max_wind_gust = 0.0
         self.__temperature = 0.0
+        self.__pressure = 0.0
+        self.__humidity = 0.0
         self.__weather_dict = {
             RAIN_KEY: {
                 RAIN_COUNT_DAILY_KEY: self.__rain_count_daily,
@@ -75,7 +87,9 @@ class Weather:
                 WIND_SPEED_KEY: self.__wind_speed,
                 WIND_GUST_KEY: self.__max_wind_gust
             },
-            TEMPERATURE_KEY: self.__temperature
+            TEMPERATURE_KEY: self.__temperature,
+            PRESSURE_KEY: self.__pressure,
+            HUMIDITY_KEY: self.__humidity
         }
 
     def __repr__(self):
@@ -128,6 +142,28 @@ class Weather:
         self.__temperature = Weather.two_decimals(val)
         self.__weather_dict[TEMPERATURE_KEY] = self.__temperature
 
+    def get_temperature_list(self):
+        return self.__temperature_list
+
+    def get_humidity(self):
+        return self.__humidity
+
+    def set_humidity(self, humidity_val):
+        self.__humidity = Weather.two_decimals(humidity_val)
+
+    def get_humidity_list(self):
+        return self.__humidity_list
+
+    def get_pressure(self):
+        return self.__pressure
+
+    def set_pressure(self, kpa_val):
+        inches_val = Weather.kpa_to_inches(kpa_val)
+        self.__pressure = Weather.two_decimals(inches_val)
+
+    def get_pressure_list(self):
+        return self.__pressure_list
+
     def increment_rain(self):
         if self.rain_units == "mm":
             rain_count_daily = self.get_rain_count_daily() + RAIN_COUNT_CONSTANT
@@ -145,6 +181,14 @@ class Weather:
     def add_temperature_reading(self, temp_val):
         self.__temperature_list.append(temp_val)
         self.__temperature_list.pop(0)
+
+    def add_pressure_reading(self, pres_kpa_val):
+        self.__pressure_list.append(pres_kpa_val)
+        self.__pressure_list.pop(0)
+
+    def add_humidity_reading(self, humid_val):
+        self.__humidity_list.append(humid_val)
+        self.__humidity_list.pop(0)
 
     def check_wind_gust(self, last_gust_start_time):
         gust_window_start_time = time.ticks_ms()
@@ -175,8 +219,8 @@ class Weather:
         y_coord = sum(y for x, y in self.__wind_dir_list) / len(self.__wind_dir_list)
         return Weather.get_angle_in_degrees(x_coord, y_coord)
 
-    def calculate_avg_temperature(self):
-        return sum(self.__temperature_list) / len(self.__temperature_list)
+    def average_data_points(self, list):
+        return sum(list) / len(list)
 
     def calculate_avg_wind_speed(self, delta_time_s):
         avg_wind_spd = self.do_wind_speed_calc(self.__wind_speed_pulses, delta_time_s)
@@ -216,9 +260,16 @@ class Weather:
 
     @staticmethod
     def get_angle_in_degrees(x, y):
-        # degrees returns angles in the range [-180, 180] 
-        # in python modulo (n % 360) works to turn these angles into range [0, 360]
+        ''' 
+        degrees returns angles in the range [-180, 180] 
+        in python modulo (n % 360) works to turn these angles into range [0, 360]
+        '''
         return float(degrees(atan2(y, x)) % 360)
+
+    @staticmethod
+    def kpa_to_inches(self, pres_kpa_val):
+        ''' convert kPa to inches with 1kPa = 0.2953in '''
+        return pres_kpa_val * 0.2953
 
     @staticmethod
     def celsius2fahrenheit(val):

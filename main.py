@@ -3,10 +3,12 @@ from neopixel import NeoPixel
 from network import WLAN, STA_IF
 from onewire import OneWire
 from ds18x20 import DS18X20
-from machine import Pin, Timer, RTC, ADC
+from machine import Pin, Timer, RTC, ADC, I2C
 from time import ticks_ms, ticks_diff, sleep_ms, time, mktime
 from base64 import b64decode
 from ujson import load
+from am2320 import AM2320
+from mpl3115a2 import MPL3115A2
 import time_utils
 import weather
 import api_utils
@@ -21,6 +23,9 @@ WIND_DIR_SENSOR_IN_PIN = 4
 WIFI_LED_OUT_PIN = 8
 WIND_SPD_SENSOR_IN_PIN = 6
 RAIN_CNT_SENSOR_IN_PIN = 5
+I2C_SCL_PIN = 17
+I2C_SDA_PIN = 16
+I2C_FREQ = 400000
 RAIN_UNITS = "in"
 TEMPERATURE_UNITS = "F"
 SPEED_UNITS = "MPH"
@@ -37,21 +42,26 @@ DEFAULT_TIME_API_HOST = "worldtimeapi.org"
 DEFAULT_TIME_API_PATH = "/api/timezone/America/New_York"
 NUM_RGB_LEDS = 1
 LED_POSITION = NUM_RGB_LEDS - 1
-NUM_TEMP_SENSORS = 1
-TEMP_SENSOR_POSITION = NUM_TEMP_SENSORS - 1
+NUM_DS18X20_TEMP_SENSORS = 1
+TEMP_SENSOR_POSITION = NUM_DS18X20_TEMP_SENSORS - 1
 
 temp_sensor_pin = Pin(TEMPERATURE_SENSOR_IN_PIN)
 wind_dir_pin = ADC(Pin(WIND_DIR_SENSOR_IN_PIN))
 wifi_indicator = NeoPixel(Pin(WIFI_LED_OUT_PIN), NUM_RGB_LEDS)
 wind_speed_pin = Pin(WIND_SPD_SENSOR_IN_PIN, Pin.IN)
 rain_counter_pin = Pin(RAIN_CNT_SENSOR_IN_PIN, Pin.IN)
+i2c_scl_pin = Pin(I2C_SCL_PIN)
+i2c_sda_pin = Pin(I2C_SDA_PIN)
 rtc = RTC()
 wlan = WLAN(STA_IF)
 wlan.active(True)
 wind_dir_pin.atten(ADC.ATTN_11DB)
+i2c = I2C(0,scl=i2c_scl_pin,sda=i2c_sda_pin,freq=I2C_FREQ)
+humidity_sensor = AM2320(i2c)
+pressure_sensor = MPL3115A2(i2c, mode=MPL3115A2.ALTITUDE)
 temp_sensor = DS18X20(OneWire(temp_sensor_pin))
 roms = temp_sensor.scan()
-weather_obj = weather.Weather(TEMPERATURE_UNITS, RAIN_UNITS, RAIN_UNITS, UPDATES_PER_HOUR, \
+weather_obj = weather.Weather(TEMPERATURE_UNITS, SPEED_UNITS, RAIN_UNITS, UPDATES_PER_HOUR, \
     DATA_POINTS_PER_UPDATE)
 
 def set_time():
@@ -130,7 +140,9 @@ def reset_rain_counter_daily(rain_timer):
 def update_weather(weather_timer):
     global weather_update_time
     weather_obj.set_wind_direction(weather_obj.calculate_avg_wind_dir())
-    weather_obj.set_temperature(weather_obj.calculate_avg_temperature())
+    weather_obj.set_temperature(weather_obj.average_data_points(weather_obj.get_temperature_list()))
+    weather_obj.set_humidity(weather_obj.average_data_points(weather_obj.get_humidity_list()))
+    weather_obj.set_pressure(weather_obj.average_data_points(weather_obj.get_pressure_list()))
     delta_t_s = int(ticks_diff(ticks_ms(), weather_update_time) / 1000)  # convert to seconds
     weather_obj.set_wind_speed(weather_obj.calculate_avg_wind_speed(delta_t_s))
     weather_obj.set_rain_count_hourly(weather_obj.calculate_hourly_rain())
@@ -142,16 +154,40 @@ def update_weather(weather_timer):
     print(repr(weather_obj))
     weather_obj.reset_wind_gust()
 
+def average_sensor_temperatures():
+    possible_temperatures = []
+    humidity_sensor.measure()
+    possible_temperatures.append(humidity_sensor.temperature())
+    possible_temperatures.append(pressure_sensor.temperature())
+    possible_temperatures.append(temp_sensor.read_temp(roms[TEMP_SENSOR_POSITION]))
+    temperatures = [temp for temp in possible_temperatures if temp is not None]
+    return sum(temperatures)/len(temperatures)
+
 def read_temperature(initial_reading=False):
     reading = 0
     try:
         temp_sensor.convert_temp()
         if initial_reading:
             sleep_ms(1000)
-        reading = temp_sensor.read_temp(roms[TEMP_SENSOR_POSITION])
+        reading = average_sensor_temperatures()
     except Exception as e:
         print("There was an error reading from the temp sensor.")
     return reading
+
+def read_humidity():
+    try:
+        humidity_sensor.measure()
+        return humidity_sensor.humidity()
+    except Exception as e:
+        print("There was an error reading from the humidity sensor.")
+    return None
+
+def read_pressure():
+    try:
+        return pressure_sensor.pressure()
+    except Exception as e:
+        print("There was an error reading from the pressure sensor.")
+    return None
 
 def rain_counter_isr(irq):
     weather_obj.increment_rain()
@@ -166,6 +202,8 @@ def record_weather_data_points(data_check_timer):
     global gust_start_timer
     weather_obj.add_wind_dir_reading(wind_dir_pin.read())
     weather_obj.add_temperature_reading(read_temperature())
+    weather_obj.add_humidity_reading(read_humidity())
+    weather_obj.add_pressure_reading(read_pressure())
     gust_start_timer = weather_obj.check_wind_gust(gust_start_timer)
 
 def update_weather_api():

@@ -10,6 +10,8 @@ WIND_DIRECTION_KEY = "Direction"
 RAIN_KEY = "Rain"
 RAIN_COUNT_DAILY_KEY = "Daily"
 RAIN_COUNT_HOURLY_KEY = "Hourly"
+PRESSURE_KEY = "Pressure"
+HUMIDITY_KEY = "Humidity"
 
 def get_data_str(id, key, data):
     return ''.join(
@@ -23,6 +25,8 @@ def get_data_str(id, key, data):
             '&tempf=', str(data[TEMPERATURE_KEY]),
             '&rainin=', str(data[RAIN_KEY][RAIN_COUNT_HOURLY_KEY]),
             '&dailyrainin=', str(data[RAIN_KEY][RAIN_COUNT_DAILY_KEY]),
+            '&baromin=', str(data[PRESSURE_KEY]),
+            '&humidity=', str(data[HUMIDITY_KEY]),
             '&softwaretype=custom',
             '&action=updateraw'
         ]

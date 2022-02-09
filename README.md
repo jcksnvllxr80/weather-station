@@ -31,6 +31,8 @@ The following classes (which are all in this repo) must be manually loaded onto 
 - ``api_utils.py``
 - ``mrequests.py``
 - ``weather.py``
+- ``am2320.py``
+- ``mpl3115a2.py``
 
 ## Erase and flash micropython on the ESP32-C3-Mini from windows CMD
 
@@ -42,11 +44,8 @@ The following classes (which are all in this repo) must be manually loaded onto 
 
 ## TODO
 
-- add ability to take asynchronous requests over network via REST so that local nagios can query weather status
-- send updates to a database (influxdb) on the local network running in docker on raspberrypi
-- get the humidity and pressure sensors working and possibly calculate a dewpoint using sensor data
-- eventually get the UV sensor added to this weather station
-- add solar radiation shield to give more accurate temperature readings (direct sunlight is brutal)
+- add ability to take asynchronous requests over network via API so that local nagios can query weather status
+- get a UV sensor
 
 ## Weather Vane voltage values and direction table
 
