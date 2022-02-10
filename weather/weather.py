@@ -133,9 +133,9 @@ class Weather:
             rain_count_daily = self.get_rain_count_daily() + RAIN_COUNT_CONSTANT
             self.__rain_hourly_list[-1] += RAIN_COUNT_CONSTANT
         else:
-            rain_unit = Weather.millimeters2inches(RAIN_COUNT_CONSTANT)
-            rain_count_daily = self.get_rain_count_daily() + rain_unit
-            self.__rain_hourly_list[-1] += rain_unit
+            rain_constant = Weather.millimeters2inches(RAIN_COUNT_CONSTANT)
+            rain_count_daily = self.get_rain_count_daily() + rain_constant
+            self.__rain_hourly_list[-1] += rain_constant
         self.set_rain_count_daily(rain_count_daily)
 
     def add_wind_dir_reading(self, val):
