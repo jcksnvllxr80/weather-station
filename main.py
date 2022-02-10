@@ -203,7 +203,8 @@ rain_timer = Timer(0)
 data_check_timer = Timer(2)
 init_wlan()
 connection = get_wifi_conn_status(connect_wifi(), True)
-rain_reset_list = [0] * N_RAIN_RESET_TIME_TO_REMEMBER
+# create an n-long list of 8-tuples
+rain_reset_list = [tuple([0]*8)] * N_RAIN_RESET_TIME_TO_REMEMBER
 
 begin_time = ticks_ms()
 weather_update_time = begin_time
