@@ -58,7 +58,7 @@ wlan.active(True)
 wind_dir_pin.atten(ADC.ATTN_11DB)
 i2c = I2C(0,scl=i2c_scl_pin,sda=i2c_sda_pin,freq=I2C_FREQ)
 humidity_sensor = AM2320(i2c)
-pressure_sensor = MPL3115A2(i2c, mode=MPL3115A2.ALTITUDE)
+pressure_sensor = MPL3115A2(i2c, mode=MPL3115A2.PRESSURE)
 temp_sensor = DS18X20(OneWire(temp_sensor_pin))
 roms = temp_sensor.scan()
 weather_obj = weather.Weather(TEMPERATURE_UNITS, SPEED_UNITS, RAIN_UNITS, UPDATES_PER_HOUR, \
