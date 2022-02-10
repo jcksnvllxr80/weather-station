@@ -116,18 +116,11 @@ def get_wifi_conn_status(conn_status, bool_query_time):
         print("sorry, cant connect to wifi AP! connection --> {}".format(conn_status))
     return conn_status
 
-def update_conn_status(wifi_timer):
-    global connection
-    if not wlan.isconnected():
-        connection = get_wifi_conn_status(connect_wifi(), True)
-    else:
-        connection = set_time()
-
 def reset_rain_counter_daily(rain_timer):
     weather_obj.reset_daily_rain_count()
     rain_timer.init(period=ms_until_midnight(), mode=Timer.ONE_SHOT, callback=reset_rain_counter_daily)
 
-def update_weather(weather_timer):
+def update_weather():
     global weather_update_time
     weather_obj.set_wind_direction(weather_obj.calculate_avg_wind_dir())
     weather_obj.set_temperature(weather_obj.calculate_avg_temperature())
@@ -198,9 +191,7 @@ def ms_until_midnight():
 connection = ""
 wifi_led_red()
 config = read_config_file(CONFIG_FILE)
-wifi_timer = Timer(0)
-weather_timer = Timer(0)
-rain_timer = Timer(2)
+rain_timer = Timer(0)
 data_check_timer = Timer(2)
 init_wlan()
 connection = get_wifi_conn_status(connect_wifi(), True)
@@ -211,11 +202,11 @@ wind_speed_last_intrpt = begin_time
 gust_start_timer = begin_time
 rain_counter_pin.irq(trigger=Pin.IRQ_RISING, handler=rain_counter_isr)
 wind_speed_pin.irq(trigger=Pin.IRQ_RISING, handler=wind_speed_isr)
-wifi_timer.init(period=WIFI_CHECK_PERIOD, mode=Timer.PERIODIC, callback=update_conn_status)
-weather_timer.init(period=WEATHER_UPDATE_PERIOD, mode=Timer.PERIODIC, callback=update_weather)
 rain_timer.init(period=ms_until_midnight(), mode=Timer.ONE_SHOT, callback=reset_rain_counter_daily)
 data_check_timer.init(period=DATA_POINT_CHECK_PERIOD, mode=Timer.PERIODIC, callback=record_weather_data_points)
 trash_temperature_reading = read_temperature(initial_reading=True)
 del trash_temperature_reading  # first reading is always wrong so just put it in the garbage
 while True:
     sleep_ms(100)
+    if ticks_diff(ticks_ms(), weather_update_time) > WEATHER_UPDATE_PERIOD :
+        update_weather()
