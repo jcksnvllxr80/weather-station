@@ -127,7 +127,7 @@ def save_rain_reset_time(current_time):
     rain_reset_list.append(current_time)
     rain_reset_list.pop(0)
 
-def update_weather():
+def update_weather_metrics():
     global weather_update_time
     weather_obj.set_wind_direction(weather_obj.calculate_avg_wind_dir())
     weather_obj.set_temperature(weather_obj.calculate_avg_temperature())
@@ -137,8 +137,8 @@ def update_weather():
     weather_obj.rotate_hourly_rain_buckets()
     weather_update_time = ticks_ms()
     if get_wifi_conn_status(wlan.isconnected(), False):
-        update_weather_api()
-        update_database()
+        web_weather_update()
+        database_weather_update()
     print(repr(weather_obj))
     weather_obj.reset_wind_gust()
 
@@ -168,7 +168,7 @@ def record_weather_data_points(timer):
     weather_obj.add_temperature_reading(read_temperature())
     gust_start_timer = weather_obj.check_wind_gust(gust_start_timer)
 
-def update_weather_api():
+def web_weather_update():
     creds = weather_settings().get("credentials", {})
     station_id = b64decode(bytes(creds.get("station_id", ""), 'utf-8'))
     station_key = b64decode(bytes(creds.get("station_key", ""), 'utf-8'))
@@ -180,7 +180,7 @@ def update_weather_api():
         weather_obj.get_weather_data()
     )
 
-def update_database():
+def database_weather_update():
     api_utils.send_json_to_telegraf_api(
         database_settings().get("host", ""),
         database_settings().get("port", 8080),
@@ -222,4 +222,4 @@ while True:
     sleep_ms(100)
     if ticks_diff(ticks_ms(), weather_update_time) > WEATHER_UPDATE_PERIOD:
         print("updating weather. daily rain resets were: {}".format(str(rain_reset_list)))
-        update_weather()
+        update_weather_metrics()
