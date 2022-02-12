@@ -193,7 +193,9 @@ def ms_until_midnight():
     return the difference between future midnight and now, in ms
     '''
     now = rtc.datetime()
-    midnight_seconds = mktime((now[0], now[1], now[2] + 1, 0, 0, 0, 0, 0))
+    # rtc returns datetimetuple -> (year, month, day, weekday, hours, minutes, seconds, subseconds)
+    # mktime tuple arg is a little diff -> (year, month, mday, hour, minute, second, weekday, yearday)
+    midnight_seconds = mktime((now[0], now[1], now[2] + 1, 0, 0, 0, now[3] + 1, 0))
     return (midnight_seconds - time()) * 1000  # return in milliseconds
 
 connection = ""
