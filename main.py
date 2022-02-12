@@ -138,7 +138,11 @@ def reset_rain_counter_daily(rain_timer):
     weather_obj.reset_daily_rain_count()
     rain_timer.init(period=ms_until_midnight(), mode=Timer.ONE_SHOT, callback=reset_rain_counter_daily)
 
-def update_weather(weather_timer):
+def save_rain_reset_time(current_time):
+    rain_reset_list.append(current_time)
+    rain_reset_list.pop(0)
+
+def update_weather_metrics():
     global weather_update_time
     weather_obj.set_wind_direction(weather_obj.calculate_avg_wind_dir())
     weather_obj.set_temperature(weather_obj.average_data_points(weather_obj.get_temperature_list()))
@@ -150,8 +154,8 @@ def update_weather(weather_timer):
     weather_obj.rotate_hourly_rain_buckets()
     weather_update_time = ticks_ms()
     if get_wifi_conn_status(wlan.isconnected(), False):
-        update_weather_api()
-        update_database()
+        web_weather_update()
+        database_weather_update()
     print(repr(weather_obj))
     weather_obj.reset_wind_gust()
 
@@ -210,7 +214,7 @@ def record_weather_data_points(data_check_timer):
     weather_obj.add_pressure_reading(read_pressure())
     gust_start_timer = weather_obj.check_wind_gust(gust_start_timer)
 
-def update_weather_api():
+def web_weather_update():
     creds = weather_settings().get("credentials", {})
     station_id = b64decode(bytes(creds.get("station_id", ""), 'utf-8'))
     station_key = b64decode(bytes(creds.get("station_key", ""), 'utf-8'))
@@ -262,3 +266,6 @@ trash_temperature_reading = read_temperature(initial_reading=True)
 del trash_temperature_reading  # first reading is always wrong so just put it in the garbage
 while True:
     sleep_ms(100)
+    if ticks_diff(ticks_ms(), weather_update_time) > WEATHER_UPDATE_PERIOD:
+        print("updating weather. daily rain resets were: {}".format(str(rain_reset_list)))
+        update_weather_metrics()
