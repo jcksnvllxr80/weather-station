@@ -1,5 +1,4 @@
 import time
-from machine import I2C, Pin
 
 class MPL3115A2exception(Exception):
     pass
