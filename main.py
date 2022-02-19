@@ -222,7 +222,7 @@ def web_weather_update():
     #     weather_obj.get_weather_data()
     # )
 
-def update_database():
+def database_weather_update():
     pass
     # api_utils.send_json_to_telegraf_api(
     #     database_settings().get("host", ""),
