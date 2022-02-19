@@ -220,7 +220,8 @@ class Weather:
         return Weather.get_angle_in_degrees(x_coord, y_coord)
 
     def average_data_points(self, list):
-        return sum(list) / len(list)
+        list_with_no_nones = [x for x in list if x is not None]
+        return sum(list_with_no_nones) / len(list_with_no_nones)
 
     def calculate_avg_wind_speed(self, delta_time_s):
         avg_wind_spd = self.do_wind_speed_calc(self.__wind_speed_pulses, delta_time_s)
