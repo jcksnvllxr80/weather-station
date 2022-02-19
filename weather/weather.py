@@ -221,7 +221,10 @@ class Weather:
 
     def average_data_points(self, list):
         list_with_no_nones = [x for x in list if x is not None]
-        return sum(list_with_no_nones) / len(list_with_no_nones)
+        if list_with_no_nones:
+            return sum(list_with_no_nones) / len(list_with_no_nones)
+        else:
+            return 0.0
 
     def calculate_avg_wind_speed(self, delta_time_s):
         avg_wind_spd = self.do_wind_speed_calc(self.__wind_speed_pulses, delta_time_s)
