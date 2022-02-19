@@ -2,10 +2,12 @@ import ustruct
 import time
 
 class AM2320:
+    BUFFER_SIZE = const(8)
+
     def __init__(self, i2c=None, address=0x5c):
         self.i2c = i2c
         self.address = address
-        self.buf = bytearray(16)
+        self.buf = bytearray(self.BUFFER_SIZE)
 
     def measure(self):
         buf = self.buf

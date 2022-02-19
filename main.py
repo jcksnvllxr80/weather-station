@@ -171,7 +171,7 @@ def read_temperature(initial_reading=False):
             sleep_ms(1000)
         reading = average_sensor_temperatures()
     except Exception as e:
-        print("There was an error reading from the temp sensor.")
+        print("There was an error reading from the temp sensor. {}".format(e))
     return reading
 
 def read_humidity():
@@ -179,14 +179,14 @@ def read_humidity():
         humidity_sensor.measure()
         return humidity_sensor.humidity()
     except Exception as e:
-        print("There was an error reading from the humidity sensor.")
+        print("There was an error reading from the humidity sensor. {}".format(e))
     return None
 
 def read_pressure():
     try:
         return pressure_sensor.pressure()
     except Exception as e:
-        print("There was an error reading from the pressure sensor.")
+        print("There was an error reading from the pressure sensor. {}".format(e))
     return None
 
 def rain_counter_isr(irq):
