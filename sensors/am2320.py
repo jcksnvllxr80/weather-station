@@ -14,6 +14,7 @@ class AM2320:
         address = self.address
         # wake sensor
         try:
+            self.i2c.scan()
             self.i2c.writeto(address, b'')
         except OSError:
             pass
@@ -22,7 +23,7 @@ class AM2320:
         time.sleep_ms(2)
         # read data
         self.i2c.readfrom_mem_into(address, 0, buf)
-        print(buf)
+        # print(buf)
         crc = ustruct.unpack('<H', bytearray(buf[-2:]))[0]
         if (crc != self.crc16(buf[:-2])):
             raise Exception("checksum error")
@@ -40,7 +41,6 @@ class AM2320:
         return crc
 
     def humidity(self):
-        print('self.buf[2] << 8: {} | {} = {}'.format(a, b, c))
         return (self.buf[2] << 8 | self.buf[3]) * 0.1
 
     def temperature(self):

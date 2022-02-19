@@ -25,7 +25,7 @@ WIND_SPD_SENSOR_IN_PIN = 6
 RAIN_CNT_SENSOR_IN_PIN = 5
 I2C_SCL_PIN = 19
 I2C_SDA_PIN = 18
-I2C_FREQ = 400000
+I2C_FREQ = 100000
 RAIN_UNITS = "in"
 TEMPERATURE_UNITS = "F"
 SPEED_UNITS = "MPH"
@@ -50,13 +50,14 @@ wind_dir_pin = ADC(Pin(WIND_DIR_SENSOR_IN_PIN))
 wifi_indicator = NeoPixel(Pin(WIFI_LED_OUT_PIN), NUM_RGB_LEDS)
 wind_speed_pin = Pin(WIND_SPD_SENSOR_IN_PIN, Pin.IN)
 rain_counter_pin = Pin(RAIN_CNT_SENSOR_IN_PIN, Pin.IN)
-i2c_scl_pin = Pin(I2C_SCL_PIN)
-i2c_sda_pin = Pin(I2C_SDA_PIN)
+i2c_scl_pin = Pin(I2C_SCL_PIN, mode=Pin.OUT, pull=Pin.PULL_UP)
+i2c_sda_pin = Pin(I2C_SDA_PIN, mode=Pin.OUT, pull=Pin.PULL_UP)
 rtc = RTC()
 wlan = WLAN(STA_IF)
 wlan.active(True)
 wind_dir_pin.atten(ADC.ATTN_11DB)
-i2c = I2C(0,scl=i2c_scl_pin,sda=i2c_sda_pin,freq=I2C_FREQ)
+# i2c = I2C(0, scl=i2c_scl_pin, sda=i2c_sda_pin, freq=I2C_FREQ)
+i2c = I2C(0, scl=i2c_scl_pin, sda=i2c_sda_pin)
 humidity_sensor = AM2320(i2c)
 pressure_sensor = MPL3115A2(i2c, mode=MPL3115A2.PRESSURE)
 temp_sensor = DS18X20(OneWire(temp_sensor_pin))
