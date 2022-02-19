@@ -169,9 +169,9 @@ class Weather:
             rain_count_daily = self.get_rain_count_daily() + RAIN_COUNT_CONSTANT
             self.__rain_hourly_list[-1] += RAIN_COUNT_CONSTANT
         else:
-            rain_unit = Weather.millimeters2inches(RAIN_COUNT_CONSTANT)
-            rain_count_daily = self.get_rain_count_daily() + rain_unit
-            self.__rain_hourly_list[-1] += rain_unit
+            rain_constant = Weather.millimeters2inches(RAIN_COUNT_CONSTANT)
+            rain_count_daily = self.get_rain_count_daily() + rain_constant
+            self.__rain_hourly_list[-1] += rain_constant
         self.set_rain_count_daily(rain_count_daily)
 
     def add_wind_dir_reading(self, val):
@@ -220,7 +220,8 @@ class Weather:
         return Weather.get_angle_in_degrees(x_coord, y_coord)
 
     def average_data_points(self, list):
-        return sum(list) / len(list)
+        list_with_no_nones = [x for x in list if x is not None]
+        return sum(list_with_no_nones) / len(list_with_no_nones)
 
     def calculate_avg_wind_speed(self, delta_time_s):
         avg_wind_spd = self.do_wind_speed_calc(self.__wind_speed_pulses, delta_time_s)

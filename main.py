@@ -42,8 +42,10 @@ DEFAULT_TIME_API_HOST = "worldtimeapi.org"
 DEFAULT_TIME_API_PATH = "/api/timezone/America/New_York"
 NUM_RGB_LEDS = 1
 LED_POSITION = NUM_RGB_LEDS - 1
-NUM_DS18X20_TEMP_SENSORS = 1
-TEMP_SENSOR_POSITION = NUM_DS18X20_TEMP_SENSORS - 1
+NUM_TEMP_SENSORS = 1
+TEMP_SENSOR_POSITION = NUM_TEMP_SENSORS - 1
+N_RAIN_RESET_TIME_TO_REMEMBER = 5
+# EPOCH_TO_JAN_1_2000_SECONDS = 946702800
 
 temp_sensor_pin = Pin(TEMPERATURE_SENSOR_IN_PIN)
 wind_dir_pin = ADC(Pin(WIND_DIR_SENSOR_IN_PIN))
@@ -127,8 +129,9 @@ def get_wifi_conn_status(conn_status, bool_query_time):
         print("sorry, cant connect to wifi AP! connection --> {}".format(conn_status))
     return conn_status
 
-def reset_rain_counter_daily(rain_timer):
+def reset_rain_counter_daily(timer):
     weather_obj.reset_daily_rain_count()
+    save_rain_reset_time(rtc.datetime())
     rain_timer.init(period=ms_until_midnight(), mode=Timer.ONE_SHOT, callback=reset_rain_counter_daily)
 
 def save_rain_reset_time(current_time):
@@ -199,7 +202,7 @@ def wind_speed_isr(irq):
         wind_speed_last_intrpt = ticks_ms()
         weather_obj.add_wind_speed_pulse()
 
-def record_weather_data_points(data_check_timer):
+def record_weather_data_points(timer):
     global gust_start_timer
     weather_obj.add_wind_dir_reading(wind_dir_pin.read())
     weather_obj.add_temperature_reading(read_temperature())
@@ -219,7 +222,7 @@ def web_weather_update():
     #     weather_obj.get_weather_data()
     # )
 
-def update_database():
+def database_weather_update():
     pass
     # api_utils.send_json_to_telegraf_api(
     #     database_settings().get("host", ""),
@@ -233,7 +236,10 @@ def ms_until_midnight():
     return the difference between future midnight and now, in ms
     '''
     now = rtc.datetime()
-    return mktime((now[0], now[1], now[2] + 1, 0, 0, 0, 0, 0)) - time()
+    # rtc returns datetimetuple -> (year, month, day, weekday, hours, minutes, seconds, subseconds)
+    # mktime tuple arg is a little diff -> (year, month, mday, hour, minute, second, weekday, yearday)
+    midnight_seconds = mktime((now[0], now[1], now[2] + 1, 0, 0, 0, now[3] + 1, 0))
+    return (midnight_seconds - time()) * 1000  # return in milliseconds
 
 connection = ""
 wifi_led_red()
@@ -242,6 +248,8 @@ rain_timer = Timer(0)
 data_check_timer = Timer(2)
 init_wlan()
 connection = get_wifi_conn_status(connect_wifi(), True)
+# create an n-long list of 8-tuples
+rain_reset_list = [tuple([0]*8)] * N_RAIN_RESET_TIME_TO_REMEMBER
 
 begin_time = ticks_ms()
 weather_update_time = begin_time
