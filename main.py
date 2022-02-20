@@ -213,22 +213,22 @@ def web_weather_update():
     creds = weather_settings().get("credentials", {})
     station_id = b64decode(bytes(creds.get("station_id", ""), 'utf-8'))
     station_key = b64decode(bytes(creds.get("station_key", ""), 'utf-8'))
-    # api_utils.update_weather_api(
-    #     weather_settings().get("host", ""),
-    #     weather_settings().get("path", ""),
-    #     station_id.decode("utf-8"),
-    #     station_key.decode("utf-8"),
-    #     weather_obj.get_weather_data()
-    # )
+    api_utils.update_weather_api(
+        weather_settings().get("host", ""),
+        weather_settings().get("path", ""),
+        station_id.decode("utf-8"),
+        station_key.decode("utf-8"),
+        weather_obj.get_weather_data()
+    )
 
 def database_weather_update():
     pass
-    # api_utils.send_json_to_telegraf_api(
-    #     database_settings().get("host", ""),
-    #     database_settings().get("port", 8080),
-    #     database_settings().get("path", ""),
-    #     weather_obj.get_weather_data()
-    # )
+    api_utils.send_json_to_telegraf_api(
+        database_settings().get("host", ""),
+        database_settings().get("port", 8080),
+        database_settings().get("path", ""),
+        weather_obj.get_weather_data()
+    )
 
 def ms_until_midnight():
     '''
