@@ -223,7 +223,6 @@ def web_weather_update():
     )
 
 def database_weather_update():
-    pass
     api_utils.send_json_to_telegraf_api(
         database_settings().get("host", ""),
         database_settings().get("port", 8080),
