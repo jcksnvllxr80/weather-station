@@ -271,7 +271,7 @@ class Weather:
         return float(degrees(atan2(y, x)) % 360)
 
     @staticmethod
-    def kpa_to_inches(self, pres_kpa_val):
+    def kpa_to_inches(pres_kpa_val):
         ''' convert kPa to inches with 1kPa = 0.2953in '''
         return pres_kpa_val * 0.2953
 
