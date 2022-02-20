@@ -173,8 +173,9 @@ def get_temperature(initial_reading=False):
         temp_sensor.convert_temp()
         if initial_reading:
             sleep_ms(1000)
+            return read_temp_sensors_value()
     except Exception as e:
-        print_sensor_read_error("temperature sensor", e)
+        print_sensor_read_error("temperature sensor - convert_temp function", e)
     return average_sensor_temperatures()
 
 def try_read_sensor_catch_e(sensor, func):
