@@ -3,7 +3,7 @@ from neopixel import NeoPixel
 from network import WLAN, STA_IF
 from onewire import OneWire
 from ds18x20 import DS18X20
-from machine import Pin, Timer, RTC, ADC, I2C
+from machine import Pin, Timer, RTC, ADC, SoftI2C
 from time import ticks_ms, ticks_diff, sleep_ms, time, mktime
 import weather
 from base64 import b64decode
@@ -25,7 +25,7 @@ WIND_SPD_SENSOR_IN_PIN = 6
 RAIN_CNT_SENSOR_IN_PIN = 5
 I2C_SCL_PIN = 19
 I2C_SDA_PIN = 18
-I2C_FREQ = 100000
+I2C_FREQ = 100_000
 RAIN_UNITS = "in"
 TEMPERATURE_UNITS = "F"
 SPEED_UNITS = "MPH"
@@ -57,11 +57,11 @@ rtc = RTC()
 wlan = WLAN(STA_IF)
 wlan.active(True)
 wind_dir_pin.atten(ADC.ATTN_11DB)
-i2c = I2C(0, scl=i2c_scl_pin, sda=i2c_sda_pin, freq=I2C_FREQ)
+i2c = SoftI2C(scl=i2c_scl_pin, sda=i2c_sda_pin, freq=I2C_FREQ, timeout=50_000)
 humidity_sensor = AM2320(i2c)
 pressure_sensor = MPL3115A2(i2c, mode=MPL3115A2.PRESSURE)
-# temp_sensor = DS18X20(OneWire(temp_sensor_pin))
-# roms = temp_sensor.scan()
+temp_sensor = DS18X20(OneWire(temp_sensor_pin))
+roms = temp_sensor.scan()
 weather_obj = weather.Weather(TEMPERATURE_UNITS, SPEED_UNITS, RAIN_UNITS, UPDATES_PER_HOUR, \
     DATA_POINTS_PER_UPDATE)
 
@@ -155,39 +155,37 @@ def update_weather_metrics():
 
 def average_sensor_temperatures():
     possible_temperatures = []
-    possible_temperatures.append(humidity_sensor.temperature())
-    possible_temperatures.append(pressure_sensor.temperature())
-    # possible_temperatures.append(temp_sensor.read_temp(roms[TEMP_SENSOR_POSITION]))
-    temperatures = [temp for temp in possible_temperatures if temp is not None]
+    
+    possible_temperatures.append(try_read_sensor_catch_e("humidity sensor - temperature", humidity_sensor.temperature))
+    # print("humidity sensor's temperature reading: {}".format(possible_temperatures[-1]))
+    possible_temperatures.append(try_read_sensor_catch_e("pressure sensor - temperature", pressure_sensor.temperature))
+    # print("pressure sensor's temperature reading: {}".format(possible_temperatures[-1]))
+    possible_temperatures.append(try_read_sensor_catch_e("temperature sensor", read_temp_sensors_value))
+    # print("temperature sensor's temperature reading: {}".format(possible_temperatures[-1]))
+    temperatures = [temp for temp in possible_temperatures if temp]
     if temperatures:
-        return sum(temperatures)/len(temperatures)
+        return sum(temperatures) / len(temperatures)
     else:
         return 0.0
 
-def read_temperature(initial_reading=False):
-    reading = 0
+def get_temperature(initial_reading=False):
     try:
-        # temp_sensor.convert_temp()
+        temp_sensor.convert_temp()
         if initial_reading:
             sleep_ms(1000)
-        reading = average_sensor_temperatures()
     except Exception as e:
         print_sensor_read_error("temperature sensor", e)
-    return reading
+    return average_sensor_temperatures()
 
-def read_humidity():
+def try_read_sensor_catch_e(sensor, func):
     try:
-        return humidity_sensor.humidity()
+        return func()
     except Exception as e:
-        print_sensor_read_error("humidity sensor", e)
+        print_sensor_read_error(sensor, e)
     return None
 
-def read_pressure():
-    try:
-        return pressure_sensor.pressure()
-    except Exception as e:
-        print_sensor_read_error("pressure sensor", e)
-    return None
+def read_temp_sensors_value():
+    return temp_sensor.read_temp(roms[TEMP_SENSOR_POSITION])
 
 def print_sensor_read_error(sensor, error):
     print("There was an error reading from the {}. {}".format(sensor, error))
@@ -203,18 +201,12 @@ def wind_speed_isr(irq):
 
 def record_weather_data_points(timer):
     global gust_start_timer
-    read_humidity_sensor()
+    try_read_sensor_catch_e("humidity sensor - measure", humidity_sensor.measure)
     weather_obj.add_wind_dir_reading(wind_dir_pin.read())
-    weather_obj.add_temperature_reading(read_temperature())
-    weather_obj.add_humidity_reading(read_humidity())
-    weather_obj.add_pressure_reading(read_pressure())
+    weather_obj.add_temperature_reading(get_temperature())
+    weather_obj.add_humidity_reading(try_read_sensor_catch_e("humidity sensor", humidity_sensor.humidity))
+    weather_obj.add_pressure_reading(try_read_sensor_catch_e("pressure sensor", pressure_sensor.pressure))
     gust_start_timer = weather_obj.check_wind_gust(gust_start_timer)
-
-def read_humidity_sensor():
-    try:
-        humidity_sensor.measure()
-    except Exception as e:
-        print_sensor_read_error("humidity sensor", e)
 
 def web_weather_update():
     creds = weather_settings().get("credentials", {})
@@ -265,8 +257,8 @@ rain_counter_pin.irq(trigger=Pin.IRQ_RISING, handler=rain_counter_isr)
 wind_speed_pin.irq(trigger=Pin.IRQ_RISING, handler=wind_speed_isr)
 rain_timer.init(period=ms_until_midnight(), mode=Timer.ONE_SHOT, callback=reset_rain_counter_daily)
 data_check_timer.init(period=DATA_POINT_CHECK_PERIOD, mode=Timer.PERIODIC, callback=record_weather_data_points)
-# trash_temperature_reading = read_temperature(initial_reading=True)
-# del trash_temperature_reading  # first reading is always wrong so just put it in the garbage
+trash_temperature_reading = get_temperature(initial_reading=True)
+del trash_temperature_reading  # first reading is always wrong so just put it in the garbage
 while True:
     sleep_ms(100)
     if ticks_diff(ticks_ms(), weather_update_time) > WEATHER_UPDATE_PERIOD:
