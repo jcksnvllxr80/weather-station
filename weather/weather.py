@@ -150,6 +150,7 @@ class Weather:
 
     def set_humidity(self, humidity_val):
         self.__humidity = Weather.two_decimals(humidity_val)
+        self.__weather_dict[HUMIDITY_KEY] = self.__humidity
 
     def get_humidity_list(self):
         return self.__humidity_list
@@ -157,9 +158,10 @@ class Weather:
     def get_pressure(self):
         return self.__pressure
 
-    def set_pressure(self, kpa_val):
-        inches_val = Weather.kpa_to_inches(kpa_val)
+    def set_pressure(self, pa_val):
+        inches_val = Weather.pa_to_inches(pa_val)
         self.__pressure = Weather.two_decimals(inches_val)
+        self.__weather_dict[PRESSURE_KEY] = self.__pressure
 
     def get_pressure_list(self):
         return self.__pressure_list
@@ -179,14 +181,17 @@ class Weather:
         self.__wind_dir_list.pop(0)
 
     def add_temperature_reading(self, temp_val):
+        # print("temperature reading was: {}".format(temp_val))
         self.__temperature_list.append(temp_val)
         self.__temperature_list.pop(0)
 
-    def add_pressure_reading(self, pres_kpa_val):
-        self.__pressure_list.append(pres_kpa_val)
+    def add_pressure_reading(self, pres_pa_val):
+        # print("pressure reading was: {}".format(pres_pa_val))
+        self.__pressure_list.append(pres_pa_val)
         self.__pressure_list.pop(0)
 
     def add_humidity_reading(self, humid_val):
+        # print("humidity reading was: {}".format(humid_val))
         self.__humidity_list.append(humid_val)
         self.__humidity_list.pop(0)
 
@@ -220,7 +225,7 @@ class Weather:
         return Weather.get_angle_in_degrees(x_coord, y_coord)
 
     def average_data_points(self, list):
-        list_with_no_nones = [x for x in list if x is not None]
+        list_with_no_nones = [x for x in list if x]
         if list_with_no_nones:
             return sum(list_with_no_nones) / len(list_with_no_nones)
         else:
@@ -271,9 +276,9 @@ class Weather:
         return float(degrees(atan2(y, x)) % 360)
 
     @staticmethod
-    def kpa_to_inches(pres_kpa_val):
-        ''' convert kPa to inches with 1kPa = 0.2953in '''
-        return pres_kpa_val * 0.2953
+    def pa_to_inches(pres_pa_val):
+        ''' convert pa to inches with 1kPa = 0.2953in '''
+        return (pres_pa_val * 0.2953) / 1000
 
     @staticmethod
     def celsius2fahrenheit(val):

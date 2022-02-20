@@ -5,12 +5,12 @@ from onewire import OneWire
 from ds18x20 import DS18X20
 from machine import Pin, Timer, RTC, ADC, I2C
 from time import ticks_ms, ticks_diff, sleep_ms, time, mktime
+import weather
 from base64 import b64decode
 from ujson import load
 from am2320 import AM2320
 from mpl3115a2 import MPL3115A2
 import time_utils
-import weather
 import api_utils
 
 print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
@@ -45,7 +45,6 @@ LED_POSITION = NUM_RGB_LEDS - 1
 NUM_TEMP_SENSORS = 1
 TEMP_SENSOR_POSITION = NUM_TEMP_SENSORS - 1
 N_RAIN_RESET_TIME_TO_REMEMBER = 5
-# EPOCH_TO_JAN_1_2000_SECONDS = 946702800
 
 temp_sensor_pin = Pin(TEMPERATURE_SENSOR_IN_PIN)
 wind_dir_pin = ADC(Pin(WIND_DIR_SENSOR_IN_PIN))
@@ -58,12 +57,11 @@ rtc = RTC()
 wlan = WLAN(STA_IF)
 wlan.active(True)
 wind_dir_pin.atten(ADC.ATTN_11DB)
-# i2c = I2C(0, scl=i2c_scl_pin, sda=i2c_sda_pin, freq=I2C_FREQ)
-i2c = I2C(0, scl=i2c_scl_pin, sda=i2c_sda_pin)
+i2c = I2C(0, scl=i2c_scl_pin, sda=i2c_sda_pin, freq=I2C_FREQ)
 humidity_sensor = AM2320(i2c)
 pressure_sensor = MPL3115A2(i2c, mode=MPL3115A2.PRESSURE)
-temp_sensor = DS18X20(OneWire(temp_sensor_pin))
-roms = temp_sensor.scan()
+# temp_sensor = DS18X20(OneWire(temp_sensor_pin))
+# roms = temp_sensor.scan()
 weather_obj = weather.Weather(TEMPERATURE_UNITS, SPEED_UNITS, RAIN_UNITS, UPDATES_PER_HOUR, \
     DATA_POINTS_PER_UPDATE)
 
@@ -157,17 +155,19 @@ def update_weather_metrics():
 
 def average_sensor_temperatures():
     possible_temperatures = []
-    humidity_sensor.measure()
     possible_temperatures.append(humidity_sensor.temperature())
     possible_temperatures.append(pressure_sensor.temperature())
-    possible_temperatures.append(temp_sensor.read_temp(roms[TEMP_SENSOR_POSITION]))
+    # possible_temperatures.append(temp_sensor.read_temp(roms[TEMP_SENSOR_POSITION]))
     temperatures = [temp for temp in possible_temperatures if temp is not None]
-    return sum(temperatures)/len(temperatures)
+    if temperatures:
+        return sum(temperatures)/len(temperatures)
+    else:
+        return 0.0
 
 def read_temperature(initial_reading=False):
     reading = 0
     try:
-        temp_sensor.convert_temp()
+        # temp_sensor.convert_temp()
         if initial_reading:
             sleep_ms(1000)
         reading = average_sensor_temperatures()
@@ -177,7 +177,6 @@ def read_temperature(initial_reading=False):
 
 def read_humidity():
     try:
-        humidity_sensor.measure()
         return humidity_sensor.humidity()
     except Exception as e:
         print_sensor_read_error("humidity sensor", e)
@@ -204,11 +203,18 @@ def wind_speed_isr(irq):
 
 def record_weather_data_points(timer):
     global gust_start_timer
+    read_humidity_sensor()
     weather_obj.add_wind_dir_reading(wind_dir_pin.read())
     weather_obj.add_temperature_reading(read_temperature())
     weather_obj.add_humidity_reading(read_humidity())
     weather_obj.add_pressure_reading(read_pressure())
     gust_start_timer = weather_obj.check_wind_gust(gust_start_timer)
+
+def read_humidity_sensor():
+    try:
+        humidity_sensor.measure()
+    except Exception as e:
+        print_sensor_read_error("humidity sensor", e)
 
 def web_weather_update():
     creds = weather_settings().get("credentials", {})
@@ -259,10 +265,10 @@ rain_counter_pin.irq(trigger=Pin.IRQ_RISING, handler=rain_counter_isr)
 wind_speed_pin.irq(trigger=Pin.IRQ_RISING, handler=wind_speed_isr)
 rain_timer.init(period=ms_until_midnight(), mode=Timer.ONE_SHOT, callback=reset_rain_counter_daily)
 data_check_timer.init(period=DATA_POINT_CHECK_PERIOD, mode=Timer.PERIODIC, callback=record_weather_data_points)
-trash_temperature_reading = read_temperature(initial_reading=True)
-del trash_temperature_reading  # first reading is always wrong so just put it in the garbage
+# trash_temperature_reading = read_temperature(initial_reading=True)
+# del trash_temperature_reading  # first reading is always wrong so just put it in the garbage
 while True:
     sleep_ms(100)
     if ticks_diff(ticks_ms(), weather_update_time) > WEATHER_UPDATE_PERIOD:
-        print("updating weather. daily rain resets were: {}".format(str(rain_reset_list)))
+        # print("updating weather. daily rain resets were: {}".format(str(rain_reset_list)))
         update_weather_metrics()
