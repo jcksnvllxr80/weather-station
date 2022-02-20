@@ -14,11 +14,11 @@ class AM2320:
         address = self.address
         # wake sensor
         try:
-            self.i2c.scan()
             self.i2c.writeto(address, b'')
         except OSError:
             pass
         # read 4 registers starting at offset 0x00
+        self.i2c.writeto(address, b'\x03\x00\x04')
         # wait at least 1.5ms
         time.sleep_ms(2)
         # read data
