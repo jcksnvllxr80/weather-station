@@ -26,6 +26,7 @@ RAIN_CNT_SENSOR_IN_PIN = 5
 I2C_SCL_PIN = 19
 I2C_SDA_PIN = 18
 I2C_FREQ = 100_000
+I2C_TIMEOUT = 50_000
 RAIN_UNITS = "in"
 TEMPERATURE_UNITS = "F"
 SPEED_UNITS = "MPH"
@@ -57,7 +58,7 @@ rtc = RTC()
 wlan = WLAN(STA_IF)
 wlan.active(True)
 wind_dir_pin.atten(ADC.ATTN_11DB)
-i2c = SoftI2C(scl=i2c_scl_pin, sda=i2c_sda_pin, freq=I2C_FREQ, timeout=50_000)
+i2c = SoftI2C(scl=i2c_scl_pin, sda=i2c_sda_pin, freq=I2C_FREQ, timeout=I2C_TIMEOUT)
 humidity_sensor = AM2320(i2c)
 pressure_sensor = MPL3115A2(i2c, mode=MPL3115A2.PRESSURE)
 temp_sensor = DS18X20(OneWire(temp_sensor_pin))
