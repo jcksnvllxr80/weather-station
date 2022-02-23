@@ -59,8 +59,13 @@ wlan = WLAN(STA_IF)
 wlan.active(True)
 wind_dir_pin.atten(ADC.ATTN_11DB)
 i2c = SoftI2C(scl=i2c_scl_pin, sda=i2c_sda_pin, freq=I2C_FREQ, timeout=I2C_TIMEOUT)
-humidity_sensor = AM2320(i2c)
-pressure_sensor = MPL3115A2(i2c, mode=MPL3115A2.PRESSURE)
+humidity_sensor = None
+pressure_sensor = None
+try:
+    humidity_sensor = AM2320(i2c)
+    pressure_sensor = MPL3115A2(i2c, mode=MPL3115A2.PRESSURE)
+except Exception as e:
+    print("Problem initializing an i2c device: ", e)
 temp_sensor = DS18X20(OneWire(temp_sensor_pin))
 roms = temp_sensor.scan()
 weather_obj = weather.Weather(TEMPERATURE_UNITS, SPEED_UNITS, RAIN_UNITS, UPDATES_PER_HOUR, \
@@ -156,11 +161,12 @@ def update_weather_metrics():
 
 def average_sensor_temperatures():
     possible_temperatures = []
-    
-    possible_temperatures.append(try_read_sensor_catch_e("humidity sensor - temperature", humidity_sensor.temperature))
-    # print("humidity sensor's temperature reading: {}".format(possible_temperatures[-1]))
-    possible_temperatures.append(try_read_sensor_catch_e("pressure sensor - temperature", pressure_sensor.temperature))
-    # print("pressure sensor's temperature reading: {}".format(possible_temperatures[-1]))
+    if humidity_sensor:
+        possible_temperatures.append(try_read_sensor_catch_e("humidity sensor - temperature", humidity_sensor.temperature))
+        # print("humidity sensor's temperature reading: {}".format(possible_temperatures[-1]))
+    if pressure_sensor:
+        possible_temperatures.append(try_read_sensor_catch_e("pressure sensor - temperature", pressure_sensor.temperature))
+        # print("pressure sensor's temperature reading: {}".format(possible_temperatures[-1]))
     possible_temperatures.append(try_read_sensor_catch_e("temperature sensor", read_temp_sensors_value))
     # print("temperature sensor's temperature reading: {}".format(possible_temperatures[-1]))
     temperatures = [temp for temp in possible_temperatures if temp]
@@ -203,11 +209,13 @@ def wind_speed_isr(irq):
 
 def record_weather_data_points(timer):
     global gust_start_timer
-    try_read_sensor_catch_e("humidity sensor - measure", humidity_sensor.measure)
+    if humidity_sensor:
+        try_read_sensor_catch_e("humidity sensor - measure", humidity_sensor.measure)
+        weather_obj.add_humidity_reading(try_read_sensor_catch_e("humidity sensor", humidity_sensor.humidity))
     weather_obj.add_wind_dir_reading(wind_dir_pin.read())
     weather_obj.add_temperature_reading(get_temperature())
-    weather_obj.add_humidity_reading(try_read_sensor_catch_e("humidity sensor", humidity_sensor.humidity))
-    weather_obj.add_pressure_reading(try_read_sensor_catch_e("pressure sensor", pressure_sensor.pressure))
+    if pressure_sensor:
+        weather_obj.add_pressure_reading(try_read_sensor_catch_e("pressure sensor", pressure_sensor.pressure))
     gust_start_timer = weather_obj.check_wind_gust(gust_start_timer)
 
 def web_weather_update():
