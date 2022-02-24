@@ -49,7 +49,7 @@ N_RAIN_RESET_TIME_TO_REMEMBER = 5
 
 temp_sensor_pin = Pin(TEMPERATURE_SENSOR_IN_PIN)
 wind_dir_pin = ADC(Pin(WIND_DIR_SENSOR_IN_PIN))
-wifi_indicator = NeoPixel(Pin(WIFI_LED_OUT_PIN), NUM_RGB_LEDS)
+wifi_indicator = NeoPixel(Pin(WIFI_LED_OUT_PIN, Pin.OUT), NUM_RGB_LEDS)
 wind_speed_pin = Pin(WIND_SPD_SENSOR_IN_PIN, Pin.IN)
 rain_counter_pin = Pin(RAIN_CNT_SENSOR_IN_PIN, Pin.IN)
 i2c_scl_pin = Pin(I2C_SCL_PIN, mode=Pin.OUT, pull=Pin.PULL_UP)
@@ -99,11 +99,11 @@ def database_settings():
 
 def wifi_led_red():
     wifi_indicator[LED_POSITION] = (2, 0, 0)  # dim red
-    wifi_indicator.write()
+    # wifi_indicator.write()
 
 def wifi_led_green():
     wifi_indicator[LED_POSITION] = (0, 2, 0)  # dim green
-    wifi_indicator.write()
+    # wifi_indicator.write()
 
 def init_wlan():
     wlan.active(True)

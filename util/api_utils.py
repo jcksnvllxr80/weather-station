@@ -37,14 +37,14 @@ def update_weather_api(host, path, station_id, station_key, weather):
     try:
         get_response(url_str, requests.get(url=url_str))
     except Exception as e:
-        print("Looks like Wunderground is not responding -> {}".format(e))
+        print("url: {}\nLooks like Wunderground is not responding -> {}".format(url_str, e))
 
 def send_json_to_telegraf_api(host, port, path, weather_dict):
     url_str = "http://{}:{}{}".format(host, port, path)
     try:
         get_response(url_str, requests.post(url=url_str, data=dumps(weather_dict)))
     except Exception as e:
-        print("Looks like Telegraf is not responding -> {}".format(e))
+        print("url: {}\nLooks like Telegraf is not responding -> {}".format(url_str, e))
 
 def get_response(url_str, http_res):
     http_parser = http_utils.HttpParser()
