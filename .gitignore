@@ -1,2 +1,3 @@
 esp32-c3/
 conf/config.json
+examples/calculate_dew_point/.idea
