@@ -147,6 +147,7 @@ def update_weather_metrics():
     weather_obj.set_wind_direction(weather_obj.calculate_avg_wind_dir())
     weather_obj.set_temperature(weather_obj.average_data_points(weather_obj.get_temperature_list()))
     weather_obj.set_humidity(weather_obj.average_data_points(weather_obj.get_humidity_list()))
+    weather_obj.set_dew_point()
     weather_obj.set_pressure(weather_obj.average_data_points(weather_obj.get_pressure_list()))
     delta_t_s = int(ticks_diff(ticks_ms(), weather_update_time) / 1000)  # convert to seconds
     weather_obj.set_wind_speed(weather_obj.calculate_avg_wind_speed(delta_t_s))

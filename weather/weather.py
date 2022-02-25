@@ -2,7 +2,7 @@ import time
 from math import pi, sin, cos, atan2, degrees, radians
 from api_utils import TEMPERATURE_KEY, WIND_KEY, WIND_GUST_KEY, \
 WIND_SPEED_KEY, WIND_DIRECTION_KEY, RAIN_KEY, RAIN_COUNT_DAILY_KEY, \
-RAIN_COUNT_HOURLY_KEY, PRESSURE_KEY, HUMIDITY_KEY
+RAIN_COUNT_HOURLY_KEY, PRESSURE_KEY, HUMIDITY_KEY, DEW_POINT_KEY
 RAIN_COUNT_CONSTANT = 0.2794  # mm's rain
 ANEMOMETER_CONSTANT = 2.4  # km/h
 N_NE_ANGLE_RAD = radians(22.5)
@@ -77,6 +77,7 @@ class Weather:
         self.__temperature = 0.0
         self.__pressure = 0.0
         self.__humidity = 0.0
+        self.__dew_point = 0.0
         self.__weather_dict = {
             RAIN_KEY: {
                 RAIN_COUNT_DAILY_KEY: self.__rain_count_daily,
@@ -89,7 +90,8 @@ class Weather:
             },
             TEMPERATURE_KEY: self.__temperature,
             PRESSURE_KEY: self.__pressure,
-            HUMIDITY_KEY: self.__humidity
+            HUMIDITY_KEY: self.__humidity,
+            DEW_POINT_KEY: self.__dew_point
         }
 
     def __repr__(self):
@@ -165,6 +167,16 @@ class Weather:
 
     def get_pressure_list(self):
         return self.__pressure_list
+
+    def get_dew_point(self):
+        return self.__dew_point
+
+    def set_dew_point(self, val=None):
+        if val is None:
+            self.__dew_point = val
+        else:
+            self.__dew_point = Weather.two_decimals(self.calc_dew_point_with_humidity())
+        self.__weather_dict[DEW_POINT_KEY] = self.__dew_point
 
     def increment_rain(self):
         if self.rain_units == "mm":
@@ -242,6 +254,13 @@ class Weather:
             mph_conversion_divisor = 1.6093
         return mph_conversion_divisor
 
+    def calc_dew_point_with_humidity(self):
+        if self.temp_units == "F":
+            temperature_c = Weather.fahrenheit2celsius(self.__temperature)
+            return Weather.celsius2fahrenheit(Weather.get_dew_point_in_c(self.__humidity, temperature_c))
+        else:
+            return Weather.get_dew_point_in_c(self.__humidity, self.__temperature)
+
     def calculate_hourly_rain(self):
         return sum(self.__rain_hourly_list)
 
@@ -285,5 +304,25 @@ class Weather:
         return val * 1.8 + 32
 
     @staticmethod
+    def fahrenheit2celsius(val):
+        return (val - 32) / 1.8
+
+    @staticmethod
     def millimeters2inches(val):
         return val / 25.4  # 25.4 mm / inch
+
+    @staticmethod
+    def get_dew_point_in_c(humidity, temp_c):
+        if humidity < 50:
+            return Weather.magnus_formula(humidity, temp_c)
+        else:
+            return temp_c - (100 - humidity) / 5
+
+    @staticmethod
+    def magnus_formula(humidity, temp_c):
+        humidity_decimal = 0.01 * humidity
+        a = temp_c - (14.55 + 0.114 * temp_c) * (1 - humidity_decimal)
+        b = pow(((2.5 + 0.007 * temp_c) * (1 - humidity_decimal)), 3)
+        c = (15.9 + (0.117 * temp_c))
+        d = pow((1 - humidity_decimal), 14)
+        return (a - b - (c * d))
