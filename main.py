@@ -99,11 +99,11 @@ def database_settings():
 
 def wifi_led_red():
     wifi_indicator[LED_POSITION] = (2, 0, 0)  # dim red
-    # wifi_indicator.write()
+    wifi_indicator.write()
 
 def wifi_led_green():
     wifi_indicator[LED_POSITION] = (0, 2, 0)  # dim green
-    # wifi_indicator.write()
+    wifi_indicator.write()
 
 def init_wlan():
     wlan.active(True)
