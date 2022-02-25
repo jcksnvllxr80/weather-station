@@ -173,9 +173,9 @@ class Weather:
 
     def set_dew_point(self, val=None):
         if val is None:
-            self.__dew_point = val
-        else:
             self.__dew_point = Weather.two_decimals(self.calc_dew_point_with_humidity())
+        else:
+            self.__dew_point = val
         self.__weather_dict[DEW_POINT_KEY] = self.__dew_point
 
     def increment_rain(self):
