@@ -39,10 +39,10 @@ The following classes (which are all in this repo) must be manually loaded onto 
 ## Erase and flash micropython on the ESP32-C3-Mini from windows CMD
 
 - download and unzip <https://github.com/espressif/esptool>
-- download the MicroPython firmware <https://micropython.org/download/esp32c3/> (I used esp32c3-20210902-v1.17.bin)
+- download the MicroPython firmware <https://micropython.org/download/esp32c3/> (esp32c3-20220225-unstable-v1.18-160-g0a217624e.bin)
 - for the next step I used anaconda prompt (you may have to install dependencies)
 - python esptool.py -p COM<your_com_num> -b 1000000 --before default_reset erase_flash
-- python esptool.py -p COM<your_com_num> -b 1500000 --before default_reset write_flash -z 0x0000 esp32c3-20210902-v1.17.bin
+- python esptool.py -p COM<your_com_num> -b 1500000 --before default_reset write_flash -z 0x0000 esp32c3-20220225-unstable-v1.18-160-g0a217624e.bin
 - the above two commands worked for me but here is a helpful link just in case: <http://embedded-things.blogspot.com/2021/10/flash-micropython-firmware-on-esp32-c3.html>
 
 ## TODO
