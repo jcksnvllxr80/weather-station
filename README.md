@@ -8,12 +8,10 @@
 
 ## Image of project
 
-<!-- ![alt text](https://live.staticflickr.com/65535/51849793428_41a067f149_k.jpg "Image of project") -->
 ![alt text](./etc/img/weather-station.jpg "Image of project")
 
 ## Schematic
 
-<!-- ![alt text](https://live.staticflickr.com/65535/51820944746_9f174e4951_k.jpg "Schematic") -->
 ![alt text](./etc/img/weather-station_schem.png "Schematic")
 
 ## Grafana Dashboard
