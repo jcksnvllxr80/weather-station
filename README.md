@@ -16,6 +16,11 @@
 <!-- ![alt text](https://live.staticflickr.com/65535/51820944746_9f174e4951_k.jpg "Schematic") -->
 ![alt text](./etc/img/weather-station_schem.png "Schematic")
 
+## Grafana Dashboard
+
+<!-- ![alt text](https://live.staticflickr.com/65535/51820944746_9f174e4951_k.jpg "Schematic") -->
+![alt text](./etc/img/grafana-dashboard.jpg "Grafana Dashboard")
+
 ## Description
 
 :cloud: :cyclone: :ocean: :zap: :sunny: :umbrella: :snowman: :foggy:
