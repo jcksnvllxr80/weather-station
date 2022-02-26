@@ -18,7 +18,7 @@
 
 ## Grafana Dashboard
 
-![alt text](./etc/img/grafana-dashboard.jpg "Grafana Dashboard")
+![alt text](./etc/img/grafana-dashboard.png "Grafana Dashboard")
 
 ## Description
 
