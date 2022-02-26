@@ -24,7 +24,7 @@
 
 :cloud: :cyclone: :ocean: :zap: :sunny: :umbrella: :snowman: :foggy:
 
-Using solar-power and a ESP32-C3-Mini to transmit rain fall, wind speed, wind direction, and temperature here -> <https://www.wunderground.com/dashboard/pws/KFLJACKS4049>.
+Powered by solar, a ESP32-C3-Mini collects data from the rain, wind (speed & direction), humidity, pressure, and temperature sensors then sends it to the Wunderground PWS site <https://www.wunderground.com/dashboard/pws/KFLJACKS4049> and a Telegraf listener (repo for docker telegraf-influxdb-grafana stack -> <https://github.com/jcksnvllxr80/docker-telegraf-influx-grafana>) via a Wi-Fi connection to my LAN.
 
 ## Prerequisites
 
