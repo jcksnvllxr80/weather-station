@@ -8,12 +8,10 @@
 
 ## Image of project
 
-<!-- ![alt text](https://live.staticflickr.com/65535/51849793428_41a067f149_k.jpg "Image of project") -->
 ![alt text](./etc/img/weather-station.jpg "Image of project")
 
 ## Schematic
 
-<!-- ![alt text](https://live.staticflickr.com/65535/51820944746_9f174e4951_k.jpg "Schematic") -->
 ![alt text](./etc/img/weather-station_schem.png "Schematic")
 
 ## Grafana Dashboard
@@ -52,7 +50,7 @@ The following classes (which are all in this repo) must be manually loaded onto 
 ## TODO
 
 - add ability to take asynchronous requests over network via API so that local nagios can query weather status
-- get a UV sensor
+- find and integrate a UV sensor to the weather station
 
 ## Weather Vane voltage values and direction table
 
