@@ -8,10 +8,12 @@
 
 ## Image of project
 
+<!-- ![alt text](https://live.staticflickr.com/65535/51849793428_41a067f149_k.jpg "Image of project") -->
 ![alt text](./etc/img/weather-station.jpg "Image of project")
 
 ## Schematic
 
+<!-- ![alt text](https://live.staticflickr.com/65535/51820944746_9f174e4951_k.jpg "Schematic") -->
 ![alt text](./etc/img/weather-station_schem.png "Schematic")
 
 ## Grafana Dashboard
@@ -22,7 +24,7 @@
 
 :cloud: :cyclone: :ocean: :zap: :sunny: :umbrella: :snowman: :foggy:
 
-Powered by solar, a ESP32-C3-Mini collects data from the rain, wind (speed & direction), humidity, pressure, and temperature sensors then sends it to the Wunderground PWS site <https://www.wunderground.com/dashboard/pws/KFLJACKS4049> and a Telegraf listener (repo for docker telegraf-influxdb-grafana stack -> <https://github.com/jcksnvllxr80/docker-telegraf-influx-grafana>) via a Wi-Fi connection to my LAN.
+This project is powered by a solar panel that charges a lithium ion battery through a Sparkfun "solar buddy" board. The code is written in MicroPython on a ESP32-C3-Mini. The chip collects data from the rain, wind (speed & direction), humidity, pressure, and temperature sensors in a variety of ways (i.e. i2c, oneWire, ADC, and electrical pulse interrupts). The data is collected every 5 seconds and then averaged at the end of two minutes and placed into a dictionary data structure and sent to my Wunderground PWS site <https://www.wunderground.com/dashboard/pws/KFLJACKS4049> where my data and other users data get stored for public consumption. The is also a Telegraf listener running in a docker container on my local network (repo for docker telegraf-influxdb-grafana stack -> <https://github.com/jcksnvllxr80/docker-telegraf-influx-grafana>) which takes json requests via its API and converts the data into a protocol that influxDb speaks. There are two Telegraf outputs; one goes to the local influxdb running in docker and the goes to a Prometheus plugin running in my Grafana Cloud account. Both database allow me to make beautiful charts and graphs to show and analyze the weather data. All connections to the network are via Wi-Fi connection on my Google Wifi (Mesh) LAN. 
 
 ## Prerequisites
 
@@ -50,7 +52,7 @@ The following classes (which are all in this repo) must be manually loaded onto 
 ## TODO
 
 - add ability to take asynchronous requests over network via API so that local nagios can query weather status
-- find and integrate a UV sensor to the weather station
+- get a UV sensor
 
 ## Weather Vane voltage values and direction table
 
