@@ -133,7 +133,7 @@ def get_wifi_conn_status(conn_status, bool_query_time):
         print("sorry, cant connect to wifi AP! connection --> {}".format(conn_status))
     return conn_status
 
-def reset_rain_counter_daily(timer):
+def reset_rain_counter_daily():
     weather_obj.reset_daily_rain_count()
     save_rain_reset_time(rtc.datetime())
 
