@@ -136,7 +136,6 @@ def get_wifi_conn_status(conn_status, bool_query_time):
 def reset_rain_counter_daily(timer):
     weather_obj.reset_daily_rain_count()
     save_rain_reset_time(rtc.datetime())
-    rain_timer.init(period=ms_until_midnight(), mode=Timer.ONE_SHOT, callback=reset_rain_counter_daily)
 
 def save_rain_reset_time(current_time):
     rain_reset_list.append(current_time)
@@ -239,24 +238,24 @@ def database_weather_update():
         weather_obj.get_weather_data()
     )
 
-def ms_until_midnight():
-    '''
-    return the difference between future midnight and now, in ms
-    '''
-    now = rtc.datetime()
-    # rtc returns datetimetuple -> (year, month, day, weekday, hours, minutes, seconds, subseconds)
-    # mktime tuple arg is a little diff -> (year, month, mday, hour, minute, second, weekday, yearday)
-    midnight_seconds = mktime((now[0], now[1], now[2] + 1, 0, 0, 0, now[3] + 1, 0))
-    return (midnight_seconds - time()) * 1000  # return in milliseconds
+# def ms_until_midnight():
+#     '''
+#     return the difference between future midnight and now, in ms
+#     '''
+#     now = rtc.datetime()
+#     # rtc returns datetimetuple -> (year, month, day, weekday, hours, minutes, seconds, subseconds)
+#     # mktime tuple arg is a little diff -> (year, month, mday, hour, minute, second, weekday, yearday)
+#     midnight_seconds = mktime((now[0], now[1], now[2] + 1, 0, 0, 0, now[3] + 1, 0))
+#     return (midnight_seconds - time()) * 1000  # return in milliseconds
 
 connection = ""
 wifi_led_red()
 config = read_config_file(CONFIG_FILE)
-rain_timer = Timer(0)
 data_check_timer = Timer(2)
 init_wlan()
 connection = get_wifi_conn_status(connect_wifi(), True)
 # create an n-long list of 8-tuples
+rain_needs_reset_at_midnight = True
 rain_reset_list = [tuple([0]*8)] * N_RAIN_RESET_TIME_TO_REMEMBER
 
 begin_time = ticks_ms()
@@ -265,12 +264,20 @@ wind_speed_last_intrpt = begin_time
 gust_start_timer = begin_time
 rain_counter_pin.irq(trigger=Pin.IRQ_RISING, handler=rain_counter_isr)
 wind_speed_pin.irq(trigger=Pin.IRQ_RISING, handler=wind_speed_isr)
-rain_timer.init(period=ms_until_midnight(), mode=Timer.ONE_SHOT, callback=reset_rain_counter_daily)
 data_check_timer.init(period=DATA_POINT_CHECK_PERIOD, mode=Timer.PERIODIC, callback=record_weather_data_points)
 trash_temperature_reading = get_temperature(initial_reading=True)
 del trash_temperature_reading  # first reading is always wrong so just put it in the garbage
 while True:
     sleep_ms(100)
     if ticks_diff(ticks_ms(), weather_update_time) > WEATHER_UPDATE_PERIOD:
-        # print("updating weather. daily rain resets were: {}".format(str(rain_reset_list)))
+        print("updating weather. daily rain resets were: {}".format(str(rain_reset_list)))
         update_weather_metrics()
+        # check to see if its midnight with rtc.datetime()[4] as it returns the current hour
+        if rtc.datetime()[4] is 0:
+            if rain_needs_reset_at_midnight:
+                reset_rain_counter_daily()
+                rain_needs_reset_at_midnight = False
+        else:
+            # here's where it just stopped being the zeroth hour so now we set needs reset to true again
+            if not rain_needs_reset_at_midnight:
+                rain_needs_reset_at_midnight = True
