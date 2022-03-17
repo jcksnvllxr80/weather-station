@@ -277,6 +277,7 @@ while True:
             if rain_needs_reset_at_midnight:
                 reset_rain_counter_daily()
                 rain_needs_reset_at_midnight = False
+            connection = get_wifi_conn_status(connect_wifi(), True)
         else:
             # here's where it just stopped being the zeroth hour so now we set needs reset to true again
             if not rain_needs_reset_at_midnight:
