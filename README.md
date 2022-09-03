@@ -118,7 +118,11 @@ https://weatherstation.wunderground.com/weatherstation/updateweatherstation.php?
 
 ```
 
-### Use Thonny to write the following code to ESP32-C3-Mini
+---
+
+## For testing chunks of code on the ESP32-C3-Mini
+
+Use Thonny to write some code to ESP32-C3-Mini: example below where i was testing the temp sensor.
 
 ```python
 # 1-wire DS18B20
