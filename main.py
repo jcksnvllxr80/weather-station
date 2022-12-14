@@ -14,7 +14,7 @@ import time_utils
 import api_utils
 
 print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
-print("RPi-Pico MicroPython Ver:", version)
+print("ESP32-C3-Mini MicroPython Ver:", version)
 print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
 
 CONFIG_FILE = "conf/config.json"
