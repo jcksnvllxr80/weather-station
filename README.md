@@ -136,3 +136,7 @@ time.sleep_ms(750)
 for rom in roms:
   print(ds_sensor.read_temp(rom))
 ```
+
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=jcksnvll/weather-station&type=Date)](https://star-history.com/#ausbitbank/stable-diffusion-discord-bot&Date)
