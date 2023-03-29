@@ -139,4 +139,4 @@ for rom in roms:
 
 ## Star History
 
-[![Star History Chart](https://api.star-history.com/svg?repos=jcksnvll/weather-station&type=Date)](https://star-history.com/#ausbitbank/stable-diffusion-discord-bot&Date)
+[![Star History Chart](https://api.star-history.com/svg?repos=jcksnvllxr80/weather-station&type=Date)](https://star-history.com/#jcksnvllxr80/weather-station&Date)
