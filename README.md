@@ -51,7 +51,6 @@ The following classes (which are all in this repo) must be manually loaded onto 
 
 - add ability to take asynchronous requests over network via API so that local nagios can query weather status
 - get a UV sensor
-- add try/except block around timeapi call
 
 ## Weather Vane voltage values and direction table
 

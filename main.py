@@ -72,11 +72,14 @@ weather_obj = weather.Weather(TEMPERATURE_UNITS, SPEED_UNITS, RAIN_UNITS, UPDATE
     DATA_POINTS_PER_UPDATE)
 
 def set_time():
-    time_utils.query_time_api(
-        time_settings().get("host", DEFAULT_TIME_API_HOST),
-        time_settings().get("path", DEFAULT_TIME_API_PATH),
-        rtc
-    )
+    try:
+        time_utils.query_time_api(
+            time_settings().get("host", DEFAULT_TIME_API_HOST),
+            time_settings().get("path", DEFAULT_TIME_API_PATH),
+            rtc
+        )
+    except Exception as e:
+        print("Problem setting the time: ", e)
     return get_wifi_conn_status(wlan.isconnected(), False)
 
 def read_config_file(filename):
