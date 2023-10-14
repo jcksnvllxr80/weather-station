@@ -26,9 +26,9 @@ def get_data_str(id, key, data):
             '&tempf=', str(data[TEMPERATURE_KEY]),
             '&rainin=', str(data[RAIN_KEY][RAIN_COUNT_HOURLY_KEY]),
             '&dailyrainin=', str(data[RAIN_KEY][RAIN_COUNT_DAILY_KEY]),
-            '&baromin=', str(data[PRESSURE_KEY]),
-            '&humidity=', str(data[HUMIDITY_KEY]),
-            '&dewptf=', str(data[DEW_POINT_KEY]),
+            # '&baromin=', str(data[PRESSURE_KEY]),
+            # '&humidity=', str(data[HUMIDITY_KEY]),
+            # '&dewptf=', str(data[DEW_POINT_KEY]),
             '&softwaretype=custom',
             '&action=updateraw'
         ]
