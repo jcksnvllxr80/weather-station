@@ -3,7 +3,7 @@ from neopixel import NeoPixel
 from network import WLAN, STA_IF
 from onewire import OneWire
 from ds18x20 import DS18X20
-from machine import Pin, Timer, RTC, ADC, SoftI2C
+from machine import Pin, Timer, RTC, ADC, SoftI2C, WDT
 from time import ticks_ms, ticks_diff, sleep_ms, time, mktime
 import weather
 from base64 import b64decode
@@ -37,6 +37,7 @@ SECOND_PERIOD = 1000
 DATA_POINT_CHECK_PERIOD = 5 * SECOND_PERIOD
 MINUTE_PERIOD = 60 * SECOND_PERIOD
 WEATHER_UPDATE_PERIOD = 2 * MINUTE_PERIOD
+WDT_TIMEOUT_MS = 30000  # 30 seconds watchdog timeout
 UPDATES_PER_HOUR = int(HOURLY / WEATHER_UPDATE_PERIOD)
 DATA_POINTS_PER_UPDATE = int(WEATHER_UPDATE_PERIOD / DATA_POINT_CHECK_PERIOD)
 DEFAULT_TIME_API_HOST = "worldtimeapi.org"
@@ -255,6 +256,11 @@ connection = ""
 wifi_led_red()
 config = read_config_file(CONFIG_FILE)
 data_check_timer = Timer(2)
+
+# Initialize watchdog timer
+print("Initializing watchdog timer with {}ms timeout".format(WDT_TIMEOUT_MS))
+wdt = WDT(timeout=WDT_TIMEOUT_MS)
+
 init_wlan()
 connection = get_wifi_conn_status(connect_wifi(), True)
 # create an n-long list of 8-tuples
@@ -271,6 +277,9 @@ data_check_timer.init(period=DATA_POINT_CHECK_PERIOD, mode=Timer.PERIODIC, callb
 trash_temperature_reading = get_temperature(initial_reading=True)
 del trash_temperature_reading  # first reading is always wrong so just put it in the garbage
 while True:
+    # Feed the watchdog timer to prevent reset during normal operation
+    wdt.feed()
+    
     sleep_ms(100)
     if ticks_diff(ticks_ms(), weather_update_time) > WEATHER_UPDATE_PERIOD:
         print("updating weather. daily rain resets were: {}".format(str(rain_reset_list)))
