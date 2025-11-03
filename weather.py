@@ -3,6 +3,7 @@ from math import pi, sin, cos, atan2, degrees, radians
 from api_utils import TEMPERATURE_KEY, WIND_KEY, WIND_GUST_KEY, \
 WIND_SPEED_KEY, WIND_DIRECTION_KEY, RAIN_KEY, RAIN_COUNT_DAILY_KEY, \
 RAIN_COUNT_HOURLY_KEY, PRESSURE_KEY, HUMIDITY_KEY, DEW_POINT_KEY
+GUST_OUTLIER_THRESHOLD = 3.0  # max allowed multiplier increase for gust from previous max
 RAIN_COUNT_CONSTANT = 0.2794  # mm's rain
 ANEMOMETER_CONSTANT = 2.4  # km/h
 N_NE_ANGLE_RAD = radians(22.5)
@@ -192,28 +193,100 @@ class Weather:
         self.__wind_dir_list.append(Weather.wind_adc_to_coordinate(val))
         self.__wind_dir_list.pop(0)
 
+    def is_valid_temperature(self, temp_val):
+        """Check if temperature is within physically reasonable range"""
+        if self.temp_units == "F":
+            return -40 <= temp_val <= 140  # Fahrenheit range
+        else:
+            return -40 <= temp_val <= 60   # Celsius range
+
+    def is_valid_humidity(self, humid_val):
+        """Check if humidity is within valid range"""
+        return 0 <= humid_val <= 100
+
+    def is_valid_pressure(self, pres_pa_val):
+        """Check if pressure is within reasonable range (in Pascals)"""
+        return 85000 <= pres_pa_val <= 108000  # ~25-32 inHg
+
+    def is_valid_wind_speed(self, wind_val):
+        """Check if wind speed/gust is within reasonable range"""
+        if self.speed_units == "MPH":
+            return 0 <= wind_val <= 200  # MPH range (200 mph is extreme but possible)
+        else:
+            return 0 <= wind_val <= 320  # km/h range
+
     def add_temperature_reading(self, temp_val):
-        # print("temperature reading was: {}".format(temp_val))
-        self.__temperature_list.append(temp_val)
-        self.__temperature_list.pop(0)
+        # Check for outlier and validity before adding
+        if self.is_valid_temperature(temp_val) and not self.is_outlier(temp_val, self.__temperature_list):
+            self.__temperature_list.append(temp_val)
+            self.__temperature_list.pop(0)
+        else:
+            print(f"Temperature reading rejected: {temp_val}")
 
     def add_pressure_reading(self, pres_pa_val):
-        # print("pressure reading was: {}".format(pres_pa_val))
-        self.__pressure_list.append(pres_pa_val)
-        self.__pressure_list.pop(0)
+        # Check for outlier and validity before adding
+        if self.is_valid_pressure(pres_pa_val) and not self.is_outlier(pres_pa_val, self.__pressure_list):
+            self.__pressure_list.append(pres_pa_val)
+            self.__pressure_list.pop(0)
+        else:
+            print(f"Pressure outlier rejected: {pres_pa_val}")
 
     def add_humidity_reading(self, humid_val):
-        # print("humidity reading was: {}".format(humid_val))
-        self.__humidity_list.append(humid_val)
-        self.__humidity_list.pop(0)
+        # Check for outlier and validity before adding
+        if self.is_valid_humidity(humid_val) and not self.is_outlier(humid_val, self.__humidity_list):
+            self.__humidity_list.append(humid_val)
+            self.__humidity_list.pop(0)
+        else:
+            print(f"Humidity outlier rejected: {humid_val}")
+
+    def is_outlier(self, new_value, data_list, std_dev_threshold=2.5):
+        """
+        Detect if a new value is an outlier compared to existing data.
+        Returns True if the value is an outlier (should be rejected).
+
+        Args:
+            new_value: The new sensor reading to validate
+            data_list: List of previous readings to compare against
+            std_dev_threshold: Number of standard deviations from mean (default 2.5)
+        """
+        # Filter out zeros and None values for better statistics
+        valid_data = [x for x in data_list if x and x != 0.0]
+
+        # Need at least 3 data points to detect outliers
+        if len(valid_data) < 3:
+            return False  # Accept the value if not enough data yet
+
+        # Calculate mean and standard deviation
+        mean = sum(valid_data) / len(valid_data)
+        variance = sum((x - mean) ** 2 for x in valid_data) / len(valid_data)
+        std_dev = variance ** 0.5
+
+        # Check if new value is drastically different
+        if std_dev < 0.1:
+            # Check if new value is drastically different
+            if mean == 0:
+                return abs(new_value) > 1.0  # Absolute threshold when mean is zero
+            return abs(new_value - mean) > (abs(mean) * 0.3)  # 30% difference
+
+        # Check if new value is beyond threshold standard deviations
+        z_score = abs(new_value - mean) / std_dev
+        return z_score > std_dev_threshold
 
     def check_wind_gust(self, last_gust_start_time):
         gust_window_start_time = time.ticks_ms()
         if last_gust_start_time:
             delta_t_gust = time.ticks_diff(gust_window_start_time, last_gust_start_time)
             current_gust = self.calculate_wind_gust(delta_t_gust)
-            if current_gust > self.__max_wind_gust:
-                self.set_wind_gust(current_gust)
+            # Only update if valid and greater than current max
+            if self.is_valid_wind_speed(current_gust):
+                # Also check if it's not an unreasonable jump from current max
+                if self.__max_wind_gust == 0 or current_gust <= (self.__max_wind_gust * GUST_OUTLIER_THRESHOLD):
+                    if current_gust > self.__max_wind_gust:
+                        self.set_wind_gust(current_gust)
+                else:
+                    print(f"Wind gust outlier rejected: {current_gust} (current max: {self.__max_wind_gust})")
+            else:
+                print(f"Invalid wind gust rejected: {current_gust}")
         return gust_window_start_time
 
     def add_wind_speed_pulse(self):
