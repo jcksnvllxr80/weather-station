@@ -3,8 +3,9 @@ from neopixel import NeoPixel
 from network import WLAN, STA_IF
 from onewire import OneWire
 from ds18x20 import DS18X20
-from machine import Pin, Timer, RTC, ADC, SoftI2C, WDT
+from machine import Pin, Timer, RTC, ADC, SoftI2C, WDT, reset
 from time import ticks_ms, ticks_diff, sleep_ms, time, mktime
+import micropython
 import weather
 from base64 import b64decode
 from ujson import load
@@ -12,6 +13,9 @@ from am2320 import AM2320
 from mpl3115a2 import MPL3115A2
 import time_utils
 import api_utils
+
+# Reserve buffer so exceptions raised inside ISRs are reportable instead of silent.
+micropython.alloc_emergency_exception_buf(100)
 
 print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
 print("ESP32-C3-Mini MicroPython Ver:", version)
@@ -38,6 +42,7 @@ DATA_POINT_CHECK_PERIOD = 5 * SECOND_PERIOD
 MINUTE_PERIOD = 60 * SECOND_PERIOD
 WEATHER_UPDATE_PERIOD = 2 * MINUTE_PERIOD
 WDT_TIMEOUT_MS = 30000  # 30 seconds watchdog timeout
+DAILY_REBOOT_MS = 24 * 60 * MINUTE_PERIOD  # preventive reboot to clear silent hangs
 UPDATES_PER_HOUR = int(HOURLY / WEATHER_UPDATE_PERIOD)
 DATA_POINTS_PER_UPDATE = int(WEATHER_UPDATE_PERIOD / DATA_POINT_CHECK_PERIOD)
 DEFAULT_TIME_API_HOST = "worldtimeapi.org"
@@ -202,14 +207,26 @@ def read_temp_sensors_value():
 def print_sensor_read_error(sensor, error):
     print("There was an error reading from the {}. {}".format(sensor, error))
 
-def rain_counter_isr(irq):
+def _drain_rain(_):
     weather_obj.increment_rain()
+
+def rain_counter_isr(irq):
+    try:
+        micropython.schedule(_drain_rain, 0)
+    except RuntimeError:
+        pass  # schedule queue full; drop one tip rather than hard-fault
+
+def _drain_wind_pulse(_):
+    weather_obj.add_wind_speed_pulse()
 
 def wind_speed_isr(irq):
     global wind_speed_last_intrpt  # software debounce mechanical reed switch
     if ticks_diff(ticks_ms(), wind_speed_last_intrpt) > 5:  # no less than 5ms between pulses
         wind_speed_last_intrpt = ticks_ms()
-        weather_obj.add_wind_speed_pulse()
+        try:
+            micropython.schedule(_drain_wind_pulse, 0)
+        except RuntimeError:
+            pass
 
 def record_weather_data_points(timer):
     global gust_start_timer
@@ -284,6 +301,10 @@ while True:
     if ticks_diff(ticks_ms(), weather_update_time) > WEATHER_UPDATE_PERIOD:
         print("updating weather. daily rain resets were: {}".format(str(rain_reset_list)))
         update_weather_metrics()
+        if ticks_diff(ticks_ms(), begin_time) > DAILY_REBOOT_MS:
+            print("Scheduled daily reboot after 24 hours uptime")
+            sleep_ms(100)
+            reset()
         # check to see if its midnight with rtc.datetime()[4] as it returns the current hour
         if rtc.datetime()[4] is 0:
             if rain_needs_reset_at_midnight:
